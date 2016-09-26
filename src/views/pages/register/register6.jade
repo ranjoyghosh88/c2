@@ -1,0 +1,36 @@
+extends ../../layouts/layout
+include ../../mixin/headpanel
+include ../../mixin/formHeading
+include ../../mixin/SignupstepsTemplate
+include ../../mixin/registerFormcontinue
+block content 
+    +headpanels('Sign up as ' + role )
+    .container
+      +signSteps({step:'step3'})
+    .container.error-container 
+    .container.register
+      +setFormHead({head:'Connect with your co-workers at ' +curCmpny+'.',text:"Make your network stronger by connecting with people you know"})
+      .row
+          form.form-horizontal.signupForm(method='post', action=(stepNumber==5 ? '/register/step5' : '/register/step4'))
+            div.form-horizontal.bordered.col-lg-8.col-lg-offset-2.col-md-10.col-md-offset-1.col-xs-12
+                +previousData(formdata)
+                +companyexists(companyexist)
+                input#_csrf(type='hidden', name='_csrf', value='{{csrfToken}}')
+                .form-group
+                  - each val, index in users  
+                      .col-sm-6.col-xs-12
+                        if(val.pictureUrl)
+                          img.clientImg.pull-left(src='#{val.pictureUrl}',style='background-image:none;')
+                        else
+                          img.clientImg.pull-left(src='#{cdn("/profile.jpg")}',style='background-image:none;')
+                        .clientInfo
+                          span.pull-left - #{val.name+' '+val.lastName}
+                        a.pull-right(href='#')
+                          span.glyphicon.glyphicon-plus   
+            div.form-horizontal.col-xs-8.col-xs-offset-2(style='margin-top:20px;')        
+              .form-group
+                .col-sm-offset-3.col-sm-6
+                  button.btn.signup.btn-primary.form-control(type='submit') Continue
+              .form-group
+                .col-sm-offset-4.col-sm-4
+                  button.btn.signup.btn-link.form-control(type='submit') or Skip        

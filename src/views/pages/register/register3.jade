@@ -1,0 +1,23 @@
+extends ../../layouts/layout
+include ../../mixin/headpanel
+include ../../mixin/formHeading
+include ../../mixin/SignupstepsTemplate
+include ../../mixin/registerFormcontinue
+block content 
+    +headpanels('Sign up as ' + role )
+    .container
+      +signSteps({step:'step2'})
+    .container.error-container 
+    .container
+      form.form-horizontal.signupForm(method='post', action='/register/step3')
+        +previousData(formdata)
+        input#_csrf(type='hidden', name='_csrf', value='{{csrfToken}}')
+        +setFormHead({head:'What services do you provide',text:"Let potential clients know everything you can do"})
+        .form-group
+          .col-md-4.col-md-offset-4.col-sm-8.col-sm-offset-2
+            select.form-control#vendorServices(name='vendorServices', data-taggable='true', data-master='vendorService', multiple, data-errorholder='Vendor Services',data-placeholder='Integration,Training, BI Design, etc.',required,style="width: 100%")
+              //-+selectBox(masterCollections.vendorServices,"Please Select a Vendor Services")
+        .form-group
+          .col-md-4.col-md-offset-4.col-sm-8.col-sm-offset-2
+            button.btn.signup.btn-primary.form-control(type='submit') Continue 
+        

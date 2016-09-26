@@ -1,0 +1,27 @@
+include ../mixin/pagination
+mixin searchBox2(data, options)
+	-var key = selectKey || 'all'
+		form.form-inline.search.pull-left(id='search-form-right',method='get',action='/search/#{key}')
+			.form-group
+				div.input-group
+					a.input-group-addon.dropdown-toggle.searchText.no_underline.mobile_align(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+							span.text All
+							i.fa.fa-chevron-down.text-primary
+					ul.dropdown-menu.searchToggle
+						li
+							a(href='#',data-value='all',data-text='All') All
+						li
+							a(href='#',data-value='product',data-text='Products') Products
+						li
+							a(href='#',data-value='people',data-text='People') People
+						li
+							a(href='#',data-value='company',data-text='Companies') Companies
+					input.searchKeyTrigger.form-control.notSelect2.hidden(id='select-key',name="selectKey",type='hidden',value='#{key}')
+					input.form-control(type='text',value='#{search || ""}',name='search', placeholder='Product, people and company')
+					a.btn.btn.btn-primary.input-group-addon(id='btn-search',type='submit',onclick='$(this).closest("form").submit();return false;', title='Click to Search')
+						span.glyphicon.glyphicon-search.text-inverse
+mixin customNotification(name,uid,type)
+	if manageProfile && isSuperUser
+			span.text-primary(style='margin-top:20px;display:inline-block;')
+				span.glyphicon.glyphicon-exclamation-sign 
+				| &nbsp;You are managing <a href='#{"/"+type+"/"+uid}'><b style='text-transform:capitalize;'>#{name}</b></a> profile

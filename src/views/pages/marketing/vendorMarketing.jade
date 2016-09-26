@@ -1,0 +1,72 @@
+extends ../../layouts/layout
+include ../../mixin/vendors
+include ../../mixin/professionals
+
+block content
+	#vendorMarketing.marketing
+		div.jumbotron
+			.container
+				.row
+					.col-sm-6			
+						h2.text-left.font-secondary.text-uppercase.text-primary lorem ipsum dolor sit amet
+						p.font-primary Nunc ultricies vitae tellus ornare fringilla. Mauris lacinia maximus nibh ut pharetra. Proin quis sodales enim, quis elementum purus. Curabitur justo metus.
+						button.btn.btn-primary.disabled(type="submit") Join Now! 
+		div.bar
+			.container
+				.row
+					.col-sm-12
+						marquee.margin0.text-inverse TradeRx, Enterprise Software Co, Joined Today - Vestibulum ante ipsum.Cras elementum turpis urna, nec laoreet velit egestas at....
+
+		div.benefits
+			.container
+				.row
+					.col-sm-4
+						img.block(src="images/vendor_benefit_1.png")
+						h2.text-uppercase.text-primary
+							strong benefit#1
+						p.text-center Make connections with 1000’s of decision makers
+					.col-sm-4
+						img.block(src="images/vendor_benefit_2.png")
+						h2.text-uppercase.text-tertiary
+							strong benefit#2		
+						p.text-center Get Qualified Leads			
+					.col-sm-4
+						img.block(src="images/vendor_benefit_3.png")
+						h2.text-uppercase.text-secondary
+							strong benefit#3
+						p.text-center Show expertise through thought leadership and guidance
+		div.Professionals_carousel
+			.container
+				.row
+					h3.text-secondary Reach the Best Professionals in the Market
+				.row
+					.col-sm-12
+						+carousel_professional({ratings:false})
+			
+
+		div.vendors_carousel
+			.container
+				.row
+					.col-sm-12
+						h3 Other IT Vendors had This to Say
+				.row
+					.col-sm-12
+						+carousel_vendor
+
+		div.join
+			.container
+				.row
+					.col-sm-12
+						div.join_border
+							.row
+								.col-sm-10
+									p.text-secondary.text-uppercase.inline-block
+										strong Lorem ipsum dolor sit amet, consectetur adipiscing elit... 
+								.col-sm-2
+									button.btn-primary.btn.disabled Join Now!
+						
+
+
+
+
+

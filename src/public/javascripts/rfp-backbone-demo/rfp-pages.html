@@ -1,0 +1,571 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSquire | Home</title>
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Josefin+Sans:700|Open+Sans:400,300,700">
+    <link rel="stylesheet" href="/stylesheets/lib/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link href="/stylesheets/screen.min.css" rel="stylesheet" media="screen">
+    <link href="/stylesheets/print.min.css" rel="stylesheet" media="print">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet">
+</head>
+<script type="text/html" id="formTemplate">
+    <div class="form-group form-head">
+        <div class="col-sm-12 form-content">
+        </div>
+    </div>
+</script>
+<script type="text/html" id="back-continue">
+    <div class="form-group">
+        <div class="col-md-2">
+            <button type="button" class="btn back btn-primary form-control">Back </button>
+        </div>
+        <div class="col-md-2">
+            <button type="button" class="btn continue btn-primary form-control">Continue </button>
+        </div>
+    </div>
+</script>
+<script type="text/html" id="rfp-input-template">
+    <div class="rfp-select">
+        <label class="block"><%= title%></label>
+        <% for(var iIndex=0;iIndex< inputs.length;iIndex++) { 
+          var data = inputs[iIndex];
+        %>
+        <div class="inline-block">
+            <input type="<%= type%>" name="<%= name%>" value="<%= data.value%>" />
+            <label><%= data.text%> </label>
+        </div>  
+        <%}%>
+        <br/>
+    </div>
+</script>
+<script type="text/html" id="title-text">
+    <div class="title-text">
+        <label><%= title%></label></br>
+        <input type="text" name="<%= name%>" value="<%= value || ''%>" />
+    </div>
+</script>
+<script type="text/html" id="add-company">
+    <div>
+        <a href='#'  class='btn btn-link' data-toggle="<%= toggle%>" data-target="<%= target%>">Add company</a>
+    </div>
+</script>
+<script type="text/html" id="inquire-product-tmpl">
+    <div class="radio-arrange">
+        <label class="block">1. Do you know which product you would like to inquire about?</label>
+        <div class="inline-block">
+            <input type="radio" name="hasProduct" value="Yes"  checked="checked"/>
+            <label>Yes</label>
+        </div>
+        <div class="inline-block">
+            <input type="radio" name="hasProduct" value="No" />
+            <label>No</label>
+        </div>
+        <select class="form-control" name="select-product" data-master="developmentSoftware" data-placeholder='Select Product' style="width: 100%" multiple="multiple"></select>
+    </div>
+    <div>
+        <label class="block">2. There are multiple companies that can help you with these products , please select the ones you are interested in having Respond</label>
+        <select class="form-control" name="select-intrested-company" data-master="company" data-placeholder='Select Company' style="width: 100%" multiple="multiple"></select>
+    </div>
+    <div class="radio-arrange">
+        <label class="block">1a. Would you like a needs analysis to help determine the best potential options?</label>
+        <div class="inline-block">
+            <input type="radio" name="analysis-help" value="Yes"  checked="checked"/>
+            <label>Yes</label>
+        </div>
+        <div class="inline-block"> 
+            <input type="radio" name="analysis-help" value="No" />
+            <label>No</label>
+        </div>
+    </div>
+    <div>
+        <label class="block">1b. What type of product type (ie ERP) or Business Process Areas (Accounting are you trying find a solution for?</label>
+        <select class="form-control" name="type-of-prod" data-master="developmentSoftware" data-placeholder='product type or Business Process Areas ' style="width: 100%" multiple="multiple"></select>
+    </div>
+</script>
+<script type="text/html" id="rfp-product-q-1">
+    <div>
+        <label class="block"><%= title%></label>
+        <select class="form-control notSelect2" name="<%= name%>" data-placeholder='Select Company' style="width: 100%">
+            <% for(var iIndex=0;iIndex< options.length;iIndex++) { 
+                opt = options[iIndex];
+            %>
+            <option value='<%= opt%>'><%= opt%></option>
+            <%}%>
+        </select>
+    </div>
+</script>
+<script type="text/html" id="select-typeahead" >
+    <div class="select-company">
+        <label class="block"><%= title%></label>
+        <select class="form-control" name="<%= name%>" data-master="<%= dataMaster%>" data-placeholder='<%= dataPlaceholder%>' style="width: 100%"></select>
+    </div>
+</script>
+
+<script type="text/html" id="popup-tmpl" >
+    <!-- Modal -->
+    <div class="modal fade" id="<%= id%>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+          </div>
+          <div class="modal-body">
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+</script>
+
+<script type="text/html" id="edit-que-popup-tmpl" >
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Edit Question</h4>
+        </div>
+        <div class="modal-body">
+            <div class='form-horizontal'>
+                <div class='form-group'>
+                    <input type='text' name='edited-question' class='form-control' value='<%=que.title %>'/>
+                </div>
+                <div class='form-group'>
+                    <select name='change-que-type'>
+                        <% _.each(queTypes,function(item,indx){ %>
+                            <option value='<%=indx %>'><%=item %></option>
+                        <% }); %>
+                    </select>
+                </div>
+                <div class='form-group answers-container'>
+                </div>
+                <!--<div class='form-group'>
+                    <label>Do you want to add an optional commentbox for this question?</label>
+                    <input type='radio' name='add-commentbox' value='yes'/> Yes
+                    <input type='radio' name='add-commentbox' value='no'/> No
+                </div>-->
+                <div class='form-group'>
+                    <label>Subgroup</label>
+                    <input type='text' name='edit-subgroup' value='<%=que.subGroup %>'/>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" id='save-edited'>Save changes</button>
+        </div>
+</script>
+<script type='text/html' id='default-answers-tmpl'>
+ <select name='multi-answers' multiple style='width:100%;'>
+                       
+                       <% _.each( multiSelectAnswers, function( opt , index){ %>
+                            <option value='<%=opt %>' selected><%=opt %></option>
+                        <% }); %>
+                    </select>
+</script>
+
+<script type="text/html" id="reciepent-list-tmpl" >
+    <% _.each( reciepents, function( listItem , index){ %>
+        <div class='rfpRecipientList'>
+            <div class="row">
+                <div class="col-sm-1">
+                    <img src="/images/favicon.ico" class="favicon">
+                </div>
+                <div class="col-sm-3">
+                    <img src='<%= listItem.logo %>' width='100%' class="Logo_Company"/>
+                </div>
+                <div class="col-sm-5">
+                    <label class="margin0"><%= listItem.name %></label>
+                </div>
+                <div class="col-sm-3">
+                    <button data-unselect='<%= index %>' class='btn btn-primary unselect btn-block'>Un Select</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-5 col-sm-offset-4">
+                    <a href="#"> Tags</a>
+                </div>
+                <div class="col-sm-3">
+                    <span class="glyphicon glyphicon-star-empty block text-center text-primary"></span>
+                </div>
+            </div>
+        </div>
+    <% }); %>
+
+</script>
+
+<script type="text/html" id="add-questions-tmpl" >
+    <div>
+
+      <!-- Nav tabs -->
+      <ul class="nav nav-pills" role="tablist">
+        <% _.each( questions, function( questionItem , index){ %>
+      
+            <li role="presentation" class="<%=index==0?'active':'' %>">
+                <a href="<%='#'+questionItem.name %>" aria-controls="<%=questionItem.name %>" role="tab" data-toggle="tab"><%=questionItem.title %></a>
+            </li>
+      
+        <% }); %>
+    </ul>
+    <div class="tab-content">
+      <% _.each( questions, function( questionItem , index){ %>
+        <div role="tabpanel" data-index="<%=index %>" class="<%=index==0?'tab-pane active':'tab-pane' %>" id="<%=questionItem.name %>">
+            <div class='add-std-que-container radio-arrange'>
+                <label class="block">Would you like to utilize our standard questions for an ERP RFP?</label>
+                <div class="inline-block">
+                    <input type="radio" data-index="<%=index %>" class='add-std-que' name="<%='add-std-func-que-'+questionItem.name %>" value="Yes"  checked="checked"/>
+                    <label>Yes</label>
+                </div>
+                <div class="inline-block"> 
+                    <input type="radio" data-index="<%=index %>" class='add-std-que' name="<%='add-std-func-que-'+questionItem.name %>" value="No" />
+                    <label>No</label>
+                </div>
+            </div>
+            <div class='question-list'>
+                <% _.each( questionItem.quelist, function( question , i){ %>
+                    <% if(question.includedInRfp){ %>
+                        <div class='std-que' data-index='<%=i %>'>
+                            <label class="block" name="<%='Q'+i %>"><%=question.title %></label>
+                            <% if(question.critical){ %>
+                                <input type='checkbox' class='critical-select' checked="checked"/>
+                                <input type='checkbox' class='score-select'/>
+                                <input type='hidden' disabled class='weight' value='<%=question.weight %>'/>
+                            <% }else{ %>
+                                <% if(question.type=='0'){ %>
+                                    <input type='checkbox' class='critical-select' disabled/>
+                                <% }else{ %>
+                                    <input type='checkbox' class='critical-select'/>
+                                <%} %>
+                                <input type='checkbox' class='score-select' checked="checked"/>
+                                <input type='hidden' class='weight' value='<%=question.weight %>'/>
+                            <%} %>
+                            <div>
+                                <button class='btn btn-link edit-que' data-index='<%=i %>'>Edit</button>
+                            </div>
+                            <% if(question.subGroup){ %>
+                                <div>
+                                    <label>subgroup</label>
+                                    <label><%=question.subGroup %></label>
+                                </div>
+                            <% } %>
+                                <div>
+                                    <label>Type = <%=questionTypes[question.type] %></label>
+                                </div>
+                        </div>
+                    <% } %>
+                <% }); %>
+            </div>
+        <div class='addNewQueContainer'></div>
+        <button class='btn btn-primary add-que marginT_30'>Add Question</button>
+        </div>
+      <% }); %>
+    </div>
+</script>
+<script id='question-list-tmpl' type='text/html'>
+    <% _.each(quelist, function( question , i){ %>
+        <% if(question.includedInRfp){ %>
+            <div class='std-que' data-index='<%=i %>'>
+                <label class="block" name="<%='Q'+i %>"><%=question.title %></label>
+                    <% if(question.critical){ %>
+                        <input type='checkbox' class='critical-select' checked="checked"/>
+                        <input type='checkbox' class='score-select' />
+                        <input type='hidden' disabled class='weight' value='<%=question.weight %>'/>
+                    <% }else{ %>
+                            <% if(question.type=='0'){ %>
+                                <input type='checkbox' class='critical-select' disabled/>
+                            <% }else{ %>
+                                <input type='checkbox' class='critical-select'/>
+                            <%} %>
+                        <input type='checkbox' class='score-select' checked="checked"/>
+                        <input type='hidden' class='weight' value='<%=question.weight %>'/>
+                    <%} %>
+                <div>
+                    <button class='btn btn-link edit-que' data-index='<%=i %>'>Edit</button>
+                </div>
+                <% if(question.subGroup){ %>
+                    <div>
+                        <label>subgroup</label>
+                        <label><%=question.subGroup %></label>
+                    </div>
+                <% } %>
+                <div>
+                    <label>Type = <%=questionTypes[question.type] %></label>
+                </div>
+            </div>
+        <% } %>
+    <% }); %>
+</script>
+<script type='text/html' id='add-new-que-tmpl'>
+    <label>New Question</label><br>
+    <input type='text' class='form-control' name='newQuestion'/>
+    <input type='hidden' class='form-control add-weight' value='1'/>
+    <button class='saveQue btn btn-primary marginT_30'>Save</button>
+</script>
+<script type="text/html" id="page-1">
+    <div>
+        <div class="container error-container"></div>
+        <div class="container">
+            <div class="row">
+                <div class=" col-sm-8 col-sm-offset-2 marginT_30 col-xs-10 col-xs-offset-1">
+                    <form method="post" action="#" class="form-horizontal signupForm" novalidate="novalidate">
+                        <div class="form-group form-head">
+                            <h3>Please let us know what kind of proposal you wish to receive</h3>
+                            <label class="block"></label>
+                        </div>
+                        <div class="form-group form-head">
+                            <div id="rfp-select"></div>
+                            <div id="rfp-title"></div>
+                            <div id="rfp-company-select"></div>
+                            <div id="rfp-add-company"></div>
+                            <div id="rfp-popup-tmpl"></div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-4 col-sm-8 pull-right ">
+                                <a href="#" class="btn btn-primary form-control continue">Continue </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+<script type="text/html" id="page-2">
+    <div>
+        <div class="container error-container"></div>
+        <div class="container">
+            <div class="row">
+                <div class=" col-sm-8 col-sm-offset-2 marginT_30 col-xs-10 col-xs-offset-1">
+                    <form method="post" action="#" class="form-horizontal signupForm" novalidate="novalidate">
+                        <div class="form-group form-head">
+                            <h3>Please provide some additional information about XYZ</h3>
+                            <label class="block">ERP Replacement of Epicor – September 2015</label>
+                        </div>
+                        <div class="form-group form-head">
+                            <div id="rfp-product-q-1"></div>
+                            <div id="rfp-product-q-2"></div>
+                            <div id="rfp-product-q-3"></div>
+                            <div id="rfp-product-q-4"></div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-4 col-sm-8 pull-right ">
+                                <a href="#" class="btn btn-primary form-control continue">Continue </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+<script type="text/html" id="page-3">
+    <div>
+        <div class="container error-container"></div>
+        <div class="container">
+        <div class="row">
+                <div class=" col-sm-8 col-sm-offset-2 marginT_30 col-xs-10 col-xs-offset-1">
+            <form method="post" action="#" class="form-horizontal signupForm" novalidate="novalidate">
+                    <div class="form-group form-head">
+                            <h3>Please provide some additional information about XYZ</h3>
+                            <label class="block"></label>
+                        
+                    </div>
+                <div class="form-group form-head">
+                    <div id="rfp-inquire-product">
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-4 col-sm-8 pull-right ">
+                            <a href="#" class="btn btn-primary form-control continue">Continue </a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            </div>
+            </div>
+        </div>
+    </div>
+</script>
+<script type="text/html" id="page-4">
+    <div>
+        <div class="container error-container"></div>
+        <div class="container">
+        <div class="row">
+                <div class=" col-sm-8 col-sm-offset-2 marginT_30 col-xs-10 col-xs-offset-1">
+            <form method="post" action="#" class="form-horizontal signupForm" novalidate="novalidate">
+                    <div class="form-group form-head" >
+                        <div class="col-sm-12">
+                            <h3>Here is who you have selected to Receive your RFP Request</h3>
+                            <label class="block">ERP Replacement of Epicor – September 2015</label>
+                        </div>
+                    </div>
+                <div class="form-group form-head">
+                    <div id="rfp-reciepent-list">
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-4 col-sm-8 pull-right">
+                            <a href="#" class="btn btn-primary form-control continue">Continue </a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/html" id="page-5">
+    <div>
+        <div class="container error-container"></div>
+        <div class="container">
+        <div class="row">
+                <div class=" col-sm-8 col-sm-offset-2 marginT_30 col-xs-10 col-xs-offset-1">
+            <form method="post" action="#" class="form-horizontal signupForm" novalidate="novalidate">
+                    <div class="form-group form-head">
+                            <h3>Here is who you have selected to Receive your RFP Request</h3>
+                            <label class="block">ERP Replacement of Epicor – September 2015</label>
+                    </div>
+                <div class="form-group form-head">
+                    <div id="rfp-add-questions">
+                    </div>
+                    <div class="modal fade" id="edit-question-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                        <div class="modal-dialog" role="document">
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-4 col-sm-8 pull-right ">
+                            <a href="#" class="btn btn-primary form-control continue marginT_30">Continue </a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            </div>
+            </div>
+        </div>
+    </div>
+</script>
+<script type="text/html" id="wizard-page-no-tmpl">
+            <div class="col-sm-12 SignUpSteps hidden-xs text-center">
+            <span></span>
+            </div>
+</script>
+<script type="text/html" id="rfp-wizard-tmpl">
+    <div class="rfp-wizard">
+        <div class="header-counter marginT_30" id="rfpSteps">
+        </div>
+        <div class="page">
+        </div>
+        <div class="navigation">
+        </div>
+    </div>
+</script>
+
+<body class="home-container">
+    <!--#{(curr-1)*5+5}-->
+    <div id="header" class="newSearch">
+        <nav class="navbar navbar-default">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12 col lg-12">
+                        <div class="navbar-header row">
+                            <button type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" class="navbar-toggle collapsed"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a id="logo" href="/" class="navbar-brand"></a><div id="navbar" class="navbar-collapse collapse pull-right col-xs-12 col-sm-10 col-md-9 col-lg-9">
+                                <ul class="nav navbar-nav navbar-left navigation">
+                                    <li>
+                                        <form id="search-form-right" method="get" action="/search/all" class="form-inline search pull-left" novalidate="novalidate">
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    <a type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="input-group-addon dropdown-toggle searchText"><span class="text">All</span><i class="fa fa-chevron-down text-primary"></i></a><ul class="dropdown-menu searchToggle">
+                                                        <li><a href="#" data-value="all" data-text="All">All</a></li>
+                                                        <li><a href="#" data-value="company" data-text="Companies">Companies</a></li>
+                                                        <li><a href="#" data-value="people" data-text="People">People</a></li>
+                                                        <li><a href="#" data-value="product" data-text="Products">Products</a></li>
+                                                    </ul>
+                                                    <input id="select-key" name="selectKey" type="hidden" value="all" class="searchKeyTrigger form-control notSelect2 hidden"><input type="text" value="" name="search" placeholder="Companies, Software, Consultants and Individuals" class="form-control"><a id="btn-search" type="submit" onclick="$(this).closest(&quot;form&quot;).submit();return false;" class="btn btn btn-primary input-group-addon"><span class="glyphicon glyphicon-search text-inverse"></span></a>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </li>
+                                </ul>
+                                <ul class="nav navbar-nav navbar-right padding-T">
+                                    <li><a href="/login" class="text-underline inline-block">Log In </a></li>
+                                    <li><a href="/register" class="text-underline inline-block">Sign up</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <div id="advanceSearch" tabindex="-1" role="dialog" class="modal fade">
+        <div role="document" class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" data-dismiss="modal" aria-label="Close" class="close"></button>
+                    <h4 id="exampleModalLabel" class="modal-title">Advanced Search</h4>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <!-- Nav tabs-->
+                        <ul role="tablist" class="nav nav-pills">
+                            <li role="presentation" class="active"><a href="#company" aria-controls="company" role="tab" data-toggle="tab">Companies</a></li>
+                            <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">People</a></li>
+                            <li role="presentation"><a href="#product" aria-controls="product" role="tab" data-toggle="tab">Products</a></li>
+                        </ul>
+                        <!-- Tab panes-->
+                        <div class="tab-content">
+                            <div id="company" role="tabpanel" class="tab-pane active">company</div>
+                            <div id="profile" role="tabpanel" class="tab-pane">people </div>
+                            <div id="product" role="tabpanel" class="tab-pane">product</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="content">
+        <!--<div id="rfp-wizard">
+            <ul class="nav nav-tabs" id="tab-header">
+            </ul>
+            <div class="tab-content" id="tab-content">
+            </div>
+        </div>-->
+        <div id="rfp-wizard-count" class="container">
+
+        </div>
+        <div id="rfp-wizard" class="container">
+        </div>
+    </div>
+    <div id="footer" class="text-inverse">
+        <div class="container">
+            <div id="copyright" class="col-xs-12 col-sm-6">
+                <p>© 2015 CSquire Inc. All rights reserved. | <a href="/TOS" target="_blank" class="text-inverse">Terms of Service</a> | <a href="/privacyPolicy" class="text-inverse" getfullyear="" target="_blank">Privacy Policy </a></p>
+            </div>
+            <div id="social" class="col-xs-12 col-sm-6"><a href="#facebook" title="visit us on Facebook"><span class="fa-stack fa-lg"><i class="fa fa-facebook fa-stack-1x fa-inverse"></i></span></a><a href="#twitter" title="Follow us on Twitter;"><span class="fa-stack fa-lg"><i class="fa fa-twitter fa-stack-1x fa-inverse"></i></span></a><a href="#linkedin" title="Connect on LinkedIn"><span class="fa-stack fa-lg"><i class="fa fa-linkedin fa-stack-1x fa-inverse"></i></span></a></div>
+        </div>
+    </div>
+    <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="/javascripts/lib/jquery/jquery-bootstrap-rating.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.12.0/jquery.validate.js"></script>
+    <script src="//mathiasbynens.github.io/jquery-placeholder/jquery.placeholder.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.2.3/backbone-min.js"></script>
+    <script src="/rfp-backbone-demo/definition.js"></script>
+    <script src="/rfp-backbone-demo/rfp-models.js"></script>
+    <script src="/rfp-backbone-demo/rfp-views.js"></script>
+    <script src="/rfp-backbone-demo/rfp-create.js"></script>
+    <script src="/javascripts/main.js"></script>
+</body>
+</html>

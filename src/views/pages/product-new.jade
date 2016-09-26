@@ -1,0 +1,17 @@
+extends ../layouts/layout_searchbox_2column
+include ../mixin/formerror
+include ../mixin/formsuccess
+include ../mixin/registerFormcontinue
+include ../mixin/overallRatings
+include ../mixin/upgrade
+include ../mixin/company
+
+block column_1  
+  include ../widgets/productProfile
+
+block column_2
+  include ../widgets/productaside
+
+block append js
+  script(src='//cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js')
+  script(src=cdn('/profile.js'))

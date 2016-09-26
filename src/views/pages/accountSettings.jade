@@ -1,0 +1,76 @@
+extends ../layouts/layout
+include ../mixin/quickSupportMixin
+
+block content
+	+headerQuickSupport({head:'Settings'})
+	- var lIn = data.externalSources?data.externalSources.linkedIn:false;
+	- var lInUser=lIn?true:false;
+	#accountSettings
+		.container
+			.row
+				.col-md-8.col-md-offset-2.col-xs-12
+					h4.font-primary Personal Info
+					div.greyBox
+						.row
+							.col-sm-3.col-xs-4
+								label Name
+							.col-sm-9.col-xs-8
+								span(style='word-wrap: break-word;') #{data.name} #{data.lastName}
+						.row.filterMargin
+							.col-sm-3.col-xs-4
+								label Email
+							.col-sm-9.col-xs-8
+								span(style='word-wrap: break-word;') #{data.email}
+						//- - if(lInUser)
+							.col-md-9.col-sm-9.col-xs-8.text-right
+								form(method='post', action='#')
+									button.btn.btn-default.btn-primary.btn-heading Sync With Linkedin
+					- if(!lInUser)
+						h4.font-primary Password Reset
+						div.greyBox
+							.row.passwordChangeBox
+								.col-md-3.col-sm-3.col-xs-4.tableDisplay
+									label.middleAlign Password
+								//-.col-md-5.col-sm-4.col-xs-8
+									- if(pwdresetDays)
+										span Last changed over #{pwdresetDays}.
+									- else
+										span Your password has not been reset once.
+								.col-md-9.col-sm-9.col-xs-8.text-right
+									form#resetForm(method='post', action='api/sendPasswordResetEmail')
+										input#sptoken.form-control(type='hidden', name='email',  value='#{data.email}')			
+										div
+											button.btn.btn-default.btn-primary.btn-heading Reset
+							div#emailnotify
+								.row
+									.col-xs-12
+										span.block.filterMargin An email has been sent to your registered email address. Please click on the link to change the password for your account.
+							div#errornotify
+								.row
+									.col-xs-12
+										span.text-danger.block.filterMargin There is an error sending the email for change password. Kindly contact support.
+
+					h4.font-primary Payment Preferences
+					div.greyBox
+						.row
+							.col-sm-3.col-xs-4.tableDisplay
+								label.middleAlign Stripe
+							if data.payments !== undefined && data.payments.stripe !== null && data.payments.stripe !== undefined
+								.col-sm-6.col-xs-8.tableDisplay
+									span.middleAlign.block.stripeId #{data.payments.stripe.stripe_user_id}	
+								.col-xs-3.col-sm-3.pull-right.remove.col-xs-offset-4.col-sm-offset-0
+									a.btn.btn-default.btn-primary.btn-heading.margin0(href="/quickSupport/deauthorize") Remove
+							else
+								.col-sm-9.col-xs-8.text-right
+									span  
+										a.btn.btn-default.btn-primary.btn-heading(href="/quickSupport/authorize") Manage								
+					h4.font-primary Deactivate Account
+					div.greyBox
+						.row
+							.col-md-8.col-sm-7.col-xs-12
+								span When this button is clicked, you will receive an email to your registered email address. Please follow the instructions in that email to complete the Account Deactivation process.
+							.col-md-4.col-sm-5.col-xs-8.col-xs-offset-4.col-sm-offset-0.text-right
+								form(method='post', action='/beginDeactivate')
+									button.btn.btn-default.btn-danger.btn-heading Deactivate
+append js
+	script(src=cdn('/accountSettings.js'))

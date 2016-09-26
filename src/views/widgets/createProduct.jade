@@ -1,0 +1,37 @@
+div#createProduct.container
+  .container
+      .row
+        .col-xs-12
+          div
+            h4.font-primary.pull-left All Products
+            button.btn.btn-primary.btn-heading-small.pull-right(type='button', data-toggle='modal', data-target='#createProductPopup') Create New Product
+      .row
+        .col-xs-12
+          div.table-small-responsive
+            table.table.table-bordered.productCreateTable(cellspacing="0" cellpadding="0")
+              thead
+                tr
+                  th Product Name
+                  th Description
+                  th Add SKU
+                  th &nbsp;
+              tbody
+                if stripeProductList && stripeProductList.length
+                  each productList in stripeProductList
+                    tr
+                      td 
+                        a(href="/qsCreate/createSKU?productId=#{productList.id}",title="Details",type="button")
+                          span #{productList.name}
+                      td #{productList.description}
+                      td.text-center
+                        a(href="/qsCreate/createSKU?skuCreate=true&productId=#{productList.id}",title="Details",type="button")
+                          i.fa.fa-plus-square.text-primary(aria-hidden="true")
+                      td.text-center
+                        a(href="javascript:void(0);",title="Edit",type="button")
+                          span(id="#{productList.id}",class="productEdit glyphicon glyphicon-edit connection-small text-primary" aria-hidden="true") 
+                else
+                  tr
+                    td(colspan="4") No product present
++qsMappingModel()
++createProductModel()
++updateProductModel()

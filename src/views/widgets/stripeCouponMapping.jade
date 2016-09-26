@@ -1,0 +1,63 @@
+div#stripeMapping
+  div.panel.panel-default
+    div.panel-body.padding0
+      div.padding15
+        h4.font-primary Add CSquire Coupon Mapping
+        form.form-horizontal.signupForm#coupon-mapping-form
+          .row.rowMargin
+            .col-sm-4
+              input(type='hidden', name='csquireService', value='6')
+              label.width20 Service Name
+              select#csquireService.form-control(name='validService',data-placeholder='Select Service Name',data-errorholder='serviceName' style='width:70%')
+                +selectCsquireServiceRole(csquireServices,'csquireService')
+              label.error.alert.alert-danger.marginLabel(style="display:none") Please enter Service Name
+            .col-sm-4.mobileTopMargin
+              label.width20 Coupon Name
+              select#stripeCouponId.form-control(name='stripeCouponId',data-placeholder='Select Coupon Name',data-errorholder='serviceName' style='width:70%')
+                if stripeCouponList && stripeCouponList.length
+                  +selectStripeCoupon(stripeCouponList,'stripeCoupontId')
+              label.error.alert.alert-danger.marginLabel(style="display:none") Please enter Coupon Name
+          .row
+            .col-xs-12.col-sm-6
+              span#company-span(style="display:none")
+                label Company
+                select.form-control(name='csquireCompanyProfiles', id = "csquireCompanyProfiles" data-master="companyProfile", data-placeholder='Enter company name', multiple,data-errorholder='serviceName' style='width:70%')
+                  if isMappingEdit == true && couponMappingData.csquireCompanyProfiles.length > 0
+                    +PreselectBoxQuick(data, couponMappingData.csquireCompanyProfiles)
+              span#person-span(style="display:none")
+                label Person
+                select.form-control(name='csquirePersonalProfiles', id = "csquirePersonalProfiles" data-master="personalProfile" data-placeholder='Enter person name', multiple,data-errorholder='serviceName' style='width:70%')
+                  if isMappingEdit == true && couponMappingData.csquirePersonalProfiles.length > 0
+                    +PreselectBoxQuick(data, couponMappingData.csquirePersonalProfiles)
+          .row.filterMargin
+            .col-xs-12
+              button.btn.btn-primary.btn-default.btn-heading.margin0(type="button" id = "addStripeCouponMapping") Add
+              a.btn.btn-default.btn-heading.border-primary(href="/qsMapping/couponMapping") Clear all
+      div.bordertop.filterMargin
+      div.padding15
+        h4.font-primary Coupon Mappings
+        div.table-small-responsive
+          table.table.table-bordered.couponMappingTable(cellspacing="0" cellpadding="0")
+            thead
+              tr
+                th Service Name
+                th Coupon Id
+                th
+            tbody
+              if couponMappingList && couponMappingList.length
+                each couponMapping in couponMappingList
+                  tr
+                    td #{couponMapping.validService.name}
+                    td 
+                      a(class='couponDetailsById' couponId = "#{couponMapping.stripeCouponId}") #{couponMapping.stripeCouponId}
+                    td.text-center 
+                      a(href="/qsMapping/deletecouponMapping/#{couponMapping._id}" data-confirm="Are you sure you want to delete?" title="Delete")
+                        span.glyphicon.glyphicon-trash
+              else
+                tr
+                  td(colspan="4") No coupon mapping present
+
+  
++qsMappingModel()
++couponDetailsModel()
++couponDetailsModelErr()

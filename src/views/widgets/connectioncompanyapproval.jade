@@ -1,0 +1,22 @@
+h4.font-primary You have #{pendingInviationCount} pending connections invitation
+each data in datas
+      .panel.panel-default
+        .panel-body
+          .media
+            .media-left
+              a(href="#")
+                if(data.pictureUrl)
+                  img.media-object(src="#{cdn(data.refId.pictureUrl)}")
+                else
+                  img.media-object(src="#{cdn('/profile.jpg')}")
+            .media-body
+              h4.media-heading #{data.refId.name},   
+                label CEO at Lorem Ipsum
+              p Wants to connect you as #{data.relation}
+              p.connectionDate #{data.connectionDate}
+            .media-right
+              div.inline-block
+                button.followHim.text-uppercase.text-secondary()
+                  span.glyphicon.glyphicon-ok-circle
+                button.followHim.text-uppercase()
+                  span.glyphicon.glyphicon-remove-circle

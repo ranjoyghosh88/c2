@@ -1,0 +1,38 @@
+.dashboard.marginT_30
+	.row
+		.col-xs-12.row0
+			.panel.panel-default
+				.panel-heading.text-uppercase.text-center Getting Started
+				.panel-body
+					.progress
+						a(href="/profile")
+							.progress-bar.bg-secondary(role='progressbar', aria-valuenow='60', aria-valuemin='0', aria-valuemax='100', style='width: 60%;')
+								| 60%
+								span.sr-only 60% Complete
+					h5.font-primary.text-left Next + Expertise
+					div.review_tags.filterMargin
+						a(href="/profile") Review Tags
+					div.filterMargin
+						a(href="/inviteContacts") Invite Contacts
+					p.text-primary.filterMargin Finish Your CSquire Profile 
+	.row
+		.col-xs-12.row1
+			.panel.panel-default.marginT_30.relative#postQuestion
+				.panel-heading.text-uppercase.text-center Forum
+				.panel-body
+					.row
+						.col-xs-12
+								form.input-group(action='//kb.csquire.com/Question/Ask',method='get')
+									input.form-control(name='title',placeholder="Enter Your Question..")
+									button.btn.input-group-addon.text-inverse() Ask
+					.row
+						.col-xs-12
+							ol
+								li lorem ipsum
+								li Lorem ipsum dolor sit
+								li Lorem ipsum dolor
+					.row.dashboardSeeAll
+						.col-xs-12.text-center
+							a(href="#") See All
+							i.fa.fa-angle-double-right.text-primary
+					

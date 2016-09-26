@@ -1,0 +1,180 @@
+mixin company(pastClient,tab,conFromId,connectFrom,isadmin)
+	-var iscon = false;
+	-var isfav = false;
+	-var modal='';
+	if connectFrom=='company'
+		- modal='companies'
+	else if connectFrom=='product'
+		- modal='products'
+	else
+		- modal=''
+	-var isAdmin = (conFromId && conFromId!=='undefined');
+	- isAdmin = isadmin;
+	-var conFromIds = conFromId?'&conFromId='+conFromId:''
+	-var connectFrom = connectFrom || 'people'
+	- tab = tab || null
+	for client in pastClient
+		- iscon=false;
+		- isfav=false;
+		if client.refId
+			for prof in client.refId.connections.profiles
+				-if (prof.refId == loggedUser){
+					- iscon=true;
+					- break;
+				- }
+			for prof in client.refId.favouritedBy
+				- if(loggedUser == prof){
+					- isfav=true;
+					- break;
+				- }
+			if modal
+				for prof in client.refId.connections[modal]
+					//h2 #{JSON.stringify(prof)} #{conFromId}
+					-if (prof.refId == conFromId && isAdmin){
+						- iscon=true;
+						- break;
+					- }
+			div.row.featured-row.hidden
+				div.col-xs-12
+					img.absolute.featured(src="#{cdn('/favicon_inverse.png')}")
+			if client.connectionStatus == 'APPROVED'
+				div.row.items.marginT_30.padding_b_30
+					div.col-xs-12
+						.row
+							.col-sm-3.col-xs-12.text-center
+								input#_id(type="hidden",value= client.refId._id)
+								a.companyImage(href="/company/#{client.refId.uid}")
+									- if(client.refId.logo)
+										img.image-width(src=client.refId.logo)
+									- else
+										img.image-width(src="#{cdn('/CompanyDummyLogo.jpg')}")
+							.col-sm-6.col-xs-12.col-lg-7
+								h3.margin0
+									a.anchorHeading.font-primary(href="/company/#{client.refId.uid}") #{client.refId.name}
+								if client.refId && client.refId.type
+									if ((typeof(client.refId.type)==='number' && client.refId.type!==1) || (typeof(client.refId.type)==='object' && client.refId.type._id!==1))
+										br
+									h5.font-primary(style='font-weight: 500;') Connected as #{client.relation}
+
+							.col-sm-3.col-lg-2.col-xs-12.text-center
+								.connection_box.filterMargin
+									.row
+										.col-sm-4.col-xs-6
+												if isfav
+													a.text-uppercase.block.fav.add-favourite(title="Remove from favorites" data-fav='company' data-id='#{client.refId._id}')
+														label.glyphicon.glyphicon-star.block.text-center
+												else
+													a.text-uppercase.block.add-favourite(title="Add to favorites" data-fav='company' data-id='#{client.refId._id}')
+														label.glyphicon.glyphicon-star-empty.block.text-center
+										.col-sm-6.col-xs-6
+											if iscon
+												form.panel(action='/profile-con/#{connectFrom}/company/people/people/#{client.refId.uid}/#{client.refId._id}/false?redirct=1&tab=#{tab}#{conFromIds}',method='post')
+													input#returnUrl(type="hidden",name="returnUrl", value= '#{returnUrl}')
+													a.text-uppercase.block#remove-connection(title="Remove from connection")
+														img.connection-small(src="#{cdn('/connections.png')}")
+											else
+												form.panel(action='',method='post')
+													input#returnUrl(type="hidden",name="returnUrl", value= '#{returnUrl}')
+													a.text-uppercase.block#add-connection(data-connectto="company" data-con="1" title="Add to connection" data-id='#{client.refId._id}')
+														img.connection-small(src="#{cdn('/connections_active.png')}")
+
+
+mixin relatedCompany(profiles,rel)
+	-var iscon = []
+	-var isFav = []
+	for profile in profiles
+		for prof in profile.connections.profiles
+			if prof.refId.equals(profileData._id)
+				-iscon.push(1)
+			for prof in profile.favouritedBy
+				if prof == profileData._id
+					-isFav.push(1)
+		if profile.relation == rel
+			div.row.featured-row.hidden
+				div.col-xs-12
+					img.absolute.featured(src="#{cdn('/favicon_inverse.png')}")
+			div.row.items.marginT_30
+				div.col-xs-12
+					.row
+						.col-sm-3.col-xs-12.text-center
+							input#_id(type="hidden",value= profile._id)
+							a.companyImage(href="/people/#{profile.uid}")
+								img.image-width(src=src=profile.pictureUrl?"#{profile.pictureUrl}":"#{cdn('/profile.jpg')}")
+						.col-sm-6.col-lg-7.col-xs-12
+							h3.margin0
+								a.anchorHeading.font-primary(href="/people/#{profile.uid}") #{profile.name} #{profile.lastName}
+						.col-sm-3.col-lg-2.col-xs-12.text-center
+							.connection_box
+								.row
+									.col-sm-4.col-xs-6
+										if isFav.length
+											a.text-uppercase.block.fav.add-favourite(title="Remove from favorites" data-fav='company' data-id='#{profile._id}')
+												label.glyphicon.glyphicon-star.block.text-center
+										else
+											a.text-uppercase.block.add-favourite(title="Add to favorites" data-fav='company' data-id='#{profile._id}')
+												label.glyphicon.glyphicon-star-empty.block.text-center
+									.col-sm-6.col-xs-6
+										if iscon.length
+											form.panel(action='/profile-con/people/people/people/people/#{profile.uid}/#{profile._id}/false?redirct=1',method='post')
+												a.text-uppercase.block.remove-connection(title="Remove from connection")
+													img.connection-small(src="#{cdn('/connections.png')}")
+										else
+											form.panel(action='',method='post')
+												a.text-uppercase.block.add-connection(data-connectto="people" data-con="1" title="Add to connection" data-id='#{profile._id}')
+													img.connection-small(src="#{cdn('/connections_active.png')}")
+
+
+mixin similarCompany(companies)
+	for company in companies
+		.panel-body.text-center.similar_professionals
+			.row
+				.col-xs-12
+					div.text-center
+						a.companyImage(href="/company/#{company.uid}")
+							img(src=company.logo?"#{company.logo}":"#{cdn('/CompanyDummyLogo.jpg')}")
+
+mixin addCompany(tab,connectFrom,id,type,header)
+	-type = type||null
+	select.addTo.form-control(name='compnayProfile', data-master='compnayProfile',data-placeholder='Enter company name', required='required',data-errorholder='compnayProfile',style='width:100%')
+	span.comment
+	input(type='hidden',name='type',value=type)
+	input(type='hidden',name='header',value=header)
+	input#returnUrl(type='hidden',name='returnUrl',value='#{returnUrl}')
+	form#pstcomform(action="/addPastCompany?tab=#{tab}&connectFrom=#{connectFrom}&connectFromId=#{id}",method="post" style="padding-top: 19px;")
+		.form-group
+			.row
+				.col-lg-6.col-md-6.col-sm-6
+					input.form-control#companyname(type='text',name='name' placeholder='Company Name',required='required',data-errorholder='Company Name')
+				.col-lg-6.col-md-6.col-sm-6
+					input.form-control#companyurl(type='text', name='companyWebsite',placeholder='Company Website',data-errorholder='Company Website',pattern='/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/')
+		.form-group
+			.row
+				.col-lg-6.col-md-6.col-sm-6
+					input.form-control#location(type='text', name='companyLocations', placeholder='Location (at least one)',data-errorholder='Location')
+				.col-lg-6.col-md-6.col-sm-6
+					.dropdown
+						select#annualRevenue.sortSelectOnNum.form-control.select2(name='annualRevenue',data-placeholder='Annual Revenue',style="width: 100%",data-errorholder='Annual Revenue')
+							+PreselectBoxQuick(revenues || (masterCollections && masterCollections.revenues?masterCollections.revenues:[]),[])
+		.form-group
+			.row
+				.col-lg-6.col-md-6.col-sm-6
+					.dropdown
+						select#headCount.sortSelectOnNum.form-control.select2(name='headCount', data-placeholder='Head Count',style="width: 100%",data-errorholder='Head Count')
+							+PreselectBoxQuick(headcounts || (masterCollections && masterCollections.headcounts?masterCollections.headcounts:[]),[])
+		.form-group 
+			.row
+				.col-lg-12.col-md-12.col-sm-12.col-xs-12
+					textarea.txtArea_notes#desc.col-lg-12.col-md-12.col-sm-12.col-xs-12.form-control(name="description",placeholder="Company Short Description")
+					div.clearfix
+		.form-group.hidden-xs
+			.row 
+				div.col-sm-12.text-right
+					button.btn.btn-primary.btn-heading#addCompanyBtn(type='submit') Save
+					button.btn.btn-default.btn-heading#companyCancel(type="button") Reset
+					
+		.form-group.hidden-sm.visible-xs
+			.row 
+				div.col-xs-12
+					button.btn.btn-primary.margin0.form-control#addCompanyBtn(type='submit') Save                            
+				div.col-xs-12.filterMargin
+					button.btn.btn-default.margin0.form-control#companyCancel(type="button") Reset

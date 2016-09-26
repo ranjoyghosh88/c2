@@ -1,0 +1,147 @@
+div#stripeMapping
+  div.panel.panel-default
+    div.panel-body.padding0
+      div.padding15
+        h4.font-primary Add CSquire Product Mapping
+        form.form-horizontal.signupForm#product-mapping-form.filterMargin
+              .row.rowMargin
+                .col-sm-4.col-xs-12
+                  label.width20 Service Name
+                  select#csquireService.form-control.add-mapping.pull-right(name='csquireService',data-placeholder='Select Service Name',data-errorholder='serviceName' style='width:70%')
+                    if isMappingEdit
+                      +PreselectCsquireServiceRole(csquireServices, productMappingData.csquireService)
+                    else
+                      +selectCsquireServiceRole(csquireServices,'csquireService')
+                  label.error.alert.alert-danger.marginLabel(style="display:none") Please enter Service Name
+                .col-sm-4.col-xs-12.mobileTopMargin
+                  label.width20 Product Name
+                  select#stripeProductId.form-control.add-mapping.pull-right(name='stripeProductId',data-id='stripeProductId',data-placeholder='Select Product Name',data-errorholder='serviceName' style='width:70%',onchange='getSKUSOfProductId(this)')
+                    if isMappingEdit
+                      +preSelectStripeProduct(stripeProductList,productMappingData.stripeProductId)
+                    else
+                      +selectStripeProduct(stripeProductList,'stripeProductId')
+                  label.error.alert.alert-danger.marginLabel(style="display:none") Please enter Product Name
+                .col-sm-4.col-xs-12.mobileTopMargin
+                  label.width20 SKU ID
+                  select#stripeSkuId.form-control.add-mapping.pull-right(name='stripeSkuId',data-placeholder='Select SKU ID',data-errorholder='serviceName' style='width:70%')
+                    if isMappingEdit
+                       +preSelectStripeSku(skusListOfProductId,productMappingData.stripeSkuId)
+                  label.error.alert.alert-danger.marginLabel(style="display:none") Please enter SKU ID
+              .row
+                .col-xs-12
+                  label.filterMargin Add Company/Person
+              .row
+                .col-xs-12.radioContainer
+                  div.inline-block.default-div                
+                    if isMappingEdit
+                      input(type='hidden' name='mappingId', value = "#{productMappingData._id}")
+                      if productMappingData.isDefaultForCsquireService
+                        input(type="hidden"  name="isDefaultForCsquireService" value = 'true')
+                        input(type="checkbox" id="editDefaultService" name="defaultService" class = "check" checked)
+                      else
+                        input(type="hidden"  name="csquireService" value = "#{productMappingData.csquireService._id}")
+                        input(type="checkbox" id="editDefaultService" name="defaultService" class = "check")
+                    else
+                      input(type="checkbox" id="defaultService" name="defaultService" class = "check")
+                    span Default
+                  div.inline-block.company-person-div
+                    if isMappingEdit == true && productMappingData.csquireCompanyProfiles.length > 0
+                      input(type="checkbox" id="editCompanyCheck" class = "companyCheck check" checked="checked")
+                    else
+                      input(type="checkbox" id="companyCheck" class = "companyCheck check")
+                    span Company
+                  div.inline-block.company-person-div
+                    if isMappingEdit == true && productMappingData.csquirePersonalProfiles.length > 0
+                      input(type="checkbox" id="editPersonalProfileCheck" class = "personalProfileCheck check" checked="checked")
+                    else
+                      input(type="checkbox" id="personalProfileCheck" class = "personalProfileCheck check")
+                    span Person
+                  label.error.alert.alert-danger(style="display:none") Please select person or company
+              .row.rowMargin(style="margin-bottom:25px")
+                .col-xs-12.col-sm-6
+                  span#company-span.filterMargin(style="display:none")
+                    label.widthadjust Company
+                    select.form-control(name='csquireCompanyProfiles', id = "csquireCompanyProfiles" data-master="companyProfile", data-placeholder='Enter company name', multiple,data-errorholder='serviceName' style='width:70%')
+                      if isMappingEdit == true && productMappingData.csquireCompanyProfiles.length > 0
+                        +PreselectBoxQuickDefault(data, productMappingData.csquireCompanyProfiles)
+                    label.error.alert.alert-danger(style="display:none;margin-left:90px!important") Please select atleast one company
+                  span#person-span.filterMargin(style="display:none")
+                    label.widthadjust Person
+                    select.form-control(name='csquirePersonalProfiles', id = "csquirePersonalProfiles" data-master="personalProfile" data-placeholder='Enter person name', multiple,data-errorholder='serviceName' style='width:70%')
+                      if isMappingEdit == true && productMappingData.csquirePersonalProfiles.length > 0
+                        +PreselectBoxQuick(data, productMappingData.csquirePersonalProfiles)
+                    label.error.alert.alert-danger(style="display:none;margin-left:90px!important") Please select at least one person
+              .row.filterMargin
+                .col-xs-12
+                  if isMappingEdit
+                    button.btn.btn-primary.btn-default.btn-heading.margin0(type="button" id = "editStripeProductMapping") Save
+                  else
+                    button.btn.btn-primary.btn-default.btn-heading.margin0(type="button" id = "addStripeProductMapping") Add
+                  a(id = "clearAllFilter" class = "form-control btn btn-default border-primary btn-heading") Clear all
+      div.bordertop.filterMargin
+      div.padding15
+        h4.font-primary Product Mappings
+        form(method='get' novalidate)
+                .row.filterMargin
+                  .col-xs-12
+                    label Select a service name
+                .row
+                  .col-xs-12.col-sm-5
+                    select#csquireServiceFilter.form-control(name='csquireService',data-placeholder='Select service name',data-errorholder='serviceName' style='width:100%')
+                      if isServiceFilter
+                        +PreselectCsquireServiceFilter(csquireServices, serviceFilterArray)
+                      else
+                        +selectCsquireServiceFilter(csquireServices,'csquireService')
+                  .col-xs-12.col-sm-6
+                    button.btn.btn-primary.btn-default.btn-heading(type='submit') Submit
+                    a.hide(id = "clearFilter" class = "form-control btn btn-default border-primary btn-heading") Clear Filter
+            div.table-small-responsive
+              table.table.table-bordered.productMappingTable.marginT_30(cellspacing="0" cellpadding="0")
+                thead
+                  tr
+                    th Service name
+                    th Product Name
+                    th SKU Id
+                    th Person
+                    th Company
+                    th Default
+                    th 
+                    th 
+                tbody
+                  if productMappingList && productMappingList.length > 0
+                    each productMapping in productMappingList
+                      tr
+                        td #{productMapping.csquireService.name}
+                        td #{productMapping.StripeProductName}
+                        td(class='skuDetails' id = "#{productMapping.stripeSkuId}")
+                          a()
+                            | #{productMapping.stripeSkuId}
+                        td
+                            if productMapping.csquirePersonalProfiles.length > 0
+                              - var personList=[];
+                              each val,i in productMapping.csquirePersonalProfiles
+                                  -personList.push(" " + val.name)
+                              | #{personList.join(', ')}
+                            else  
+                              | -
+                        td
+                          if productMapping.csquireCompanyProfiles.length > 0
+                            - var companyList=[];
+                            each val,i in productMapping.csquireCompanyProfiles
+                                - companyList.push(" " + val.name)
+                            | #{companyList.join(', ')}
+                          else  
+                            | -
+                        td #{productMapping.isDefaultForCsquireService}
+                        td.text-center 
+                          a(href="/qsMapping?isEdited=true&productMapping=#{productMapping._id}" title="Edit")
+                            span(class="glyphicon glyphicon-edit connection-small" aria-hidden="true")
+                        td.text-center
+                          if !productMapping.isDefaultForCsquireService 
+                            a(href="/qsMapping/deleteProductMapping/#{productMapping._id}" data-confirm="Are you sure you want to   delete?" title="Delete")
+                              img.connection-small(src="#{cdn('/delete_active.png')}")
+                  else
+                    tr
+                      td(colspan="6") No product mapping present
+    +qsMappingModel()
+    +skuDetailsModel()

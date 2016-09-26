@@ -1,0 +1,70 @@
+﻿.filters
+  .col-md-12.col-sm-12
+    .panel.panel-default.filter-heading
+      .panel-heading
+        div Refine by
+      .panel-body
+        .panel-group
+         form(method='get', action='#{key}')
+          if query.search
+            input(type='hidden',name="search" value='#{search}')   
+          if query.selectKey
+            input(type='hidden',name="selectKey" value='#{selectKey}')
+          if query.connectionFrom
+            input(type='hidden',name="connectionFrom" value='#{query.connectionFrom}')
+          if query.type
+            input(type='hidden',name="type" value='#{query.type}')
+          if query.uid
+            input(type='hidden',name="uid" value='#{query.uid}')
+          if query.jTitle
+            input(type='hidden',name="jTitle" value='#{query.jTitle}')
+          if query.farea
+            input(type='hidden',name="farea" value='#{query.farea}')
+          if query.Proflevels
+            input(type='hidden',name="Proflevels" value='#{query.Proflevels}')
+          .accordian#filterAccordion
+             each filter,i in filters
+             
+                .panel.panel-default
+                    .panel-heading
+                      h4.panel-title
+                        a.filterheader(data-toggle='collapse', data-parent='#filterAccordion', href='#{"#collapse"+i}')
+                          | #{filter.header}
+                        a.indicator.fa.fa-plus-square-o.pull-right(data-toggle='collapse', data-parent='#filterAccordion', href='#{"#collapse"+i}')
+                    .panel-collapse.collapse(id='#{"collapse"+i}')
+                      .panel-body
+                        -if(filter.isMultiselect)
+                          if filter.autoSelectAll
+                            -for(var iInd=0;iInd<filter.data.length;iInd++)
+                              -filter.autoSelectAll=filter.data[iInd].selected?false:true
+                              -if(!filter.autoSelectAll)
+                                - break;
+                          select.form-control(name=filter.name,multiple,data-placeholder=filter.header,style='width:100%',data-master='#{filter.masterColleName}')
+                            -for(var iIndex=0;iIndex<filter.data.length;iIndex++)
+                             .form-group.row
+                                .col-xs-2
+                                  if filter.autoSelectAll
+                                    option(type='checkbox', name=filter.name, value=filter.data[iIndex]._id, selected)= filter.data[iIndex].name
+                                  else
+                                    option(type='checkbox', name=filter.name, value=filter.data[iIndex]._id, selected=filter.data[iIndex].selected)= filter.data[iIndex].name
+                                //-span.filter-label.col-xs-10= filter.data[iIndex].name
+                        -else if(filter.isTypehead)
+                          .form-group
+                              select.form-control(name=filter.name,data-master=filter.isTypehead.masterName,data-placeholder='#{filter.header}',value=filter.value,style="width: 100%")
+                               -if(filter.value)
+                                 option(value=filter.value,selected=selected) #{filter.value}
+                        -else
+                          .form-group
+                            if filter.name=='followers' || filter.name=='followings' || filter.name=='Who Viewed Your Profile'
+                              if filter.value
+                                - var name = filter.value[0]
+                                - var lastName= filter.value[1]
+                              else
+                                - var name = filter.value
+                                - var lastName = filter.value
+                              input.form-control.searchText(type='text', name=filter.name value=name,placeholder='First Name')
+                              input.form-control.filterMargin.searchText(type='text', name=filter.name value=lastName,placeholder='Last Name')
+                            else
+                              input.form-control.searchText(type='text', name=filter.name value=filter.value)
+          .form-group
+            button.btn.btn-primary.form-control(type='submit') Go

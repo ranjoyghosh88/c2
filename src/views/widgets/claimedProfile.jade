@@ -1,0 +1,154 @@
+div#claimedProfile.tab-pane(role="tabpanel")
+        table#table_id(cellspacing='0', width='100%',style='border-bottom:0px')
+          thead
+            tr
+              th(style='border-bottom:none')
+                h4.font-primary You have #{claimCount} #{claimCount>1?'claims':'claim'} pending for approval
+          tbody
+            each companyClaim in claimInfo.companyClaim
+                each profiles in companyClaim.claimedBy.profiles
+                    each data in profiles
+                        if(data.name && profiles.status=='pending')
+                            tr
+                                td
+                                    form(method='post', action='/claim/ChangeClaimstatus')
+                                     .panel.panel-default
+                                      .panel-body
+                                        .media.claimed_media
+                                          .media-left
+                                            a(href="#")
+                                                if(data.pictureUrl)
+                                                    a(href='/people/#{data.uid}'): img.media-object(src="#{data.pictureUrl}")
+                                                else
+                                                    a(href='/people/#{data.uid}'): img.media-object(src="#{cdn('/profile.jpg')}")
+                                          .media-body
+                                            h5.media-heading: a(href='/people/#{data.uid}') #{data.name} #{data.lastName}
+                                            p(style="text-transform: lowercase;") wants to claim your CSquire <b>#{companyClaim.name}</b> page
+                                            p.connectionDate #{moment(profiles.date).format("MMM DD YYYY, h:mm")}
+                                            input(type="hidden" name="claimId" value="#{companyClaim._id}")
+                                            input(type="hidden" name="claimFrom" value="#{data._id}")
+                                            input(type="hidden" name="claimType" value="company")
+                                          .media-right
+                                            div.inline-block
+                                              button.btn.btn-default.btn-primary(name="status" value="approved" type="submit" title="Accept claim request") Accept
+                                              button.btn.btn-default(name="status" value="reject" type="submit" title="Reject claim request") Reject
+                                            div.inline-block.claimed_links
+                                             a.inline-block(href="#" title="Mark it as dispute") Dispute&nbsp;
+                                             a.inline-block(href="#" title="Mark it as spam") Spam
+
+            each productClaim in claimInfo.productClaim
+                each profiles in productClaim.claimedBy.profiles
+                    each data in profiles
+                        if(data.name && profiles.status=='pending')
+                             tr
+                                td
+                                    form(method='post', action='/claim/ChangeClaimstatus')
+                                     .panel.panel-default
+                                      .panel-body
+                                        .media.claimed_media
+                                         .media-left
+                                             a(href="#")
+                                                 if(data.pictureUrl)
+                                                     a(href='/people/#{data.uid}'): img.media-object(src="#{data.pictureUrl}")
+                                                 else
+                                                     a(href='/people/#{data.uid}'): img.media-object(src="#{cdn('/profile.jpg')}")
+                                         .media-body
+                                             h5.media-heading: a(href='/people/#{data.uid}') #{data.name} #{data.lastName}
+                                             p(style="text-transform: lowercase;") wants to claim your CSquire <b>#{productClaim.name}</b> page
+                                             p.connectionDate #{moment(profiles.date).format("MMM DD YYYY, h:mm")}
+                                             input(type="hidden" name="claimId" value="#{productClaim._id}")
+                                             input(type="hidden" name="claimFrom" value="#{data._id}")
+                                             input(type="hidden" name="claimType" value="product")
+                                         .media-right
+                                             div.inline-block
+                                             button.btn.btn-default.btn-primary(name="status" value="approved" type="submit" title="Accept claim request") Accept
+                                             button.btn.btn-default(name="status" value="reject" type="submit" title="Reject claim request") Reject
+                                             div.inline-block.claimed_links
+                                              a.inline-block(href="#" title="Mark it as dispute") Dispute&nbsp;
+                                              a.inline-block(href="#" title="For mark as a Spam") Spam
+
+            each compClaim in companyClaimInfo
+                    tr
+                        td
+                            .panel.panel-default
+                                            .panel-body
+                                              .media.claimed_media
+                                                .media-left
+                                                    a(href="#")
+                                                        if(compClaim.logo)
+                                                          a(href='/company/#{compClaim.uid}'): img.media-object(src="#{compClaim.logo}")
+                                                        else
+                                                          a(href='/company/#{compClaim.uid}'): img.media-object(src="#{cdn('/CompanyDummyLogo.jpg')}")
+                                                .media-body
+                                                  h5.media-heading: a(href='/company/#{compClaim.uid}') <b>#{compClaim.name}</b>
+                                                  p(style="text-transform: lowercase;") your claim status for <b>#{compClaim.name}</b> page is #{compClaim.claimedBy[0].status=='reject'?'rejected':compClaim.claimedBy[0].status}.
+                                                .media-right
+                                                  div.inline-block
+                                                  div.inline-block.claimed_links
+                                                    if(compClaim.claimedBy[0].status=='reject')
+                                                        a.inline-block(href="#" title="Mark it as dispute") Dispute
+
+            each prodClaim in productClaimInfo
+                    tr
+                        td
+                            .panel.panel-default
+                                            .panel-body
+                                              .media.claimed_media
+                                                .media-left
+                                                    a(href="#")
+                                                        if(prodClaim.logo)
+                                                          a(href='/product/#{prodClaim.uid}'): img.media-object(src="#{prodClaim.logo}")
+                                                        else
+                                                          a(href='/product/#{prodClaim.uid}'): img.media-object(src="#{cdn('/ProductDummyLogo.jpg')}")
+                                                .media-body
+                                                  h5.media-heading: a(href='/product/#{prodClaim.uid}') #{prodClaim.name}
+                                                  p(style="text-transform: lowercase;") your claim status for <b>#{prodClaim.name}</b> page is #{prodClaim.claimedBy[0].status=='reject'?'rejected':prodClaim.claimedBy[0].status}.
+                                                .media-right
+                                                  div.inline-block
+                                                  div.inline-block.claimed_links
+                                                    if(prodClaim.claimedBy[0].status=='reject')
+                                                        a.inline-block(href="#" title="Mark it as dispute") Dispute
+
+            each prodClaimA in productClaimInfobyAdmin
+                    tr
+                        td
+                            each claim in prodClaimA.claimedBy
+                                .panel.panel-default
+                                            .panel-body
+                                              .media.claimed_media
+                                                .media-left
+                                                    a(href="#")
+                                                        if(claim.profileId.pictureUrl)
+                                                          a(href='/people/#{claim.profileId.uid}'): img.media-object(src="#{claim.profileId.pictureUrl}")
+                                                        else
+                                                          a(href='/people/#{claim.profileId.uid}'): img.media-object(src="#{cdn('/profile.jpg')}")
+                                                .media-body
+                                                  h5.media-heading: a(href='/people/#{claim.profileId.uid}') #{claim.profileId.name} #{claim.profileId.lastName}
+                                                  p(style="text-transform: lowercase;") request of ownership for <b>#{prodClaimA.name}</b> page has been #{claim.status=='reject'?'rejected':claim.status}.
+                                                .media-right
+                                                  div.inline-block
+                                                  div.inline-block.claimed_links
+                                                    if(claim.status=='reject')
+                                                        a.inline-block(href="#" title="Mark it as spam") Spam
+
+            each compClaimA in companyClaimInfobyAdmin
+                each claim in compClaimA.claimedBy
+                    tr
+                        td
+                            .panel.panel-default
+                                        .panel-body
+                                            .media.claimed_media
+                                             .media-left
+                                                 a(href="#")
+                                                     if(claim.profileId.pictureUrl)
+                                                         a(href='/people/#{claim.profileId.uid}'): img.media-object(src="#{claim.profileId.pictureUrl}")
+                                                     else
+                                                         a(href='/people/#{claim.profileId.uid}'): img.media-object(src="#{cdn('/profile.jpg')}")
+                                             .media-body
+                                                 h5.media-heading: a(href='/people/#{claim.profileId.uid}') #{claim.profileId.name} #{claim.profileId.lastName}
+                                                 p(style="text-transform: lowercase;") request of ownership for <b>#{compClaimA.name}</b> page has been #{claim.status=='reject'?'rejected':claim.status}.
+                                             .media-right
+                                                 div.inline-block
+                                                 div.inline-block.claimed_links
+                                                 if(claim.status=='reject')
+                                                     a.inline-block(href="#" title="Mark it as spam") Spam

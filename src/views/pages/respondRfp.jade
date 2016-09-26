@@ -1,0 +1,838 @@
+extends ../layouts/layout
+include ../mixin/search
+include ../mixin/formerror
+include ../mixin/formsuccess
+include ../mixin/clientSay
+block rfpTemplates
+  style.
+    #content{
+       min-height:400px;
+    }
+  div.
+    <script type="text/html" id="formTemplate">
+        <div class="form-group form-head">
+            <div class="col-sm-12 form-content">
+            </div>
+        </div>
+    </script>
+    <script type="text/html" id="back-continue">
+        <div class="form-group">
+            <div class="col-md-2">
+                <button type="button" class="btn back btn-primary form-control">Back </button>
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn continue btn-primary form-control">Continue </button>
+            </div>
+        </div>
+    </script>
+ 
+    <script type="text/html" id="popup-tmpl" >
+        <!-- Modal -->
+        <div class="modal fade" id="<%= id%>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header font-secondary text-uppercase text-inverse">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+              </div>
+              <div class="modal-body">
+
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+    </script>
+
+
+        
+    <script id='title-placeHolder-tmpl' type="text/html">
+        <% if(title){ %>
+            <label class="text-capitalize font-md black" style="font-weight:normal;text-transform:uppercase"><%=title %></label>
+        <% } %>
+        
+    </script>
+    <script type="text/html" id="add-questions-tmpl" >
+        <div>
+
+          <!-- Nav tabs -->
+          <ul class="nav nav-pills nav-tabs" role="tablist">
+            <% _.each( questionGroups, function( questionItem , index){ %>
+                <% if((userRole.indexOf('admin')>=0) || (userRole.indexOf(questionItem.title)>=0)){ %>
+                    <% var count=0; %>
+                     <% _.each( questionItem.questions, function( question , i){ %>
+                            <% if( (questionItem.isStdQuestion && question.isStandard) || (!question.isStandard) ){
+                                count++;
+                               } 
+                            %>
+                    <% }); %>
+                    <li role="presentation" class="<%=index==0?'active':'' %> col-sm-3 margin0 text-center">
+                        <a href="<%='#question-'+index %>" aria-controls="<%='#question-'+index %>" role="tab" data-toggle="tab"><%=questionItem.title+' ('+count+')' %></a>
+                    </li>
+                <% } %>
+            <% }); %>
+        </ul>
+        <div class="tab-content margin0">
+          <% _.each( questionGroups, function( questionItem , index){ %>
+            <div role="tabpanel" data-index="<%=index %>" data-gId='<%=questionItem._id %>' class="<%=index==0?'tab-pane active':'tab-pane' %>" id="<%='question-'+index %>">
+                <div class='question-list '>
+                    <% var count=0; %>
+                     <% _.each( questionItem.questions, function( question , i){ %>
+                            <% if( (questionItem.isStdQuestion && question.isStandard) || (!question.isStandard) ){
+                                count++;
+                               } 
+                            %>
+                    <% }); %>
+                    <% if(count>0){ %>
+                        <div>
+                                       <!-- <div>
+                                            <label class='bold black'>Total Questions <span class='question-count'><%=count %></span></label>
+                                        </div>-->
+                        </div>
+                    <% } %>
+                    <div>
+                        <% var count=0; %>
+                        <% _.each( questionItem.questions, function( question , i){ %>
+                            <% if( (questionItem.isStdQuestion && question.isStandard) || (!question.isStandard) ){ %>
+                                <div class='std-que' data-qId='<%=question._id %>' data-index='<%=i %>'>
+                                    <div style="float:left; width:20px;">
+                                        <label class='margin0'>
+                                            <%=(++count) %>
+                                        </label>
+                                    </div>
+                                    <div>
+                                        <div>
+                                            <label class="block black" name="<%='Q'+i %>"><%=question.title %></label>
+                                        </div>
+                                    </div>
+                                    <div style='min-width:200px;clear:left;'>
+                                        <% if(question.type=='0'){ %>
+                                            <%  var val= _.find(answers,function(obj){
+                                                    if(obj.qId==question._id){
+                                                        return true;
+                                                    }
+                                                });
+                                            val=val||{};
+                                            %>
+                                            <textarea type='text' placeholder='Answer' class='answer form-control' style="width: 95%;height:100px;resize:none;" data-type='0' value='<%=val.text %>' data-index='<% i %>'><%=val.text %></textarea>
+                                        <% }else if(question.type=='1'){ %>
+                                            <select class='answer' data-placeholder='Please select' data-type='1'  style='width:95%; border-radius:0;margin-left:20px;height:30px;'>
+                                               <option></option>
+                                               <%   var val1= _.find(answers,function(obj){
+                                                        if(obj.qId==question._id){
+                                                            return true;
+                                                        }
+                                                    });
+                                                    val1=val1||{};
+                                                %>
+                                               <% _.each( question.answerEnum, function( opt , index){ 
+                                                    if(_.indexOf(val1.enumAns, opt)){
+                                                        %>
+                                                        <option  value='<%=opt %>'><%=opt %></option>
+                                                        <%
+                                                    }else{
+                                                        %>
+                                                        <option selected value='<%=opt %>'><%=opt %></option>
+                                                        <%
+                                                    }%>
+                                                <% }); %>
+                                            </select>
+                                        <% }else{ %>
+                                            <%   var val2= _.find(answers,function(obj){
+                                                        if(obj.qId==question._id){
+                                                            return true;
+                                                        }
+                                                    });
+                                                    val2=val2||{};
+                                            %>
+                                            <select class='answer' data-placeholder='Please select' data-type='2'  multiple style='width:95%; border-radius:0;margin-left:20px;height:30px;'>
+                                               <% _.each( question.answerEnum, function( opt , index){
+                                                    if(_.indexOf(val2.enumAns, opt)>=0){
+                                                        %>
+                                                        <option selected value='<%=opt %>'><%=opt %></option>
+                                                        <%
+                                                    }else{
+                                                        %>
+                                                        <option  value='<%=opt %>'><%=opt %></option>
+                                                        <%
+                                                    }%>
+                                                <% }); %>
+                                            </select>
+                                        <% } %>
+                                    </div>
+                                    <div style="clear:left;">
+                                            <%  var val3= _.find(answers,function(obj){
+                                                    if(obj.qId==question._id){
+                                                        return true;
+                                                    }
+                                                });
+                                            val3=val3||{comment:[{},]};
+                                            val3.comment=val3.comment||[{},];
+                                            val3.comment[0]=val3.comment[0]||{};
+                                            %>
+                                            <div class='commentContainer' style='margin-top:10px;'>
+                                                <a href='#' class='commentToggle' style='margin: 10px 0 10px 20px;'>add comment</a>
+                                                <div class='commentSection hidden'>
+                                                    <textarea placeholder='Comment' class='comment form-control' style='margin: 10px 0 10px 20px;width: 95%;'><%=val3.comment[0].text %></textarea>
+                                                </div>
+                                            </div>
+                                            <!--<textarea class='comment form-control' placeholder='comment' style="margin: 10px 0 10px 20px;width: 95%;"><%=val3.comment[0].text %></textarea>-->
+                                    </div>
+                                    
+                                </div>
+                            <% } %>
+                        <% }); %>
+                    </div>
+                </div>
+            </div>
+          <% }); %>
+        </div>
+    </script>
+
+    <script type="text/html" id="choose-answers-tmpl" >
+        <div>
+
+          <!-- Nav tabs -->
+          <ul class="nav nav-pills nav-tabs" role="tablist">
+            <% _.each( questionGroups, function( questionItem , index){ %>
+                <% var count=0; %>
+                     <% _.each( questionItem.questions, function( question , i){ %>
+                            <% if( (questionItem.isStdQuestion && question.isStandard) || (!question.isStandard) ){
+                                count++;
+                               } 
+                            %>
+                    <% }); %>
+                <li role="presentation" class="<%=index==0?'active':'' %> col-sm-3 margin0 text-center">
+                    <a href="<%='#question-'+index %>" aria-controls="<%='#question-'+index %>" role="tab" data-toggle="tab"><%=questionItem.title+' ('+count+')' %></a>
+                </li>
+          
+            <% }); %>
+        </ul>
+        <div class="tab-content margin0">
+          <% _.each( questionGroups, function( questionItem , index){ %>
+            <div role="tabpanel" data-index="<%=index %>" data-gId='<%=questionItem._id %>' class="<%=index==0?'tab-pane active':'tab-pane' %>" id="<%='question-'+index %>">
+                <div class='question-list'>
+                    <% var count=0; %>
+                     <% _.each( questionItem.questions, function( question , i){ %>
+                            <% if( (questionItem.isStdQuestion && question.isStandard) || (!question.isStandard) ){
+                                count++;
+                               } 
+                            %>
+                    <% }); %>
+                    <% if(count>0){ %>
+                        <div>
+                            <!--<div>
+                                <label class='bold black'>Total Questions <span class='question-count'><%=count %></span></label>
+                            </div>-->
+                        </div>
+                    <% } %>
+                    <div>
+                        <% var count=0; %>
+                        <% _.each( questionItem.questions, function( question , i){ %>
+                            <% if( (questionItem.isStdQuestion && question.isStandard) || (!question.isStandard) ){ %>
+                              
+                                <div class='std-que answer-choice' data-qId='<%=question._id %>' data-index='<%=i %>'>
+                                    <div style="float: left;width: 20px;">
+                                        <label class='margin0'>
+                                            <%=(++count) %>
+                                        </label>
+                                    </div>
+                                    <div>
+                                        <div>
+                                            <label class="block black" name="<%='Q'+i %>"><%=question.title %></label>
+                                        </div>
+                                    </div>
+                                    <select class='notSelect2 chooseAnswer'  style="clear: left;display: block;margin:0 20px; width: 40%;padding: 5px 10px;border: 1px solid #ccc;border-radius: 5px;">
+                                      <% _.each( responseList, function( response , inx){  %>
+                                        <option data-isSelected='<%=response.userId.isSelected %>' value='<%=response.userId._id %>'><%=response.userId.name+' '+response.userId.lastName+"'s Answer" %>
+                                        </option>
+                                      <% }); %>
+                                    </select>
+                                  <% _.each( responseList, function( response , ix){ 
+                                    var isAnswered=false;
+                                  %>
+                                  <div class='eachAnswer' data-user='<%=response.userId._id %>' style="margin-left: 20px; display:none;">
+                                    <div  style='min-width:200px'>
+                                        <% if(question.type=='0'){ %>
+                                            <%  var val= _.find(response.answers,function(obj){
+                                                    if(obj.qId==question._id){
+                                                        return true;
+                                                    }
+                                                });
+                                           
+                                            if(val){
+                                                isAnswered=true;
+                                            }
+                                            val=val||{};
+                                            if(isAnswered){
+                                            %>
+                                            <label class='answer' style='margin: 5px 0; font-weight:normal;' data-type='0'  data-index='<% i %>'><%=val.text || 'No answer provided' %></label>
+                                            <% } else{%>
+                                            <label class='answer' style='margin: 5px 0; font-weight:normal;' data-type='0'  data-index='<% i %>'><%='No answer provided' %></label>
+                                        <% }}else if(question.type=='1'){ %>
+                                            
+                                               <%   var val1= _.find(response.answers,function(obj){
+                                                        if(obj.qId==question._id){
+                                                            return true;
+                                                        }
+                                                    });
+                                                    if(val1){
+                                                        isAnswered=true;
+                                                    }
+                                                    val1=val1||{};
+                                                    if(isAnswered){
+                                                %>
+                                                        <label  class='answer' style='margin: 5px 0; font-weight:normal;'><%=val1.enumAns %></label>
+                                                    <% } else{%>
+                                                        <label class='answer' style='margin: 5px 0; font-weight:normal;' data-type='1'   data-index='<% i %>'><%='No answer provided' %></label>
+                                                    <% } %>
+                                        <% }else{ %>
+                                            <%   var val2= _.find(response.answers,function(obj){
+                                                        if(obj.qId==question._id){
+                                                            return true;
+                                                        }
+                                                    });
+                                                    
+                                                    
+                                                    if(val2){
+                                                        isAnswered=true;
+                                                    }
+                                                   val2=val2||{};
+                                                    if(isAnswered){
+                                            %>
+                                                        <label class='answer' style='margin: 5px 0; font-weight:normal;'><%=val2.enumAns %>.</label>
+                                                    <% } else{%>
+                                                        <label class='answer' style='margin: 5px 0; font-weight:normal;' data-type='2'   data-index='<% i %>'><%='No answer provided' %></label>
+                                                    <% } %>
+                                        <% } %>
+                                    </div>
+                                    <div>
+                                            <%  var val3= _.find(response.answers,function(obj){
+                                                    if(obj.qId==question._id){
+                                                        return true;
+                                                    }
+                                                });
+                                            val3=val3||{comment:[{},]};
+                                            val3.comment=val3.comment||[{},];
+                                            val3.comment[0]=val3.comment[0]||{};
+                                            %>
+                                            <% if(isAnswered && val3.comment[0].text){
+                                            %>
+                                            <a href='#' class='commentToggle'>show comments</a>
+                                            <div class='commentSection hidden'>
+                                                <textarea disabled class='comment form-control' style='margin: 5px 0;'><%=val3.comment[0].text %></textarea>
+                                            </div>
+                                            <% } %>
+                                    </div>
+                                  </div>
+                                  <% }); %>
+                                </div>
+                            <% } %>
+                        <% }); %>
+                    </div>
+                </div>
+            </div>
+          <% }); %>
+        </div>
+    </script>
+    <script type='text/html' id='response-cover-tmpl'>
+        <div>
+            <div class="container error-container"></div>
+            <div class="container">
+            <div class="row">
+                    <div class="col-xs-12 text-center">
+                        <h3 class='bold font-md text-primary' style='margin-top:0;'>Now let's review your RFP responses</h3>           
+                    </div>
+                </div>
+            <div class="row">
+                    <div class="marginT_30 col-xs-12">
+                        <form method="post" action="#" class="form-horizontal signupForm" novalidate="novalidate">
+                            
+                            <div class="form-group form-head">
+                                <div class="response_cover">
+                                    <div class="panel">
+                                        <div class="panel-body">
+                                            <div class="border_btm">
+                                                <div class="row">
+                                                    <div class="col-sm-2">
+                                                        <div class="list_cmpny_logo   text-center" style='margin-left:0;'>
+                                                            <a>
+                                                                <img class="rfpPic" src="<%=cover.logo || rfpReceipent.logo  || '#{cdn("/CompanyDummyLogo.png")}' %>"/>
+                                                            </a>
+                                                            
+                                                        </div>
+                                                         <div class="text-center">
+                                                            <button name="rfpPic" id="TrgrClk" class="btn btn-link">Upload Image</button>
+                                                            <input type="file" name="file" id="file" style='position: absolute;top: -1000px;'>
+                                                         </div>
+                                                    </div>
+                                                    <div class="col-sm-10">
+                                                        <textarea name='description' placeholder="description"><%=cover.description %></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--<div class="row">
+                                                <div class="col-sm-8">
+                                                    <h5>Attachments</h5>
+                                                    <table cellspacing="0" cellpadding="0" class="table table-bordered">
+                                                        <tr>
+                                                            <td align="center">01</td>
+                                                            <td>Screenshots of Mobile App.PDF</td>
+                                                            <td align="center">
+                                                                <button style="padding:0;" data-index="0" class="btn btn-link fa fa-trash-o delete-que black">
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td align="center">02</td>
+                                                            <td>Pricelist.PDF</td>
+                                                            <td align="center">
+                                                                <button style="padding:0;" data-index="0" class="btn btn-link fa fa-trash-o delete-que black">
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                    <button class="btn btn-primary additional">Additional</button>
+                                                </div>
+                                            </div>-->
+                                            <div>
+
+          <!-- Nav tabs -->
+          <ul class="nav nav-pills nav-tabs" role="tablist">
+            <% _.each( questionGroups, function( questionItem , index){ %>
+                <% if((userRole.indexOf('admin')>=0) || (userRole.indexOf(questionItem.title)>=0)){ %>
+                    <% var count=0; %>
+                     <% _.each( questionItem.questions, function( question , i){ %>
+                            <% if( (questionItem.isStdQuestion && question.isStandard) || (!question.isStandard) ){
+                                count++;
+                               } 
+                            %>
+                    <% }); %>
+                    <li role="presentation" class="<%=index==0?'active':'' %> col-sm-3 margin0 text-center">
+                        <a href="<%='#question-'+index %>" aria-controls="<%='#question-'+index %>" role="tab" data-toggle="tab"><%=questionItem.title+' ('+count+')' %></a>
+                    </li>
+                <% } %>
+            <% }); %>
+        </ul>
+        <div class="tab-content margin0">
+          <% _.each( questionGroups, function( questionItem , index){ %>
+            <div role="tabpanel" data-index="<%=index %>" data-gId='<%=questionItem._id %>' class="<%=index==0?'tab-pane active':'tab-pane' %>" id="<%='question-'+index %>">
+                <div class='question-list '>
+                    <% var count=0; %>
+                     <% _.each( questionItem.questions, function( question , i){ %>
+                            <% if( (questionItem.isStdQuestion && question.isStandard) || (!question.isStandard) ){
+                                count++;
+                               } 
+                            %>
+                    <% }); %>
+                    <% if(count>0){ %>
+                        <div>
+                                        <!--<div>
+                                            <label class='bold black'>Total Questions <span class='question-count'><%=count %></span></label>
+                                        </div>-->
+                        </div>
+                    <% } %>
+                    <div>
+                        <% var count=0; %>
+                        <% _.each( questionItem.questions, function( question , i){ %>
+                            <% if( (questionItem.isStdQuestion && question.isStandard) || (!question.isStandard) ){ %>
+                                <div class='std-que' data-qId='<%=question._id %>' data-index='<%=i %>'>
+                                    <div style="float:left; width:20px;">
+                                        <label class='margin0'>
+                                            <%=(++count) %>
+                                        </label>
+                                    </div>
+                                    <div>
+                                        <div>
+                                            <label class="block black" name="<%='Q'+i %>"><%=question.title %></label>
+                                        </div>
+                                    </div>
+                                    <div style='min-width:200px;clear:left;'>
+                                        <% if(question.type=='0'){ %>
+                                            <%  var val= _.find(answers,function(obj){
+                                                    if(obj.qId==question._id){
+                                                        return true;
+                                                    }
+                                                });
+                                            val=val||{};
+                                            %>
+                                            <label type='text' placeholder='Answer' class='' style="width: 95%;height:30px;font-weight:normal;" data-type='0' value='' data-index='<% i %>'><%=val.text || 'No answer Provided' %></label>
+                                        <% }else if(question.type=='1'){ %>
+                                               <%   var val1= _.find(answers,function(obj){
+                                                        if(obj.qId==question._id){
+                                                            return true;
+                                                        }
+                                                    });
+                                                    val1=val1||{};
+                                                %>
+                                            <label style='font-weight:normal;'><%=val1.enumAns || 'No answer provided' %></label>
+                                        <% }else{ %>
+                                            <%   var val2= _.find(answers,function(obj){
+                                                        if(obj.qId==question._id){
+                                                            return true;
+                                                        }
+                                                    });
+                                                    val2=val2||{};
+                                            %>
+                                            <label style='font-weight:normal;'><%=val2.enumAns || 'No answer provided' %></label>
+                                        <% } %>
+                                    </div>
+                                    <div style="clear:left;">
+                                            <%  var val3= _.find(answers,function(obj){
+                                                    if(obj.qId==question._id){
+                                                        return true;
+                                                    }
+                                                });
+                                            val3=val3||{};
+                                            
+                                            %>
+                                            <% if(val3.comment && val3.comment[0]){ %>
+                                                <div class='commentContainer'>
+                                                <a href='#' class='commentToggle'>show comments</a>
+                                                    <div class='commentSection hidden'>
+                                                        <textarea disabled class='comment form-control' style='margin: 5px 0;height:auto;'><%=val3.comment[0].text %></textarea>
+                                                    </div>
+                                                </div>
+                                            <% } %>
+                                    </div>
+                                    
+                                </div>
+                            <% } %>
+                        <% }); %>
+                    </div>
+                </div>
+            </div>
+          <% }); %>
+        </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group marginT_30">
+                                <div class="row">
+                                    <div class="col-sm-12 text-center">
+                                        <a href="#" class="btn btn-primary complete-rfp btn-heading">Submit </a>
+                                    </div>
+                                    <div class="col-sm-12 text-center filterMargin">
+                                        <a href="#" class="back">Go to previous step</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+    <script type='text/html' id='cover-letter-tmpl'>
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 text-center">
+                    <h3 class='bold font-md text-primary' style='margin-top:0;'>Cover letter and Milestones Details</h3>
+                    <label class="block"></label>                  
+                </div>
+            </div>
+        </div>
+        <div class="row">
+                    <div class=" col-sm-12  col-xs-12 col-xs-10 col-xs-offset-1 col-sm-offset-0">
+                        <form method="post" action="#" class="form-horizontal signupForm" novalidate="novalidate">
+                            <div class="form-group form-head">
+                                <div class="cover-letter" style='padding:0 20px;'>
+                                    <div class="row">
+                                        <div>
+                                            <label><span class="block text-left">Cover Letter</span></label>
+                                        </div>
+                                    </div>
+                                    <div class="panel panel-default row" style='border: 0;border-bottom: 1px solid #ddd;box-shadow: none;border-radius: 0;'>
+                                        <div class="panel-body" style='padding-top:0;'>
+                                            <div class="row">
+                                                <div class="pull-left" style="display:table"> 
+                                                    <div class="list_cmpny_logo  text-center " style='margin-right:20px;margin-left:0;'>
+                                                    <img src="<%=cover.image || '#{cdn("/CompanyDummyLogo.png")}' %>"/>
+                                                    </div>
+                                                    <div class="text-center marginT_30">
+                                                        <!--<a href="#">Upload Image</a>-->
+                                                    </div>
+                                                </div>
+                                        <div class="">
+                                            <div readonly name='desc'  style="height:120px;overflow:auto;" value='<%=cover.description %>'><%=cover.description %></div>
+                                        </div>
+                                    </div>
+                                        </div>
+                                    </div>
+                                </div>
+                               
+                                <div class="Milestones respond_mile" style='border:none;padding:0 20px;'>
+                                    <div class="panel row">
+                                        <div class="panel-body" style="padding-left:0">
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                   <label><strong class="block margin0">Milestones</strong></label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <label class="block">Milestone Title</label>
+                                                </div>
+                                                <div class="col-sm-9">
+                                                    <label disabled name='milestoneTitle' style="width:100%" placeholder="Description of what you are looking for / about the project"><%=milestones[0].title %></label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <label class="block">Description</label>
+                                                </div>
+                                                <div class="col-sm-9">
+                                                    <label disabled name='milestoneComments' style="width:100%" placeholder="Description of specific components of milestone"><%=milestones[0].comment %></label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <label class="block">Corresponding Date</label>
+                                                </div>
+                                                <div class="col-sm-9">
+                                                    <label><%=mileStoneDeadline %></label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <label class="block">RFP Response Deadline</label>
+                                                </div>
+                                                <div class="col-sm-9">
+                                                    <label><%=responseDL %></label>
+                                                </div>  
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <label class="block">Late responses</label>
+                                                </div>
+                                                <div class="col-sm-9">
+                                                    <label><%=willAcceptLateResponse==false?'No':'Yes' %> </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> 
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-sm-12 text-center">
+                                        <a href="#" class="btn btn-primary next btn-heading margin0">Continue </a>
+                                    </div>
+                                    <!--<div class="col-sm-12 text-center filterMargin">
+                                        <a href="#" class="back">Go to previous step</a>
+                                    </div>-->
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+    </script>
+   
+    <script id='add-contrib-tmpl'  type="text/html">
+        <div class="panel panel-default"><div class="panel-body padding0">
+        <div class="select_contributor">
+            <label>Select Contributor</label>
+            <div>
+                <select data-placeholder='Contributor Name' data-master="people" name='name' style='width:40%;margin:0;min-height:30px;'></select>
+                <input type='text' placeholder='Email' name='email' style="width:40%;min-height:40px; border-radius:5px; border:1px solid #ccc;">
+                <% if(userRole.indexOf('admin')>=0){ %>
+                    <input type='checkbox' name='role' value='admin' >Admin
+                <% } %>
+            </div>
+            <div>
+                <% if((userRole.indexOf('Functional')>=0) || (userRole.indexOf('admin')>=0)){ %>
+                    <input type='checkbox' name='role' value='Functional'><span class="padding_50">Functional</span>
+                <% } %>
+                <% if((userRole.indexOf('Business')>=0) || (userRole.indexOf('admin')>=0)){ %>
+                    <input type='checkbox' name='role' value='Business'><span class="padding_50">Business</span>
+                <% } %>
+                <% if((userRole.indexOf('Technical')>=0) || (userRole.indexOf('admin')>=0)){ %>
+                    <input type='checkbox' name='role' value='Technical'><span class="padding_50">Technical</span>
+                <% } %>
+                <% if((userRole.indexOf('Legal & Contract')>=0) || (userRole.indexOf('admin')>=0)){ %>
+                    <input type='checkbox' name='role' value='Legal & Contract'><span class="padding_50">Legal & Contract</span>
+                <% } %>
+            </div>
+            <div class='error-container'></div>
+            <div>
+                <button id='save-contrib' class='btn btn-primary'>Save<i class="fa fa-floppy-o"></i></button>
+                <button id='cancle-contrib' class='btn'>Cancel</button>
+            </div>
+        </div>
+        <div>
+            <label class="added">Added Contributors</label>
+        </div>
+        <table class='table table-responsive table-striped'>
+            <% _.each(rederContrib,function(contrib,indx){ %>
+                <tr>
+                    <td><%=indx+1 %></td>
+                    <td><%=contrib.name+' '+contrib.lastName %></td>
+                    <td><%=contrib.email %></td>
+                    <% if(contrib.role.indexOf('admin')>=0){ %>
+                        <td>Admin</td>
+                    <% } else{%>
+                        <td><%=contrib.role %></td>
+                    <% }%>
+                </tr>
+            <% }) %>
+
+        </table>
+        </div>
+    </script>
+    <script id='invite-contrib-tmpl'  type="text/html">
+        <!--<button id='show-tmpl'  class="btn btn-primary pull-right text-uppercase">invite contributor</button>
+        <div id='add-contrib-ui' style='clear:both;'></div>-->
+    </script>
+    <script type="text/html" id="page-1">
+        <div>
+            <div class="container-fluid headpanel">
+                <h3 class="text-uppercase" style="color:#555;">Respond to <span id='rfp-title-placeHolder'></span></h3>
+            </div>
+            <div class="header-counter filterMargin container" id="rfpSteps"></div>
+           
+            <div class="container">
+            <div class="row">
+                <div class="col-xs-12 text-center">
+                    <h3 class="bold font-md text-primary" style='margin-top:0;'>Now let's respond to the RFP Questions</h3>
+                    <label class="block"></label>                  
+                </div>
+            </div>
+            <div class="row">
+                    <div class="marginT_30 col-xs-12">
+                <form method="post" action="#" class="form-horizontal signupForm" novalidate="novalidate">
+                    
+                    <div class="form-group form-head">
+                        <div id="rfp-choose-answers">
+                        </div>
+                        <div class="modal fade" id="edit-question-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                            <div class="modal-dialog" role="document">
+
+                            </div>
+                        </div>
+                        <div class="form-group marginT_30">
+                            <div class="row">
+                                <div class="col-sm-12 text-center">
+                                    <a href="#" class="btn btn-primary continue btn-heading margin0">Continue </a>
+                                </div>
+                                <div class="col-sm-12 text-center filterMargin">
+                                    <a href="#" class="back">Go to previous step</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                </div>
+                </div>
+            </div>
+        </div>
+    </script>
+    <script type="text/html" id="page-5">
+        <div>
+        <div class="container-fluid headpanel">
+            <h3 class="text-uppercase" style="color:#555;">Respond to <span id='rfp-title-placeHolder'></span></h3>
+        </div>
+        <div class="header-counter filterMargin container" id="rfpSteps"></div>
+            
+            <div class="container">
+            <div class="row">
+                <div class="col-xs-12 text-center">
+                    <h3 class="bold font-md text-primary" style="margin-top:0;">Now let's respond to the RFP Questions</h3>
+                    <label class="block"></label>                  
+                </div>
+            </div>
+            <div class="row">
+                    <div class="marginT_30 col-xs-12">
+                <form method="post" action="#" class="form-horizontal signupForm" novalidate="novalidate">
+                        <div class="form-group form-head">
+                                <div id='rfp-invite-contrib'></div>
+                        </div>
+                    <div class="form-group form-head">
+                        <div id="rfp-add-questions">
+                        </div>
+                        <div class="modal fade" id="edit-question-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                            <div class="modal-dialog" role="document">
+
+                            </div>
+                        </div>
+                        <div class="form-group marginT_30">
+                            <div class="row">
+                                <div class="col-sm-12 text-center">
+                                    <a href="#" class="btn btn-primary continue btn-heading margin0">Continue </a>
+                                </div>
+                                <div class="col-sm-12 text-center filterMargin">
+                                    <a href="#" class="back">Go to previous step</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                </div>
+                </div>
+            </div>
+        </div>
+    </script>
+    <script type="text/html" id="page-6">
+        <div>
+        <div class="container-fluid headpanel">
+            <h3 class="text-uppercase" style="color:#555;">Respond to <span id='rfp-title-placeHolder'></span></h3>
+        </div>
+        <div class="header-counter filterMargin container" id="rfpSteps"></div>
+           
+            <div class="container">
+                <div id='rfp-cover-letter'></div>
+            </div>
+        </div>
+    </script>
+      <script type="text/html" id="page-7">
+        <div>
+        <div class="container-fluid headpanel">
+                <h3 class="text-uppercase" style="color:#555;">Respond to <span id='rfp-title-placeHolder'></span></h3>
+            </div>
+            <div class="header-counter filterMargin container" id="rfpSteps"></div>
+            
+            <div class="container">
+                <div id='rfp-response-cover'></div>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/html" id="wizard-page-no-tmpl">
+                <div class="col-xs-12 SignUpSteps hidden-xs text-center">
+                <span></span>
+                </div>
+    </script>
+    <script type="text/html" id="rfp-wizard-tmpl">
+        <div class="rfpPage">
+        <div class="rfp-wizard">
+            <div class="page">
+            </div>
+            <div class="navigation">
+            </div>
+        </div>
+        </div>
+    </script>
+
+block content
+  div.
+    <div id="rfp-wizard-count" class="container">
+    </div>
+    <div id="rfp-wizard" class="container">
+    </div>
+
+
+block js
+    script(src='//cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js')
+    script(src='//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js')
+    script(src='//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.2.3/backbone-min.js')
+    script(src='//cdnjs.cloudflare.com/ajax/libs/async/1.4.2/async.min.js')
+    script(src='//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js')
+    script(src=cdn('/rfp-backbone-demo/respondRfp/definition.js'))
+    script(src=cdn('/rfp-backbone-demo/respondRfp/rfp-models.js'))
+    script(src=cdn('/rfp-backbone-demo/respondRfp/rfp-views.js'))
+    script(src=cdn('/rfp-backbone-demo/respondRfp/rfp-create.js'))
+    script.
+     var rfpObj = {_id:'#{_id}'};

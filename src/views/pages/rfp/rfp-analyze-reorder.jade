@@ -1,0 +1,56 @@
+﻿extends ../../layouts/layout_backbone
+include ../../mixin/search
+
+
+block content
+	div.
+		<style>
+			.dataTables_wrapper table thead{
+				display:none;
+			}
+			#rfp-respond-table{
+			 width:100%!important; 
+			}
+			.summary-check {
+				height: 100px;
+			}
+		</style>
+	.container-fluid.headpanel
+			h2.text-uppercase
+				p.font-md.black #{rfp.title}
+	.container.header-counter.filterMargin.
+			<div class="row"><div class="pull-left"></div><div class="col-xs-12 text-center pull-right SignUpSteps hidden-xs"> <span><span class="outerCircle" style="margin-right:0;width:50px;height:50px;"><span class="circle active" style="position:relative;font-size:23px;width:35px;height:35px;margin-top:8px;">1<span class="blueDash" style="position: absolute; left: 35px; margin-top: 11px; width: 95px;"></span></span></span><span class="dash" style="left: 0;margin-top: -10px; position:relative;width:75px"></span><span class="outerCircle" style="margin-right:0;width:50px;height:50px;"><span class="circle active" style="position:relative;font-size:23px;width:35px;height:35px;margin-top:8px;">2<span class="blueDash" style="position:absolute;left:35px;margin-top:11px;width:50px"></span></span></span><span class="dash" style="left: 0;margin-top: -10px; position:relative;width:75px"></span><span class="outerCircle" style="margin-right:0;width:50px;height:50px;"><span class="circle" style="position:relative;font-size:23px;width:35px;height:35px;margin-top:8px;">3</span></span></span></div></div>
+	.container
+			.row
+					.col-xs-12.text-center
+							h3.bold.font-md.text-primary.margin_T0 Let's Prioritize your responses by drag and drop
+							label.block
+	div#rfp-respond-reorder.container.profileContainer
+		div.container-fluid(style='margin-bottom:15px;')
+				.row.sortable
+					each item, index in responses
+						.col-md-3
+							div.row.response-item.text-center(data-resid='#{item._id}')
+								.col-md-1.index #{index+1}
+								.col-md-11
+									img(src='#{item.cover.logo || item.rfpReceipent.logo || cdn("/CompanyDummyLogo.png")}' width='50%' class="Logo_Company")
+									div #{item.rfpReceipent.name}
+		.form-group
+			.row.marginT_30
+				.col-md-12.col-sm-8.text-center
+					a.btn.btn-primary.btn-heading.continue#review-submission(href='#') Continue 
+			.row
+				.col-md-12.col-sm-8.text-center
+					a.back.inline-block.filterMargin(href='/rfp-analyze-summary/#{_id}') Go to previous step
+
+block append stylesheet
+	link(rel='stylesheet', href='//cdn.datatables.net/1.10.10/css/dataTables.bootstrap.min.css')
+block append js
+	script(src="//code.jquery.com/ui/1.11.4/jquery-ui.js")
+	script(src='//cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js')
+	script(src='//cdn.datatables.net/1.10.10/js/dataTables.bootstrap.min.js')
+	script(src=cdn('/rfp-backbone-demo/rfp-common.js'))
+	script(src=cdn('/rfp-backbone-demo/rfp-analyze-reorder.js'))
+	script.
+		var rfpId = '#{_id}';
+

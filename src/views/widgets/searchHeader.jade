@@ -1,0 +1,15 @@
+﻿ul.nav.nav-pills
+    if(!hideProduct)
+     li(role="presentation",class=(key === 'product' ? 'active' : ''))
+          a(href="product?"+queryString) Products
+              span.badge.bg-primary #{productCount || 0}
+    if(!hidePeople)
+     li(role="presentation",class=(key === 'people' ? 'active' : ''))
+        a(href="people?"+queryString) People
+            span.badge.bg-primary #{profileCount || 0}
+    if(!hideCompany)
+     li(role="presentation",class=(key === 'company' ? 'active' : ''))
+          a(href="company?"+queryString) Companies
+              span.badge.bg-primary #{companyCount || 0}
+    li( class='pull-right')
+        a(href="#" class='btn btn-default hidden') Saved Searches

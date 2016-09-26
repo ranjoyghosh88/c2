@@ -1,0 +1,1792 @@
+.person_profile.businessProcessAreas
+  - var lIn = profileData.externalSources?profileData.externalSources.linkedIn:false;
+  - var lInUser=lIn?true:false;
+  - if(profileData.functionalRole._id == 7)
+    - pastClientString='';
+    - specializationString=''
+    - pastCompString=''
+    - colleguesString=''
+  if editSection=='personal'
+    .row
+      .col-sm-12.col-md-12
+        .panel.panel-profile.panel-default
+          .panel-body
+            form.media(method='post',action=isSuperUser?'#{"/profile/edit?uid="+profileData.uid}':'/profile/edit' enctype='multipart/form-data' class='edit')
+              .media
+                  .row
+                    .col-sm-12
+                      form.pull-right.edit(action="" method="post")
+                        a.cancle.pull-right.closeBtn(href='/profile',title='Close')
+                          span.fa.fa-times
+                  .row
+                    .col-lg-3.col-sm-4
+                      .media-left
+                        a(href='#')                  
+                         if profileData.pictureUrl
+                           if profileData.functionalRole._id == 2 || profileData.functionalRole._id == 6
+                             img.media-object.border.profilePic(src=profileData.pictureUrl)
+                           else
+                             img.media-object.border.border-secondary.profilePic(src=profileData.pictureUrl)
+                         else
+                           img.media-object.profilePic(src="#{cdn('/profile.jpg')}")
+                        div.text-center.upload_image
+                         if !lInUser
+                          button.btn.btn-link(name='profilePic',id='TrgrClk') Upload Image
+                          input(type='file',name='file',id='file')
+                    .col-sm-8.col-lg-9
+                      .media-body
+                        .form.personal_edit
+                          .form-group
+                            if !lInUser
+                              input.form-control(type='text',required='required',data-errorholder='First Name', placeholder='First Name',name='name',data-jVal=validation.name,value='#{profileData.name}')
+                            else
+                              input.form-control(type='text',required='required',disabled,data-errorholder='First Name', placeholder='First Name',name='name',data-jVal=validation.name,value='#{profileData.name}')
+                          .form-group
+                            if !lInUser
+                              input.form-control(type='text',required='required',data-errorholder='Last Name',placeholder='Last Name',name='lastName',data-jVal=validation.lastName,value='#{ profileData.lastName}')
+                            else
+                              input.form-control(type='text',disabled,required='required',data-errorholder='Last Name',placeholder='Last Name',name='lastName',data-jVal=validation.lastName,value='#{ profileData.lastName}')
+                          .form-group
+                            select.form-control(name='jobTitle',data-master='jobTitle', data-errorholder='Job Title', required='required',data-placeholder='Job Title i.e.. Business Analyst',style="width: 100%")
+                              +PreselectBox(masterCollections.jobTitles,[profileData.jobTitle])
+                               //-input.form-control(type='text',required='required',data-errorholder='Job Title',placeholder='Job Title',name='jobTitle',value='#{profileData.jobTitle.name}')
+                          .form-group
+                            if  lInUser
+                              select.addTo.form-control(name='companyProfile', data-master='companyProfile',data-placeholder='Enter company name', required='required',data-errorholder='companyProfile',style='width:100%')
+                            else
+                              select.form-control(data-master='selectCompany',required='required',data-errorholder='Current Company',placeholder='Current Company',name='currentCompany', data-jVal=validation.currentCompany)
+                                option(value='#{profileData.company[0]._id}')= profileData.company[0].name
+                          .form-group
+                            if  !lInUser
+                              input.form-control.text-capitalize(type='text',required='required',data-errorholder='Location',placeholder='Location',name='location',data-jVal=validation.location, value='#{profileData.location}')
+                            else
+                              input.form-control.text-capitalize(type='text',disabled,required='required',data-errorholder='Location',placeholder='Location',name='location',data-jVal=validation.location, value='#{profileData.location}')
+                  .row
+                   .col-sm-12
+                     .media_full
+                       .form.personal_edit
+                         .form-group.hidden-xs
+                           .row
+                             .col-sm-12.text-right
+                                button.btn.btn-primary.btn-heading.margin0(type='submit') Submit    
+                                a.btn.btn-default.btn-heading(href='#{"/profile?editSection=personal&uid="+profileData.uid}') Reset
+                         .form-group.visible-xs.hidden-sm
+                           .row
+                             .col-xs-12
+                               button.btn.btn-primary.form-control.margin0(type='submit') Submit    
+                             .col-xs-12.filterMargin
+                               a.btn.btn-default.form-control(href='#{"/profile?editSection=personal&uid="+profileData.uid}') Reset
+  else
+    .row
+      .col-sm-12.col-md-12
+        .panel.panel-profile.panel-default
+          .panel-body
+            .media
+              if !publicProfile
+                .row
+                  .col-sm-12
+                    form.pull-right.edit(action="/profile" method="get" novalidate)
+                      input(type='hidden',name='editSection',value='personal')
+                      if isSuperUser
+                        input(type='hidden',name='uid',value='#{profileData.uid}')
+                      button.btn.btn-link.edit(title="Edit")
+                        span.fa.fa-pencil
+              .row
+                .col-lg-3.col-sm-4
+                  .media-left
+                    a(href='#')                  
+                      if profileData.pictureUrl
+                        if profileData.functionalRole._id == 2 ||profileData.functionalRole._id == 6
+                          img.media-object.border(src=profileData.pictureUrl)
+                        else
+                          img.media-object.border.border-secondary(src=profileData.pictureUrl)
+                      else
+                        img.media-object(src="#{cdn('/profile.jpg')}")
+                .col-lg-9.col-sm-8
+                  .media-body
+                    h1.media-heading.fullName.inline-block #{profileData.name} #{profileData.lastName},&nbsp;
+                    strong
+                        span.media-heading.text-capitalize #{profileData.jobTitle.name} 
+                        =" "
+                        span at  
+                        =" "
+                      strong
+                        a(href='/company/#{profileData.company[0].uid}') #{profileData.company[0].name}       
+                    h4.media-heading.text-capitalize #{profileData.location}
+
+  if isDesktop
+    if profileData.functionalRole && profileData.functionalRole._id == 2 || profileData.functionalRole && profileData.functionalRole._id == 6
+      ul.nav.nav-tabs.marginT_30.editable.functional_consultant.functional_profile.navUi(role='tablist')
+        li.active.text-center.col-sm-3(role='presentation')
+          a(href='#about', aria-controls='about', role='tab', data-toggle='tab') About
+        li.text-center.plus.col-sm-3(role='presentation')
+          a(href='#expertise', aria-controls='expertise', role='tab', data-toggle='tab') Expertise
+          if !publicProfile
+           img.plus2.edit_plus.absolute(src="#{cdn('/plus.png')}" alt="Connect to products" title="Connect to products")
+        li.text-center.plus.col-sm-3(role='presentation')
+          a(href='#clients', aria-controls='clients', role='tab', data-toggle='tab') Clients
+          if !publicProfile
+           img.plus3.edit_plus.absolute(src="#{cdn('/plus.png')}" alt="Connect to companies" title="Connect to companies")
+        li.text-center.col-sm-3(role='presentation')
+          a(href='#colleagues', aria-controls='colleagues', role='tab', data-toggle='tab') Colleagues
+          if !publicProfile
+           img.plus4.edit_plus.absolute(src="#{cdn('/plus.png')}" alt="Connect to people" title="Connect to people")
+        //-li.text-center(role='presentation')
+          a(href='#Knowledge', aria-controls='Knowledge', role='tab', data-toggle='tab') Knowledge
+      .tab-content.tabUi
+          #about.tab-pane.active.media(role='tabpanel')
+            .panel.panel-description.panel-default
+              .panel-body
+                if editSection=='personalAbout'
+                  .row
+                    .col-sm-12
+                      form.pull-right.edit(action="" method="post")
+                        a.cancle.closeBtn.pull-right(href='/profile',title='Close')
+                          span.fa.fa-times
+                  form.media(method='post',action=isSuperUser?'#{"/profile/edit?uid="+profileData.uid}':'/profile/edit' enctype='multipart/form-data' class='edit')
+                    .form-group
+                      if  !lInUser
+                        textarea.form-control.txtArea_notes(placeholder="Note to CSquire Community" name='noteToCommunity',style='max-width:100%; height:130px')= profileData.noteToCommunity
+                      else
+                        textarea.form-control.txtArea_notes(placeholder="Note to CSquire Community" name='noteToCommunity',disabled,style='max-width:100%; height:130px')= profileData.noteToCommunity
+                    .form-group
+                           if profileData.functionalRole._id == 2 ||profileData.functionalRole._id == 6
+                             h4.media-heading.text-left Vendor Services
+                             input(type="hidden" name="vendorServices" value="0")
+                             select.form-control(name='vendorServices',data-taggable='true', data-master='vendorService', multiple,required='required',data-errorholder='Vendor Services',style='width:100%')
+                               +PreselectBox(masterCollections.vendorServices,profileData.vendorServices)
+                           else if profileData.functionalRole._id == 3
+                             h4.media-heading.text-left Enterprise Software Applications
+                             input(type="hidden" name="enterpriseSoftwares" value="0")
+                             select.form-control(name='enterpriseSoftwares',data-taggable='true', data-master='enterpriseSoftware', data-placeholder='QuickBooks, Powerplan, SAP, etc.', multiple,required='required',data-jVal=validation.location, data-errorholder='Software suites',style='width:100%')
+                               +PreselectBox(masterCollections.enterpriseSoftware,profileData.enterpriseSoftwares)
+                           else if profileData.functionalRole._id != 2 || profileData.functionalRole._id != 3 ||profileData.functionalRole._id != 6         
+                             h4.media-heading.text-left Software Language
+                             input(type="hidden" name="developmentSoftwares" value="0")
+                             select.form-control(name='developmentSoftwares',data-taggable='true', data-master='developmentSoftware',data-placeholder='Please Select a Software Language',  multiple='multiple',style='width:100%')
+                               +PreselectBox(masterCollections.softwareDevs,profileData.developmentSoftwares)
+                         .form-group
+                           h4.media-heading.text-left Business Process Experience
+                           input(type="hidden" name="businessProcessAreas" value="0")
+                           select.form-control(name='businessProcessAreas',data-taggable='true',data-master='businessProcessArea',data-placeholder='Please Select a Business Process Area',  multiple='multiple',style='width:100%')
+                             +PreselectBox(masterCollections.businessProcess, profileData.businessProcessAreas)
+                    .form-group.hidden-xs
+                      .row
+                        .col-sm-12.text-right
+                          button.btn.btn-primary.form-control.btn-heading(type='submit') Submit
+                          a.btn.btn-default.form-control.btn-heading(href='#{"/profile?editSection=personalAbout&uid="+profileData.uid}') Reset
+                    .form-group.visible-xs.hidden-sm
+                      .row
+                        .col-xs-12
+                          button.btn.btn-primary.form-control.margin0(type='submit') Submit    
+                        .col-xs-12.filterMargin
+                          a.btn.btn-default.form-control.margin0(href='#{"/profile?editSection=personalAbout&uid="+profileData.uid}') Reset
+                else
+                  if !publicProfile
+                    .row
+                      .col-sm-12
+                        form.pull-right.edit(action="" method="get" novalidate)
+                          input(type='hidden',name='editSection',value='personalAbout')
+                          if isSuperUser
+                            input(type='hidden',name='uid',value='#{profileData.uid}')
+                          button.btn.btn-link.edit(title="Edit")
+                            span.fa.fa-pencil
+                  .row
+                    .col-lg-12.col-xs-12                                    
+                      .quoted-text.expand-collapse
+                        if profileData.noteToCommunity
+                          pre #{profileData.noteToCommunity}
+                          button.btn.btn-link.block.seemoreQtext more
+                  .row.text-left
+                        if user
+                          if profileData.vendorServices && profileData.vendorServices.length > 0
+                            .col-sm-12
+                              h4.media-heading.text-left Vendor Services
+                              
+                              each val, index in profileData.vendorServices
+                                   if index == profileData.vendorServices.length-1
+                                    if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                                        p.btn.btn-link.bgnone.seemoreList more
+                                   else
+                                      if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                          else if profileData.enterpriseSoftwares && profileData.enterpriseSoftwares.length > 0
+                            .col-sm-12
+                              h4.media-heading.text-left Enterprise Software Applications
+                              
+                              each val, index in profileData.enterpriseSoftwares
+                                   if index == profileData.enterpriseSoftwares.length-1
+                                    if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                                        p.btn.btn-link.bgnone.seemoreList more
+                                   else
+                                      if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                          else if profileData.developmentSoftwares && profileData.developmentSoftwares.length > 0
+                            .col-sm-12
+                              h4.media-heading.text-left Software Language
+                              
+                              each val, index in profileData.developmentSoftwares
+                                   if index == profileData.developmentSoftwares.length-1
+                                    if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                                        p.btn.btn-link.bgnone.seemoreList more
+                                   else
+                                      if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                        if user            
+                          if profileData.businessProcessAreas && profileData.businessProcessAreas.length > 0           
+                            .col-sm-12
+                              h4.media-heading.text-left Business Process Experience
+                              
+                              each val, index in profileData.businessProcessAreas
+                                   if index == profileData.businessProcessAreas.length-1
+                                    if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                                        p.btn.btn-link.bgnone.seemoreList more
+                                   else
+                                      if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                        if user            
+                          if profileData.tags &&  profileData.tags.length >0          
+                            .col-sm-12
+                              h4.media-heading.text-left Tags
+                              
+                              each val, index in profileData.tags
+                                   if index == profileData.tags.length-1
+                                    if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                                        p.btn.btn-link.bgnone.seemoreList more
+                                   else
+                                      if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name 
+          #expertise.tab-pane(role='tabpanel')
+            .panel-default.panel
+              .panel-body
+                #products
+                  div.addProduct
+                    h4.text-uppercase.text-left.add-company add Expertise 
+                    +addProduct("expertise",'','','','','specialisation','expertise')
+                if user
+                  if expertise && expertise.length
+                    +products(expertise,'expertise')
+                    .row.seeAllProfile.margin0
+                      .col-xs-12.text-center
+                        if !publicProfile && expertise.length > 2
+                          div.see-all-align
+                            a(href=isSuperUser?'#{"/search/connections/expertise?&connectionFrom=people"+specializationString+"&uid="+profileData.uid}':'/search/connections/expertise?'+specializationString+'&connectionFrom=people') See all
+                              i.fa.fa-angle-double-right.fa_Marginleft
+                        else if expertise.length > 2
+                         div.see-all-align
+                            a(href='#{"/search/connections/expertise?&connectionFrom=people"+specializationString+"&uid="+profileData.uid}') See all
+                              i.fa.fa-angle-double-right.fa_Marginleft
+                  else
+                    if !publicProfile
+                      span.noClients Please add expertise to profile 
+                    else
+                      span.noClients There are no expertise
+                else
+                  row.seeAllProfile
+                    .col-xs-12.text-center
+                      a(href="/register") Sign up to CSquire
+          #clients.tab-pane(role='tabpanel')
+            .panel-default.panel
+              .panel-body
+                div.addClients
+                  h4.text-uppercase.text-left.add-company add Client
+                  +addCompany("clients",'','','pastClient','client')
+                    .form-group.visible-xs.hidden-sm
+                      .row 
+                        div.col-xs-12
+                          button.btn.btn-primary.margin0#addCompanyBtn(type='submit') Save
+                        div.col-xs-12.filterMargin
+                          button.btn.btn-default.margin0#companyCancel(type="button") Reset                   
+                div
+                  if user                    
+                    if pastClient && pastClient.length                      
+                      +company(pastClient,'clients')
+                      .row.seeAllProfile.margin0
+                        .col-xs-12.text-center                          
+                          if !publicProfile && pastClient.length > 2
+                            div.see-all-align
+                              a(href=isSuperUser?'#{"/search/connections/client?&connectionFrom=people"+pastClientString+"&uid="+profileData.uid}':'/search/connections/client?'+pastClientString+'&connectionFrom=people') See all
+                                i.fa.fa-angle-double-right.fa_Marginleft                              
+                          else if pastClient.length > 2
+                            div.see-all-align
+                              a(href='#{"/search/connections/client?&connectionFrom=people" + pastClientString + "&uid=" + profileData.uid}') See all
+                                i.fa.fa-angle-double-right.fa_Marginleft
+                    else
+                      if !publicProfile
+                        span.noClients Please add clients to profile
+                      else
+                        span.noClients There are no clients
+                  else
+                    row.seeAllProfile
+                      .col-xs-12.text-center
+                        a(href="/register") Sign up to CSquire
+          #colleagues.tab-pane(role='tabpanel')
+            .panel-default.panel
+              .panel-body
+               div.addPerson
+                  h4.text-uppercase.text-left.add-company add Colleague
+                  select#personSelect.addTo.form-control(name='personalProfile', data-master='personalProfile',data-placeholder='Enter person name',required='required',data-errorholder='personalProfile',style='width:100%')
+                  input(type='hidden',name='type',value='colleague')
+                  input(type='hidden',name='header',value='Colleague')
+                  span.comment
+                #personProfile
+                   if user
+                    if collegues.length
+                      +personProfile(collegues,'colleagues')
+                      .row.seeAllProfile.margin0
+                        .col-xs-12.text-center
+                          if !publicProfile && collegues.length > 2
+                            div.see-all-align
+                              a(href=isSuperUser?'#{"/search/connections/colleagues?connectionFrom=people"+colleguesString+"&uid="+profileData.uid}':'/search/connections/colleagues?'+'connectionFrom=people'+colleguesString+'&uid='+profileData.uid) See all
+                                i.fa.fa-angle-double-right.fa_Marginleft
+                          else if collegues.length > 2
+                            div.see-all-align
+                              a(href='#{"/search/connections/colleagues?connectionFrom=people" + colleguesString + "&uid="+profileData.uid}') See all
+                                i.fa.fa-angle-double-right.fa_Marginleft
+                    else
+                      if !publicProfile
+                        span.noClients Please add collegues to profile            
+                      else
+                        span.noClients There are no collegues
+                   else
+                     row.seeAllProfile
+                       .col-xs-12.text-center
+                         a(href="/register") Sign up to CSquire 
+          //-#Knowledge.tab-pane(role='tabpanel')
+            .panel-default.panel
+              .panel-body
+                div Knowledge base
+    else if profileData.functionalRole && profileData.functionalRole._id == 7
+      ul.nav.nav-tabs.marginT_30.editable.functional_consultant.functional_profile.navUi(role='tablist')
+        li.active.text-center.col-sm-3(role='presentation')
+          a(href='#about', aria-controls='about', role='tab', data-toggle='tab') About
+        li.text-center.plus.col-sm-3(role='presentation')
+          a(href='#products', aria-controls='expertise', role='tab', data-toggle='tab') Products
+          if !publicProfile
+           img.plus2.edit_plus.absolute(src="#{cdn('/plus.png')}" alt="Connect to products" title="Connect to products")
+        li.text-center.col-sm-3(role='presentation')
+          a(href='#people', aria-controls='colleagues', role='tab', data-toggle='tab') People
+          if !publicProfile
+           img.plus4.edit_plus.absolute(src="#{cdn('/plus.png')}" alt="Connect to people" title="Connect to people")
+        li.text-center.plus.col-sm-3(role='presentation')
+          a(href='#companyProfile', aria-controls='clients', role='tab', data-toggle='tab') Company
+          if !publicProfile
+           img.plus3.edit_plus.absolute(src="#{cdn('/plus.png')}" alt="Connect to companies" title="Connect to companies")
+        //-li.text-center(role='presentation')
+          a(href='#Knowledge', aria-controls='Knowledge', role='tab', data-toggle='tab') Knowledge
+      .tab-content.tabUi
+          #about.tab-pane.active.media(role='tabpanel')
+            .panel.panel-description.panel-default
+              .panel-body
+                if editSection=='personalAbout'
+                  .row
+                    .col-sm-12
+                      form.pull-right.edit(action="" method="post")
+                        a.cancle.closeBtn.pull-right(href='/profile',title='Close')
+                          span.fa.fa-times
+                  form.media(method='post',action=isSuperUser?'#{"/profile/edit?uid="+profileData.uid}':'/profile/edit' enctype='multipart/form-data' class='edit')
+                    .form-group
+                      if  !lInUser
+                        textarea.form-control.txtArea_notes(placeholder="Note to CSquire Community" name='noteToCommunity',style='max-width:100%; height:130px')= profileData.noteToCommunity
+                      else
+                        textarea.form-control.txtArea_notes(placeholder="Note to CSquire Community" name='noteToCommunity',disabled,style='max-width:100%; height:130px')= profileData.noteToCommunity
+                    .form-group
+                           if profileData.functionalRole._id == 2 ||profileData.functionalRole._id == 6
+                             h4.media-heading.text-left Vendor Services
+                             input(type="hidden" name="vendorServices" value="0")
+                             select.form-control(name='vendorServices',data-taggable='true', data-master='vendorService', multiple,required='required',data-errorholder='Vendor Services',style='width:100%')
+                               +PreselectBox(masterCollections.vendorServices,profileData.vendorServices)
+                           else if profileData.functionalRole._id == 3
+                             h4.media-heading.text-left Enterprise Software Applications
+                             input(type="hidden" name="enterpriseSoftwares" value="0")
+                             select.form-control(name='enterpriseSoftwares',data-taggable='true', data-master='enterpriseSoftware', data-placeholder='QuickBooks, Powerplan, SAP, etc.', multiple,required='required',data-jVal=validation.location, data-errorholder='Software suites',style='width:100%')
+                               +PreselectBox(masterCollections.enterpriseSoftware,profileData.enterpriseSoftwares)
+                           else if profileData.functionalRole._id != 2 || profileData.functionalRole._id != 3 ||profileData.functionalRole._id != 6         
+                             h4.media-heading.text-left Software Language
+                             input(type="hidden" name="developmentSoftwares" value="0")
+                             select.form-control(name='developmentSoftwares',data-taggable='true', data-master='developmentSoftware',data-placeholder='Please Select a Software Language',  multiple='multiple',style='width:100%')
+                               +PreselectBox(masterCollections.softwareDevs,profileData.developmentSoftwares)
+                         .form-group
+                           h4.media-heading.text-left Business Process Experience
+                           input(type="hidden" name="businessProcessAreas" value="0")
+                           select.form-control(name='businessProcessAreas',data-taggable='true',data-master='businessProcessArea',data-placeholder='Please Select a Business Process Area',  multiple='multiple',style='width:100%')
+                             +PreselectBox(masterCollections.businessProcess, profileData.businessProcessAreas)
+                    .form-group.hidden-xs
+                      .row
+                        .col-sm-12.text-right
+                          button.btn.btn-primary.form-control.btn-heading(type='submit') Submit
+                          a.btn.btn-default.form-control.btn-heading(href='#{"/profile?editSection=personalAbout&uid="+profileData.uid}') Reset
+                    .form-group.visible-xs.hidden-sm
+                      .row
+                        .col-xs-12
+                          button.btn.btn-primary.form-control.margin0(type='submit') Submit    
+                        .col-xs-12.filterMargin
+                          a.btn.btn-default.form-control.margin0(href='#{"/profile?editSection=personalAbout&uid="+profileData.uid}') Reset
+                else
+                  if !publicProfile
+                    .row
+                      .col-sm-12
+                        form.pull-right.edit(action="" method="get" novalidate)
+                          input(type='hidden',name='editSection',value='personalAbout')
+                          if isSuperUser
+                            input(type='hidden',name='uid',value='#{profileData.uid}')
+                          button.btn.btn-link.edit(title="Edit")
+                            span.fa.fa-pencil
+                  .row
+                    .col-lg-12.col-xs-12                                    
+                      .quoted-text.expand-collapse
+                        if profileData.noteToCommunity
+                          pre #{profileData.noteToCommunity}
+                          button.btn.btn-link.block.seemoreQtext more
+                  .row.text-left
+                        if user
+                          if profileData.vendorServices && profileData.vendorServices.length >0
+                            .col-sm-12
+                              h4.media-heading.text-left Vendor Services
+                              
+                              each val, index in profileData.vendorServices
+                                   if index == profileData.vendorServices.length-1
+                                    if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                                        p.btn.btn-link.bgnone.seemoreList more
+                                   else
+                                      if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                          else if profileData.enterpriseSoftwares && profileData.enterpriseSoftwares.length > 0 
+                            .col-sm-12
+                              h4.media-heading.text-left Enterprise Software Applications
+                              
+                              each val, index in profileData.enterpriseSoftwares
+                                   if index == profileData.enterpriseSoftwares.length-1
+                                    if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                                        p.btn.btn-link.bgnone.seemoreList more
+                                   else
+                                      if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                          else if profileData.developmentSoftwares && profileData.developmentSoftwares.length > 0
+                            .col-sm-12
+                              h4.media-heading.text-left Software Language
+                              if profileData.developmentSoftwares && profileData.developmentSoftwares.length
+                                  each val, index in profileData.developmentSoftwares
+                                       if index == profileData.developmentSoftwares.length-1
+                                        if index+1 <= 5
+                                            p= val.name
+                                          else
+                                            p.hide= val.name
+                                            p.btn.btn-link.bgnone.seemoreList more
+                                       else
+                                          if index+1 <= 5
+                                            p= val.name
+                                          else
+                                            p.hide= val.name
+                        if user            
+                          if profileData.businessProcessAreas && profileData.businessProcessAreas.length >0           
+                            .col-sm-12
+                              h4.media-heading.text-left Business Process Experience
+                              
+                              each val, index in profileData.businessProcessAreas
+                                   if index == profileData.businessProcessAreas.length-1
+                                    if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                                        p.btn.btn-link.bgnone.seemoreList more
+                                   else
+                                      if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                        if user            
+                          if profileData.tags &&  profileData.tags.length > 0          
+                            .col-sm-12
+                              h4.media-heading.text-left Tags
+                              
+                              each val, index in profileData.tags
+                                   if index == profileData.tags.length-1
+                                    if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                                        p.btn.btn-link.bgnone.seemoreList more
+                                   else
+                                      if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name 
+          #products.tab-pane(role='tabpanel')
+            .panel-default.panel
+              .panel-body
+                #products
+                  div.addProduct
+                    h4.text-uppercase.text-left.add-company add Products 
+                    +addProduct("products",'','','','','products','products')
+                if user
+                  if products && products.length
+                    +products(products,'products')
+                    .row.seeAllProfile.margin0
+                      .col-xs-12.text-center
+                        if !publicProfile && products.length > 2
+                          div.see-all-align
+                            a(href=isSuperUser?'#{"/search/connections/expertise?&connectionFrom=people"+specializationString+"&uid="+profileData.uid}':'/search/connections/expertise?'+specializationString+'&connectionFrom=people') See all
+                              i.fa.fa-angle-double-right.fa_Marginleft
+                        else if products.length > 2
+                         div.see-all-align
+                            a(href='#{"/search/connections/expertise?&connectionFrom=people"+specializationString+"&uid="+profileData.uid}') See all
+                              i.fa.fa-angle-double-right.fa_Marginleft
+                  else
+                    if !publicProfile
+                      span.noClients Please add products to profile 
+                    else
+                      span.noClients There are no products
+                else
+                  row.seeAllProfile
+                    .col-xs-12.text-center
+                      a(href="/register") Sign up to CSquire
+          #people.tab-pane(role='tabpanel')
+            .panel-default.panel
+              .panel-body
+               div.addPerson
+                  h4.text-uppercase.text-left.add-company Add People
+                  select#personSelect.addTo.form-control(name='personalProfile', data-master='personalProfile',data-placeholder='Enter person name',required='required',data-errorholder='personalProfile',style='width:100%')
+                  input(type='hidden',name='type',value='colleague')
+                  input(type='hidden',name='header',value='Colleague')
+                  span.comment
+                #personProfile
+                   if user
+                    if profiles.length
+                      +personProfile(profiles,'people')
+                      .row.seeAllProfile.margin0
+                        .col-xs-12.text-center
+                          if !publicProfile && profiles.length > 2
+                            div.see-all-align
+                              a(href=isSuperUser?'#{"/search/connections/colleagues?connectionFrom=people"+colleguesString+"&uid="+profileData.uid}':'/search/connections/colleagues?'+'connectionFrom=people'+colleguesString+'&uid='+profileData.uid) See all
+                                i.fa.fa-angle-double-right.fa_Marginleft
+                          else if profiles.length > 2
+                            div.see-all-align
+                              a(href='#{"/search/connections/colleagues?connectionFrom=people" + colleguesString + "&uid="+profileData.uid}') See all
+                                i.fa.fa-angle-double-right.fa_Marginleft
+                    else
+                      if !publicProfile
+                        span.noClients Please add people to profile            
+                      else
+                        span.noClients There are no people
+                   else
+                     row.seeAllProfile
+                       .col-xs-12.text-center
+                         a(href="/register") Sign up to CSquire 
+          #companyProfile.tab-pane(role='tabpanel')
+            .panel-default.panel
+              .panel-body
+                div.addClients
+                  h4.text-uppercase.text-left.add-company Add Company
+                  +addCompany("companyProfile",'','','companies','companies')
+                    .form-group.visible-xs.hidden-sm
+                      .row 
+                        div.col-xs-12
+                          button.btn.btn-primary.margin0#addCompanyBtn(type='submit') Save
+                        div.col-xs-12.filterMargin
+                          button.btn.btn-default.margin0#companyCancel(type="button") Reset                   
+                div
+                  if user                    
+                    if companies && companies.length                      
+                      +company(companies,'companyProfile')
+                      .row.seeAllProfile.margin0
+                        .col-xs-12.text-center                          
+                          if !publicProfile && companies.length > 2
+                            div.see-all-align
+                              a(href=isSuperUser?'#{"/search/connections/client?&connectionFrom=people"+pastClientString+"&uid="+profileData.uid}':'/search/connections/client?'+pastClientString+'&connectionFrom=people') See all
+                                i.fa.fa-angle-double-right.fa_Marginleft                              
+                          else if companies.length > 2
+                            div.see-all-align
+                              a(href='#{"/search/connections/client?&connectionFrom=people" + pastClientString + "&uid=" + profileData.uid}') See all
+                                i.fa.fa-angle-double-right.fa_Marginleft
+                    else
+                      if !publicProfile
+                        span.noClients Please add company to profile
+                      else
+                        span.noClients There are no company
+                  else
+                    row.seeAllProfile
+                      .col-xs-12.text-center
+                        a(href="/register") Sign up to CSquire
+          //-#Knowledge.tab-pane(role='tabpanel')
+            .panel-default.panel
+              .panel-body
+                div Knowledge base
+    else
+      ul.nav.nav-tabs.marginT_30.editable.functional_executive.functional_profile.functional_consultant.navUi(role='tablist')
+        li.active.text-center.col-sm-3(role='presentation')
+          a(href='#about', aria-controls='about', role='tab', data-toggle='tab') About
+        li.text-center.col-sm-3(role='presentation')
+          a(href='#productsUsed', aria-controls='productsUsed', role='tab', data-toggle='tab') Products Used
+          if !publicProfile
+            img.plus2.edit_plus.absolute(src="#{cdn('/plus.png')}" alt="Connect to products" title="Connect to products")
+        li.text-center.col-sm-3(role='presentation')
+          a(href='#service', aria-controls='service', role='tab', data-toggle='tab') Service Partners
+          if !publicProfile
+            img.plus3.edit_plus.absolute(src="#{cdn('/plus.png')}" alt="Connect to companies" title="Connect to companies")
+        li.text-center.col-sm-3(role='presentation')
+          a(href='#technologyPartners', aria-controls='technologyPartners', role='tab', data-toggle='tab') Technology Partners
+          if !publicProfile
+            img.plus3.edit_plus.absolute(src="#{cdn('/plus.png')}" alt="Connect to companies" title="Connect to companies")
+        //-li.text-center(role='presentation')
+          a(href='#knowledge', aria-controls='knowledge', role='tab', data-toggle='tab') Knowledge
+      .tab-content.tabUi
+          #about.tab-pane.active.media(role='tabpanel')
+            .panel.panel-description.panel-default
+              .panel-body
+                if editSection=='personalAbout'
+                  .row
+                    .col-sm-12
+                      form.pull-right.edit(action="" method="post")
+                        a.cancle.pull-right.closeBtn(href='/profile',title='Close')
+                          span.fa.fa-times                                   
+                  form.media(method='post',action=isSuperUser?'#{"/profile/edit?uid="+profileData.uid}':'/profile/edit' enctype='multipart/form-data' class='edit')
+                      .form-group
+                            if  !lInUser
+                              textarea.txtArea_notes.form-control(placeholder="Note to CSquire Community" name='noteToCommunity',style='max-width:100%;')= profileData.noteToCommunity
+                            else
+                              textarea.txtArea_notes.form-control(placeholder="Note to CSquire Community" name='noteToCommunity',disabled,style='max-width:100%;')= profileData.noteToCommunity
+                      .form-group
+                           if profileData.functionalRole._id == 2 ||profileData.functionalRole._id == 6
+                             h4.media-heading.text-left Vendor Services
+                             input(type="hidden" name="vendorServices" value="0")
+                             select.form-control(name='vendorServices',data-taggable='true', data-master='vendorService', multiple,required='required',data-errorholder='Vendor Services',style='width:100%')
+                               +PreselectBox(masterCollections.vendorServices,profileData.vendorServices)
+                           else if profileData.functionalRole._id == 3
+                             h4.media-heading.text-left Enterprise Software Applications
+                             input(type="hidden" name="enterpriseSoftwares" value="0")
+                             select.form-control(name='enterpriseSoftwares',data-taggable='true', data-master='enterpriseSoftware', data-placeholder='QuickBooks, Powerplan, SAP, etc.', multiple,required='required',data-jVal=validation.location, data-errorholder='Software suites',style='width:100%')
+                               +PreselectBox(masterCollections.enterpriseSoftware,profileData.enterpriseSoftwares)
+                           else if profileData.functionalRole._id != 2 || profileData.functionalRole._id != 3 ||profileData.functionalRole._id != 6         
+                             h4.media-heading.text-left Software Language
+                             input(type="hidden" name="developmentSoftwares" value="0")
+                             select.form-control(name='developmentSoftwares',data-taggable='true', data-master='developmentSoftware',data-placeholder='Please Select a Software Language',  multiple='multiple',style='width:100%')
+                               +PreselectBox(masterCollections.softwareDevs,profileData.developmentSoftwares)
+                         .form-group
+                           h4.media-heading.text-left Business Process Experience
+                           input(type="hidden" name="businessProcessAreas" value="0")
+                           select.form-control(name='businessProcessAreas',data-taggable='true',data-master='businessProcessArea',data-placeholder='Please Select a Business Process Area',  multiple='multiple',style='width:100%')
+                             +PreselectBox(masterCollections.businessProcess, profileData.businessProcessAreas)
+                          .form-group.hidden-xs
+                            .row
+                              .col-sm-12.text-right
+                                button.btn.btn-primary.form-control.btn-heading(type='submit') Submit
+                                a.btn.btn-default.form-control.btn-heading(href='#{"/profile?editSection=personalAbout&uid="+profileData.uid}') Reset
+                          .form-group.visible-xs.hidden-sm
+                            .row
+                              .col-xs-12
+                                button.btn.btn-primary.form-control.margin0(type='submit') Submit    
+                              .col-xs-12.filterMargin
+                                a.btn.btn-default.form-control.margin0(href='#{"/profile?editSection=personalAbout&uid="+profileData.uid}') Reset
+                else
+                  if !publicProfile
+                    .row
+                      .col-sm-12
+                        form.pull-right.edit(action="" method="get" novalidate)
+                          input(type='hidden',name='editSection',value='personalAbout')
+                          if isSuperUser
+                            input(type='hidden',name='uid',value='#{profileData.uid}')
+                          button.btn.btn-link.edit(title="Edit")
+                            span.fa.fa-pencil
+                  .row
+                    .col-lg-12.col-xs-12                                      
+                      .quoted-text.expand-collapse
+                        if profileData.noteToCommunity
+                          pre #{profileData.noteToCommunity}
+                          button.btn.btn-link.seemoreQtext.block more
+                  .row.text-left
+                        if user
+                          if profileData.vendorServices && profileData.vendorServices.length >0
+                            .col-sm-12
+                              h4.media-heading.text-left Vendor Services
+                              each val, index in profileData.vendorServices
+                                   if index == profileData.vendorServices.length-1
+                                    if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                                        p.btn.btn-link.bgnone.seemoreList more
+                                   else
+                                      if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                          else if profileData.enterpriseSoftwares && profileData.enterpriseSoftwares.length > 0
+                            .col-sm-12
+                              h4.media-heading.text-left Enterprise Software Applications
+                              
+                              each val, index in profileData.enterpriseSoftwares
+                                   if index == profileData.enterpriseSoftwares.length-1
+                                    if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                                        p.btn.btn-link.bgnone.seemoreList more
+                                   else
+                                      if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                          else if profileData.developmentSoftwares && profileData.developmentSoftwares.length > 0
+                            .col-sm-12
+                              h4.media-heading.text-left Software Language
+                              
+                              each val, index in profileData.developmentSoftwares
+                                   if index == profileData.developmentSoftwares.length-1
+                                    if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                                        p.btn.btn-link.bgnone.seemoreList more
+                                   else
+                                      if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                        if user            
+                          if profileData.businessProcessAreas && profileData.businessProcessAreas.length > 0           
+                            .col-sm-12
+                              h4.media-heading.text-left Business Process Experience
+                              
+                              each val, index in profileData.businessProcessAreas
+                                   if index == profileData.businessProcessAreas.length-1
+                                    if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                                        p.btn.btn-link.bgnone.seemoreList more
+                                   else
+                                      if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                        if user            
+                          if profileData.tags && profileData.tags.length >0          
+                            .col-sm-12
+                              h4.media-heading.text-left Tags
+                              
+                              each val, index in profileData.tags
+                                   if index == profileData.tags.length-1
+                                    if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                                        p.btn.btn-link.bgnone.seemoreList more
+                                   else
+                                      if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name 
+
+          #productsUsed.tab-pane(role='tabpanel')
+            .panel.panel-description.panel-default
+              .panel-body
+                div.addProduct
+                    h4.text-uppercase.text-left.add-company add Product Used
+                    +addProduct("productsUsed",'','','','','productsUsed')
+                div
+                  if user
+                    if productsUsed && productsUsed.length
+                      +products(productsUsed)
+                      .row.seeAllProfile.margin0
+                        .col-xs-12.text-center
+                          if !publicProfile && productsUsed.length > 2
+                             div.see-all-align
+                               a(href=isSuperUser?'#{"/search/connections/productsUsed?&connectionFrom=people"+productsUsedString+"&uid="+profileData.uid}':'/search/connections/productsUsed?'+productsUsedString+'&connectionFrom=people') See all
+                                 i.fa.fa-angle-double-right.fa_Marginleft
+                          else if productsUsed.length > 2
+                             div.see-all-align
+                               a(href='#{"/search/connections/productsUsed?&connectionFrom=people"+ productsUsedString +"&uid="+profileData.uid}') See all
+                                 i.fa.fa-angle-double-right.fa_Marginleft
+                    else
+                        if !publicProfile
+                          span.noClients Please add products to profile
+                        else
+                          span.noClients There are no products
+                  else
+                    row.seeAllProfile
+                      .col-xs-12.text-center
+                        a(href="/register") Sign up to CSquire 
+          #service.tab-pane(role='tabpanel')
+            .panel-default.panel
+              .panel-body
+                div.addClients
+                  h4.text-uppercase.text-left.add-company add Service Partner
+                  +addCompany("service",'','','servicePartner','service partner','service partner')
+                    .form-group.hidden-sm.visible-xs
+                      .row 
+                        div.col-xs-12
+                            button.btn.btn-primary.margin0#addCompanyBtn(type='submit') Save                            
+                        div.col-xs-12.filterMargin
+                            button.btn.btn-default.margin0#companyCancel(type="button") Reset
+                div
+                  if user
+                     if servicePartner && servicePartner.length
+                       +company(servicePartner)
+                       .row.seeAllProfile.margin0
+                         .col-xs-12.text-center
+                           if !publicProfile && servicePartner.length > 2
+                             div.see-all-align
+                               a(href=isSuperUser?'#{"/search/connections/servicePartners?connectionFrom=people"+servicePartnerString+"&uid="+profileData.uid}':'/search/connections/servicePartners?'+servicePartnerString+'&connectionFrom=people') See all
+                                 i.fa.fa-angle-double-right.fa_Marginleft                            
+                           else if servicePartner.length > 2
+                             div.see-all-align
+                               a(href='#{"/search/connections/servicePartners?connectionFrom=people"+servicePartnerString+"&uid="+profileData.uid}') See all
+                                 i.fa.fa-angle-double-right.fa_Marginleft
+                     else
+                      if !publicProfile
+                        span.noClients Please add service partners to profile
+                      else
+                        span.noClients There are no service partners
+                  else
+                    row.seeAllProfile
+                      .col-xs-12.text-center
+                        a(href="/register") Sign up to CSquire 
+          #technologyPartners.tab-pane(role='tabpanel')
+            .panel-default.panel
+              .panel-body
+                div.addClients
+                  h4.text-uppercase.text-left.add-company add Technology Partner
+                  +addCompany("technologyPartners",'','','technologyPartner','technology partner')
+                div
+                  if user
+                     if technologyPartner && technologyPartner.length
+                        +company(technologyPartner)
+                        .row.seeAllProfile.margin0
+                          .col-xs-12.text-center
+                            if !publicProfile && technologyPartner.length > 2
+                              div.see-all-align
+                                a(href=isSuperUser?'#{"/search/connections/technologyPartners?&connectionFrom=people"+technologyPartnerString+"&uid="+profileData.uid}':'/search/connections/technologyPartners?'+technologyPartnerString+'&connectionFrom=people') See all
+                                  i.fa.fa-angle-double-right.fa_Marginleft
+                            else if technologyPartner.length > 2
+                              div.see-all-align
+                                a(href='#{"/search/connections/technologyPartners?&connectionFrom=people"+technologyPartnerString+"&uid="+profileData.uid}') See all
+                                  i.fa.fa-angle-double-right.fa_Marginleft                      
+                     else
+                       if !publicProfile
+                          span.noClients Please add technology partners to profile
+                       else
+                         span.noClients There are no technology partners
+                  else
+                    row.seeAllProfile
+                      .col-xs-12.text-center
+                        a(href="/register") Sign up to CSquire 
+          //-#knowledge.tab-pane(role='tabpanel')
+            .panel-default.panel
+              .panel-body
+                div Knowledge
+  else
+    if profileData.functionalRole._id == 2 || profileData.functionalRole._id == 6
+      #accordion.panel-groupdiv.hidden-lg.hidden-md.hidden-sm.visible-xs(role='tablist', aria-multiselectable='true')
+        .panel.panel-default
+          #about.panel-heading(role='tab')
+            h4.panel-title
+              a.block.text-uppercase.text-center(role='button', data-toggle='collapse', data-parent='#accordion', href='#collapseOne', aria-expanded='true', aria-controls='collapseOne')
+                | About
+          #collapseOne.panel-collapse.collapse.in(role='tabpanel', aria-labelledby='about')
+            .panel-body
+                if editSection=='personalAbout'
+                  .row
+                    .col-sm-12
+                      form.pull-right.edit(action="" method="post")
+                        a.cancle.closeBtn.pull-right(href='/profile',title='Close')
+                          span.fa.fa-times
+                  form.media(method='post',action=isSuperUser?'#{"/profile/edit?uid="+profileData.uid}':'/profile/edit' enctype='multipart/form-data' class='edit')
+                    .form-group
+                      if  !lInUser
+                        textarea.form-control.txtArea_notes(placeholder="Note to CSquire Community" name='noteToCommunity',style='max-width:100%; height:130px')= profileData.noteToCommunity
+                      else
+                        textarea.form-control.txtArea_notes(placeholder="Note to CSquire Community" name='noteToCommunity',disabled,style='max-width:100%; height:130px')= profileData.noteToCommunity
+                    .form-group
+                      .row
+                        .col-xs-12
+                          button.btn.btn-primary.form-control.margin0(type='submit') Submit    
+                        .col-xs-12.filterMargin
+                          a.btn.btn-default.form-control.margin0(href='#{"/profile?editSection=personalAbout&uid="+profileData.uid}') Reset
+                else
+                  if !publicProfile
+                    .row
+                      .col-sm-12
+                        form.pull-right.edit(action="" method="get" novalidate)
+                          input(type='hidden',name='editSection',value='personalAbout')
+                          if isSuperUser
+                            input(type='hidden',name='uid',value='#{profileData.uid}')
+                          button.btn.btn-link.edit(title="Edit")
+                            span.fa.fa-pencil
+                  .row
+                    .col-lg-12.col-xs-12                                    
+                      .quoted-text.expand-collapse
+                        if profileData.noteToCommunity
+                          pre #{profileData.noteToCommunity}
+                          button.btn.btn-link.block.seemoreQtext more
+                  .row.text-left
+                        if user
+                          if profileData.vendorServices && profileData.vendorServices.length > 0
+                            .col-sm-12
+                              h4.media-heading.text-left Vendor Services
+                              
+                              each val, index in profileData.vendorServices
+                                   if index == profileData.vendorServices.length-1
+                                    if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                                        p.btn.btn-link.bgnone.seemoreList more
+                                   else
+                                      if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                          else if profileData.enterpriseSoftwares && profileData.enterpriseSoftwares.length > 0
+                            .col-sm-12
+                              h4.media-heading.text-left Enterprise Software Applications
+                              
+                              each val, index in profileData.enterpriseSoftwares
+                                   if index == profileData.enterpriseSoftwares.length-1
+                                    if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                                        p.btn.btn-link.bgnone.seemoreList more
+                                   else
+                                      if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                          else if profileData.developmentSoftwares && profileData.developmentSoftwares.length > 0
+                            .col-sm-12
+                              h4.media-heading.text-left Software Language
+                              
+                              each val, index in profileData.developmentSoftwares
+                                   if index == profileData.developmentSoftwares.length-1
+                                    if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                                        p.btn.btn-link.bgnone.seemoreList more
+                                   else
+                                      if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                        if user            
+                          if profileData.businessProcessAreas && profileData.businessProcessAreas.length > 0           
+                            .col-sm-12
+                              h4.media-heading.text-left Business Process Experience
+                              
+                              each val, index in profileData.businessProcessAreas
+                                   if index == profileData.businessProcessAreas.length-1
+                                    if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                                        p.btn.btn-link.bgnone.seemoreList more
+                                   else
+                                      if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name 
+        .panel.panel-default
+          #expertise.panel-heading.relative(role='tab')
+            h4.panel-title
+              a.collapsed.block.text-uppercase.text-center(role='button', data-toggle='collapse', data-parent='#accordion', href='#collapseTwo', aria-expanded='false', aria-controls='collapseTwo')
+                | Expertise
+              if !publicProfile
+                img.plus2.edit_plus.absolute(src="#{cdn('/plus.png')}" alt="Connect to products" title="Connect to products")
+          #collapseTwo.panel-collapse.collapse(role='tabpanel', aria-labelledby='expertise')
+              .panel-body
+                #products
+                  div.addProduct
+                    h4.text-uppercase.text-left.add-company add Expertise 
+                    select.addTo.form-control(name='productprofiles', data-master='productProfile',  data-placeholder='Enter product name', required='required',data-errorholder='productProfile',style='width:100%;float:left;')
+                    input(type='hidden',name='type',value='specialisation')
+                    input(type='hidden',name='header',value='expertise')
+                    form#pstpro(action="/addProduct?tab=expertise",method="post" style="padding-top: 19px;")
+                      .form-group
+                        .row
+                          .col-lg-6.col-md-6.col-sm-6
+                            input#productName.form-control(type='text', placeholder='Product Name',name='name',required='required',data-errorholder='Product Name')
+                          .col-lg-6.col-md-6.col-sm-6
+                            input#latestVersion.form-control(type='text', placeholder='Latest Version',name='versionNumber',required='required',data-errorholder='Latest Version')
+                      .form-group
+                        .row
+                          .col-lg-6.col-md-6.col-sm-6
+                            input#users.form-control(type='text', placeholder='Users',name='userCount',data-errorholder='User Count')
+                      .form-group
+                        .row
+                          .col-lg-12.col-sm-12.col-md-12.col-xs-12
+                            textarea.txtArea_notes#aboutProduct.form-control(type='text',name='description', placeholder='About Product')
+                            div.clearfix
+                      .form-group
+                        .row
+                          div.col-xs-12
+                            button.btn.btn-primary.margin0.form-control#addProductBtn(type='submit') Save                         
+                          div.col-xs-12.filterMargin
+                            button.btn.btn-default.margin0.form-control#productCancel(type="button") Reset           
+                if user
+                  if expertise.length
+                    +products(expertise,'expertise')
+                    .row.seeAllProfile.margin0
+                      .col-xs-12.text-center
+                        if !publicProfile && expertise.length > 2
+                          div.see-all-align
+                            a(href=isSuperUser?'#{"/search/connections/expertise?&connectionFrom=people"+productsUsedString+"&uid="+profileData.uid}':'/search/connections/expertise?'+specializationString+'&connectionFrom=people') See all
+                              i.fa.fa-angle-double-right.fa_Marginleft
+                        else if expertise.length > 2
+                         div.see-all-align
+                           a(href='#{"/search/connections/expertise?&connectionFrom=people"+productsUsedString+"&uid="+profileData.uid}') See all
+                             i.fa.fa-angle-double-right.fa_Marginleft
+                  else
+                    if !publicProfile
+                      span.noClients Please add expertise to profile 
+                    else
+                      span.noClients There are no expertise
+                else
+                  row.seeAllProfile
+                    .col-xs-12.text-center
+                      a(href="/register") Sign up to CSquire
+        .panel.panel-default
+            #clients.panel-heading.relative(role='tab')
+              h4.panel-title
+                a.collapsed.block.text-uppercase.text-center(role='button', data-toggle='collapse', data-parent='#accordion', href='#collapseThree', aria-expanded='false', aria-controls='collapseThree')
+                  | Clients
+                if !publicProfile
+                  img.plus3.edit_plus.absolute(src="#{cdn('/plus.png')}" alt="Connect to companies" title="Connect to companies")
+            #collapseThree.panel-collapse.collapse(role='tabpanel', aria-labelledby='clients')
+              .panel-body
+                div.addClients
+                  h4.text-uppercase.text-left.add-company add Client
+                  select.addTo.form-control(name='compnayProfile', data-master='compnayProfile',data-placeholder='Enter company name', required='required',data-errorholder='compnayProfile',style='width:100%')
+                  input(type='hidden',name='type',value='pastClient')
+                  input(type='hidden',name='header',value='client')
+                  form#pstcomform(action="/addPastCompany?tab=clients",method="post" style="padding-top: 19px;")
+                    .form-group
+                      .row
+                        .col-lg-6.col-md-6.col-sm-6
+                          input.form-control#companyname(type='text',name='name' placeholder='Company Name',required='required',data-errorholder='Company Name')
+                        .col-lg-6.col-md-6.col-sm-6                  
+                          input.form-control#companyurl(type='text', name='companyWebsite',placeholder='Company Website',data-errorholder='Company Website',pattern='/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/')
+                    .form-group
+                      .row
+                        .col-lg-6.col-md-6.col-sm-6                  
+                          input.form-control#location(type='text', name='companyLocations', placeholder='Location (at least one)',data-errorholder='Location')
+                        .col-lg-6.col-md-6.col-sm-6
+                          .dropdown
+                            select#annualRevenue.sortSelectOnNum.form-control.select2(name='annualRevenue',data-placeholder='Annual Revenue',style="width: 100%",data-errorholder='Annual Revenue')
+                              +PreselectBox(revenues,[])
+                    .form-group              
+                      .row
+                        .col-lg-6.col-md-6.col-sm-6
+                          .dropdown
+                            select#headCount.sortSelectOnNum.form-control.select2(name='headCount', data-placeholder='Head Count',style="width: 100%",data-errorholder='Head Count')
+                              +PreselectBox(headcounts,[])
+                    .form-group 
+                      .row
+                        .col-lg-12.col-md-12.col-sm-12.col-xs-12
+                          textarea.txtArea_notes#desc.col-lg-12.col-md-12.col-sm-12.col-xs-12.form-control(name="description",placeholder="Company Short Description")
+                          div.clearfix
+                    .form-group
+                      .row 
+                        div.col-xs-12
+                          button.btn.btn-primary.margin0#addCompanyBtn(type='submit') Save
+                        div.col-xs-12.filterMargin
+                          button.btn.btn-default.margin0#companyCancel(type="button") Reset                   
+                div
+                  if user                    
+                    if pastClient && pastClient.length                      
+                      +company(pastClient,'clients')
+                      .row.seeAllProfile.margin0
+                        .col-xs-12.text-center                          
+                          if !publicProfile && profileData.connections.companies.length > 2
+                            div.see-all-align
+                              a(href=isSuperUser?'#{"/search/connections/client?&connectionFrom=people&uid="+profileData.uid+""pastClientString}':'/search/connections/client?'+pastClientString+'&connectionFrom=people') See all
+                                i.fa.fa-angle-double-right.fa_Marginleft                    
+                          else if profileData.connections.companies.length > 2
+                            div.see-all-align
+                              a(href='#{"/search/connections/client?&connectionFrom=people" + pastClientString + "&uid=" + profileData.uid}') See all
+                                i.fa.fa-angle-double-right.fa_Marginleft
+                    else
+                      if !publicProfile
+                        span.noClients Please add clients to profile
+                      else
+                        span.noClients There are no clients
+                  else
+                    row.seeAllProfile
+                      .col-xs-12.text-center
+                        a(href="/register") Sign up to CSquire
+        .panel.panel-default
+            #colleagues.panel-heading.relative(role='tab')
+              h4.panel-title
+                a.collapsed.block.text-uppercase.text-center(role='button', data-toggle='collapse', data-parent='#accordion', href='#collapseFour', aria-expanded='false', aria-controls='collapseThree')
+                  | Colleagues
+                if !publicProfile
+                  img.plus4.edit_plus.absolute(src="#{cdn('/plus.png')}" alt="Connect to people" title="Connect to people")
+            #collapseFour.panel-collapse.collapse(role='tabpanel', aria-labelledby='colleagues')
+              .panel-body
+               div.addPerson
+                  h4.text-uppercase.text-left.add-company add Colleague
+                  select#personSelect.addTo.form-control(name='personalProfile', data-master='personalProfile',data-placeholder='Enter person name',required='required',data-errorholder='personalProfile',style='width:100%')
+                  input(type='hidden',name='type',value='colleague')
+                  input(type='hidden',name='header',value='colleague')
+                #personProfile
+                   if user
+                    if collegues.length
+                      +personProfile(collegues,'colleagues')
+                      .row.seeAllProfile.margin0
+                        .col-xs-12.text-center
+                          if !publicProfile && collegues.length > 2
+                            div.see-all-align
+                              a(href=isSuperUser?'#{"/search/connections/colleagues?connectionFrom=people"+colleguesString+"&uid="+profileData.uid}':'/search/connections/colleagues?'+'connectionFrom=people'+colleguesString+'&uid='+profileData.uid) See all
+                                i.fa.fa-angle-double-right.fa_Marginleft
+                          else if collegues.length > 2
+                           div.see-all-align
+                             a(href='#{"/search/connections/colleagues?connectionFrom=people"+colleguesString+"&uid="+profileData.uid}') See all
+                               i.fa.fa-angle-double-right.fa_Marginleft
+                    else
+                      if !publicProfile
+                        span.noClients Please add collegues to profile            
+                      else
+                        span.noClients There are no collegues
+                   else
+                     row.seeAllProfile
+                       .col-xs-12.text-center
+                         a(href="/register") Sign up to CSquire
+        //-.panel.panel-default
+            #Knowledge.panel-heading(role='tab')
+              h4.panel-title.font-primary
+                a.collapsed.block(role='button', data-toggle='collapse', data-parent='#accordion', href='#collapseFive', aria-expanded='false', aria-controls='collapseThree')
+                  | Knowledge
+            #collapseFive.panel-collapse.collapse(role='tabpanel', aria-labelledby='Knowledge')
+              .panel-body
+                div Knowledge base
+    else if profileData.functionalRole && profileData.functionalRole._id == 7
+      #accordion.panel-groupdiv.hidden-lg.hidden-md.hidden-sm.visible-xs(role='tablist', aria-multiselectable='true')
+          .panel.panel-default
+            #about.panel-heading(role='tab')
+              h4.panel-title
+                a.block.text-uppercase.text-center(role='button', data-toggle='collapse', data-parent='#accordion', href='#collapseOneDefault', aria-expanded='true', aria-controls='collapseOneDefault')
+                  | About
+            #collapseOneDefault.panel-collapse.collapse.in(role='tabpanel', aria-labelledby='about')
+              .panel-body
+                if editSection=='personalAbout'
+                  .row
+                    .col-sm-12
+                      form.pull-right.edit(action="" method="post")
+                        a.cancle.closeBtn.pull-right(href='/profile',title='Close')
+                          span.fa.fa-times
+                  form.media(method='post',action=isSuperUser?'#{"/profile/edit?uid="+profileData.uid}':'/profile/edit' enctype='multipart/form-data' class='edit')
+                    .form-group
+                      if  !lInUser
+                        textarea.form-control.txtArea_notes(placeholder="Note to CSquire Community" name='noteToCommunity',style='max-width:100%; height:130px')= profileData.noteToCommunity
+                      else
+                        textarea.form-control.txtArea_notes(placeholder="Note to CSquire Community" name='noteToCommunity',disabled,style='max-width:100%; height:130px')= profileData.noteToCommunity
+                    .form-group
+                           if profileData.functionalRole._id == 2 ||profileData.functionalRole._id == 6
+                             h4.media-heading.text-left Vendor Services
+                             input(type="hidden" name="vendorServices" value="0")
+                             select.form-control(name='vendorServices',data-taggable='true', data-master='vendorService', multiple,required='required',data-errorholder='Vendor Services',style='width:100%')
+                               +PreselectBox(masterCollections.vendorServices,profileData.vendorServices)
+                           else if profileData.functionalRole._id == 3
+                             h4.media-heading.text-left Enterprise Software Applications
+                             input(type="hidden" name="enterpriseSoftwares" value="0")
+                             select.form-control(name='enterpriseSoftwares',data-taggable='true', data-master='enterpriseSoftware', data-placeholder='QuickBooks, Powerplan, SAP, etc.', multiple,required='required',data-jVal=validation.location, data-errorholder='Software suites',style='width:100%')
+                               +PreselectBox(masterCollections.enterpriseSoftware,profileData.enterpriseSoftwares)
+                           else if profileData.functionalRole._id != 2 || profileData.functionalRole._id != 3 ||profileData.functionalRole._id != 6         
+                             h4.media-heading.text-left Software Language
+                             input(type="hidden" name="developmentSoftwares" value="0")
+                             select.form-control(name='developmentSoftwares',data-taggable='true', data-master='developmentSoftware',data-placeholder='Please Select a Software Language',  multiple='multiple',style='width:100%')
+                               +PreselectBox(masterCollections.softwareDevs,profileData.developmentSoftwares)
+                         .form-group
+                           h4.media-heading.text-left Business Process Experience
+                           input(type="hidden" name="businessProcessAreas" value="0")
+                           select.form-control(name='businessProcessAreas',data-taggable='true',data-master='businessProcessArea',data-placeholder='Please Select a Business Process Area',  multiple='multiple',style='width:100%')
+                             +PreselectBox(masterCollections.businessProcess, profileData.businessProcessAreas)
+                    .form-group.hidden-xs
+                      .row
+                        .col-sm-12.text-right
+                          button.btn.btn-primary.form-control.btn-heading(type='submit') Submit
+                          a.btn.btn-default.form-control.btn-heading(href='#{"/profile?editSection=personalAbout&uid="+profileData.uid}') Reset
+                    .form-group.visible-xs.hidden-sm
+                      .row
+                        .col-xs-12
+                          button.btn.btn-primary.form-control.margin0(type='submit') Submit    
+                        .col-xs-12.filterMargin
+                          a.btn.btn-default.form-control.margin0(href='#{"/profile?editSection=personalAbout&uid="+profileData.uid}') Reset
+                else
+                  if !publicProfile
+                    .row
+                      .col-sm-12
+                        form.pull-right.edit(action="" method="get" novalidate)
+                          input(type='hidden',name='editSection',value='personalAbout')
+                          if isSuperUser
+                            input(type='hidden',name='uid',value='#{profileData.uid}')
+                          button.btn.btn-link.edit(title="Edit")
+                            span.fa.fa-pencil
+                  .row
+                    .col-lg-12.col-xs-12                                    
+                      .quoted-text.expand-collapse
+                        if profileData.noteToCommunity
+                          pre #{profileData.noteToCommunity}
+                          button.btn.btn-link.block.seemoreQtext more
+                  .row.text-left
+                        if user
+                          if profileData.vendorServices && profileData.vendorServices.length > 0
+                            .col-sm-12
+                              h4.media-heading.text-left Vendor Services
+                              
+                              each val, index in profileData.vendorServices
+                                   if index == profileData.vendorServices.length-1
+                                    if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                                        p.btn.btn-link.bgnone.seemoreList more
+                                   else
+                                      if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                          else if profileData.enterpriseSoftwares && profileData.enterpriseSoftwares.length > 0
+                            .col-sm-12
+                              h4.media-heading.text-left Enterprise Software Applications
+                              
+                              each val, index in profileData.enterpriseSoftwares
+                                   if index == profileData.enterpriseSoftwares.length-1
+                                    if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                                        p.btn.btn-link.bgnone.seemoreList more
+                                   else
+                                      if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                          else if profileData.developmentSoftwares && profileData.developmentSoftwares.length > 0
+                            .col-sm-12
+                              h4.media-heading.text-left Software Language
+                              
+                              each val, index in profileData.developmentSoftwares
+                                   if index == profileData.developmentSoftwares.length-1
+                                    if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                                        p.btn.btn-link.bgnone.seemoreList more
+                                   else
+                                      if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                        if user            
+                          if profileData.businessProcessAreas && profileData.businessProcessAreas.length > 0           
+                            .col-sm-12
+                              h4.media-heading.text-left Business Process Experience
+                              
+                              each val, index in profileData.businessProcessAreas
+                                   if index == profileData.businessProcessAreas.length-1
+                                    if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                                        p.btn.btn-link.bgnone.seemoreList more
+                                   else
+                                      if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name 
+          .panel.panel-default
+            #products.panel-heading.relative(role='tab')
+              h4.panel-title
+                a.collapsed.block.text-uppercase.text-center(role='button', data-toggle='collapse', data-parent='#accordion', href='#collapseTwoDefault', aria-expanded='false', aria-controls='collapseTwoDefault')
+                  | Products
+                if !publicProfile
+                  img.plus2.edit_plus.absolute(src="#{cdn('/plus.png')}" alt="Connect to products" title="Connect to products")
+            #collapseTwoDefault.panel-collapse.collapse(role='tabpanel', aria-labelledby='marketOfferings')
+                  .panel-body
+                    #products
+                      div.addProduct
+                        h4.text-uppercase.text-left.add-company add Products 
+                        +addProduct("products",'','','','','products','products')
+                    if user
+                      if products && products.length
+                        +products(products,'products')
+                        .row.seeAllProfile.margin0
+                          .col-xs-12.text-center
+                            if !publicProfile && products.length > 2
+                              div.see-all-align
+                                a(href=isSuperUser?'#{"/search/connections/expertise?&connectionFrom=people"+specializationString+"&uid="+profileData.uid}':'/search/connections/expertise?'+specializationString+'&connectionFrom=people') See all
+                                  i.fa.fa-angle-double-right.fa_Marginleft
+                            else if products.length > 2
+                             div.see-all-align
+                                a(href='#{"/search/connections/expertise?&connectionFrom=people"+specializationString+"&uid="+profileData.uid}') See all
+                                  i.fa.fa-angle-double-right.fa_Marginleft
+                      else
+                        if !publicProfile
+                          span.noClients Please add products to profile 
+                        else
+                          span.noClients There are no products
+                    else
+                      row.seeAllProfile
+                        .col-xs-12.text-center
+                          a(href="/register") Sign up to CSquire
+          .panel.panel-default
+            #People.panel-heading.relative(role='tab')
+              h4.panel-title
+                a.collapsed.block.text-uppercase.text-center(role='button', data-toggle='collapse', data-parent='#accordion', href='#collapseThreeDefault', aria-expanded='false', aria-controls='collapseThreeDefault')
+                  | People
+                if !publicProfile
+                  img.plus4.edit_plus.absolute(src="#{cdn('/plus.png')}" alt="Connect to people" title="Connect to people")
+            #collapseThreeDefault.panel-collapse.collapse(role='tabpanel', aria-labelledby='People')
+              .panel-body
+               div.addPerson
+                  h4.text-uppercase.text-left.add-company Add People
+                  select#personSelect.addTo.form-control(name='personalProfile', data-master='personalProfile',data-placeholder='Enter person name',required='required',data-errorholder='personalProfile',style='width:100%')
+                  input(type='hidden',name='type',value='colleague')
+                  input(type='hidden',name='header',value='Colleague')
+                  span.comment
+                #personProfile
+                   if user
+                    if collegues.length
+                      +personProfile(collegues,'colleagues')
+                      .row.seeAllProfile.margin0
+                        .col-xs-12.text-center
+                          if !publicProfile && collegues.length > 2
+                            div.see-all-align
+                              a(href=isSuperUser?'#{"/search/connections/colleagues?connectionFrom=people"+colleguesString+"&uid="+profileData.uid}':'/search/connections/colleagues?'+'connectionFrom=people'+colleguesString+'&uid='+profileData.uid) See all
+                                i.fa.fa-angle-double-right.fa_Marginleft
+                          else if collegues.length > 2
+                            div.see-all-align
+                              a(href='#{"/search/connections/colleagues?connectionFrom=people" + colleguesString + "&uid="+profileData.uid}') See all
+                                i.fa.fa-angle-double-right.fa_Marginleft
+                    else
+                      if !publicProfile
+                        span.noClients Please add people to profile            
+                      else
+                        span.noClients There are no people
+                   else
+                     row.seeAllProfile
+                       .col-xs-12.text-center
+                         a(href="/register") Sign up to CSquire
+          .panel.panel-default
+            #companyProfile.panel-heading.relative(role='tab')
+              h4.panel-title
+                a.collapsed.block.text-uppercase.text-center(role='button', data-toggle='collapse', data-parent='#accordion', href='#collapseFourDefault', aria-expanded='false', aria-controls='collapseFourDefault')
+                  | Company
+                if !publicProfile
+                  img.plus3.edit_plus.absolute(src="#{cdn('/plus.png')}" alt="Connect to companies" title="Connect to companies")
+            #collapseFourDefault.panel-collapse.collapse(role='tabpanel', aria-labelledby='companyProfile')
+              .panel-body
+                div.addClients
+                  h4.text-uppercase.text-left.add-company Add Company
+                  +addCompany("companyProfile",'','','companies','companies')
+                    .form-group.visible-xs.hidden-sm
+                      .row 
+                        div.col-xs-12
+                          button.btn.btn-primary.margin0#addCompanyBtn(type='submit') Save
+                        div.col-xs-12.filterMargin
+                          button.btn.btn-default.margin0#companyCancel(type="button") Reset                   
+                div
+                  if user                    
+                    if pastClient && pastClient.length                      
+                      +company(companies,'companyProfile')
+                      .row.seeAllProfile.margin0
+                        .col-xs-12.text-center
+                          if !publicProfile && companies.length > 2
+                            div.see-all-align
+                              a(href=isSuperUser?'#{"/search/connections/client?&connectionFrom=people"+pastClientString+"&uid="+profileData.uid}':'/search/connections/client?'+pastClientString+'&connectionFrom=people') See all
+                                i.fa.fa-angle-double-right.fa_Marginleft                              
+                          else if companies.length > 2
+                            div.see-all-align
+                              a(href='#{"/search/connections/client?&connectionFrom=people" + pastClientString + "&uid=" + profileData.uid}') See all
+                                i.fa.fa-angle-double-right.fa_Marginleft
+                    else
+                      if !publicProfile
+                        span.noClients Please add company to profile
+                      else
+                        span.noClients There are no company
+                  else
+                    row.seeAllProfile
+                      .col-xs-12.text-center
+                        a(href="/register") Sign up to CSquire
+          .panel.panel-default
+            //-#knowledge_ex.panel-heading(role='tab')
+              h4.panel-title.font-primary
+                a.collapsed.block(role='button', data-toggle='collapse', data-parent='#accordion', href='#collapseTwo_ex', aria-expanded='false', aria-controls='collapseTwo')
+                  | Knowledge
+            #collapseTwo_ex.panel-collapse.collapse(role='tabpanel', aria-labelledby='knowledge_ex')
+              .panel-body
+                div Knowledge
+    else
+      #accordion.panel-groupdiv.hidden-lg.hidden-md.hidden-sm.visible-xs(role='tablist', aria-multiselectable='true')
+          .panel.panel-default
+            #about.panel-heading(role='tab')
+              h4.panel-title
+                a.block.text-uppercase.text-center(role='button', data-toggle='collapse', data-parent='#accordion', href='#collapseOne', aria-expanded='true', aria-controls='collapseOne')
+                  | About
+            #collapseOne.panel-collapse.collapse.in(role='tabpanel', aria-labelledby='about')
+              .panel-body
+                if editSection=='personalAbout'
+                  .row
+                    .col-sm-12
+                      form.pull-right.edit(action="" method="post")
+                        a.cancle.pull-right.closeBtn(href='/profile',title='Close')
+                          span.fa.fa-times                                   
+                  form.media(method='post',action=isSuperUser?'#{"/profile/edit?uid="+profileData.uid}':'/profile/edit' enctype='multipart/form-data' class='edit')
+                      .form-group
+                            if  !lInUser
+                              textarea.txtArea_notes.form-control(placeholder="Note to CSquire Community" name='noteToCommunity',style='max-width:100%;')= profileData.noteToCommunity
+                            else
+                              textarea.txtArea_notes.form-control(placeholder="Note to CSquire Community" name='noteToCommunity',disabled,style='max-width:100%;')= profileData.noteToCommunity
+                          .form-group.hidden-xs
+                            .row
+                              .col-sm-12.text-right
+                                button.btn.btn-primary.form-control.btn-heading(type='submit') Submit
+                                a.btn.btn-default.form-control.btn-heading(href='#{"/profile?editSection=personalAbout&uid="+profileData.uid}') Reset
+                          .form-group.visible-xs.hidden-sm
+                            .row
+                              .col-xs-12
+                                button.btn.btn-primary.form-control.margin0(type='submit') Submit    
+                              .col-xs-12.filterMargin
+                                a.btn.btn-default.form-control.margin0(href='#{"/profile?editSection=personalAbout&uid="+profileData.uid}') Reset
+                else
+                  if !publicProfile
+                    .row
+                      .col-sm-12
+                        form.pull-right.edit(action="" method="get" novalidate)
+                          input(type='hidden',name='editSection',value='personalAbout')
+                          if isSuperUser
+                            input(type='hidden',name='uid',value='#{profileData.uid}')
+                          button.btn.btn-link.edit(title="Edit")
+                            span.fa.fa-pencil
+                  .row
+                    .col-lg-12.col-xs-12                                      
+                      .quoted-text.expand-collapse
+                        if profileData.noteToCommunity
+                          pre #{profileData.noteToCommunity}
+                          button.btn.btn-link.seemoreQtext.block more
+                  .row.text-left
+                        if user
+                          if profileData.vendorServices && profileData.vendorServices.length > 0
+                            .col-sm-12
+                              h4.media-heading.text-left Vendor Services
+                              
+                              each val, index in profileData.vendorServices
+                                   if index == profileData.vendorServices.length-1
+                                    if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                                        p.btn.btn-link.bgnone.seemoreList more
+                                   else
+                                      if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                          else if profileData.enterpriseSoftwares && profileData.enterpriseSoftwares.length > 0
+                            .col-sm-12
+                              h4.media-heading.text-left Enterprise Software Applications
+                              
+                              each val, index in profileData.enterpriseSoftwares
+                                   if index == profileData.enterpriseSoftwares.length-1
+                                    if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                                        p.btn.btn-link.bgnone.seemoreList more
+                                   else
+                                      if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                          else if profileData.developmentSoftwares && profileData.developmentSoftwares.length > 0
+                            .col-sm-12
+                              h4.media-heading.text-left Software Language
+                              
+                              each val, index in profileData.developmentSoftwares
+                                   if index == profileData.developmentSoftwares.length-1
+                                    if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                                        p.btn.btn-link.bgnone.seemoreList more
+                                   else
+                                      if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                        if user            
+                          if profileData.businessProcessAreas && profileData.businessProcessAreas.length > 0           
+                            .col-sm-12
+                              h4.media-heading.text-left Business Process Experience
+                              
+                              each val, index in profileData.businessProcessAreas
+                                   if index == profileData.businessProcessAreas.length-1
+                                    if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                                        p.btn.btn-link.bgnone.seemoreList more
+                                   else
+                                      if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                        if user            
+                          if profileData.tags && profileData.tags.length > 0           
+                            .col-sm-12
+                              h4.media-heading.text-left Tags
+                              
+                              each val, index in profileData.tags
+                                   if index == profileData.tags.length-1
+                                    if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name
+                                        p.btn.btn-link.bgnone.seemoreList more
+                                   else
+                                      if index+1 <= 5
+                                        p= val.name
+                                      else
+                                        p.hide= val.name 
+          .panel.panel-default
+            #products_used.panel-heading.relative(role='tab')
+              h4.panel-title
+                a.collapsed.block.text-uppercase.text-center(role='button', data-toggle='collapse', data-parent='#accordion', href='#collapseSix_ex', aria-expanded='false', aria-controls='collapseThree')
+                  | Products Used
+                if !publicProfile
+                  img.plus2.edit_plus.absolute(src="#{cdn('/plus.png')}" alt="Connect to products" title="Connect to products")
+            #collapseSix_ex.panel-collapse.collapse(role='tabpanel', aria-labelledby='marketOfferings')
+                  .panel-body
+                    div.addProduct
+                        h4.text-uppercase.text-left.add-company add Product Used 
+                        select.addTo.form-control(name='productprofiles', data-master='productProfile', data-connectto="people", data-placeholder='Enter product name', required='required',data-errorholder='productProfile',style='width:100%')
+                        span#comment(style="width: 48%;padding-left: 70px;color: red;")
+                        input(type='hidden',name='type',value='productsUsed')
+                        form#pstpro(action="/addProduct?tab=expertise",method="post" style="padding-top: 19px;")
+                          .form-group
+                            .row
+                              .col-lg-6.col-md-6.col-sm-6
+                                input#productName.form-control(type='text', placeholder='Product Name',name='name',required='required',data-errorholder='Product Name')
+                              .col-lg-6.col-md-6.col-sm-6
+                                input#latestVersion.form-control(type='text', placeholder='Latest Version',name='versionNumber',required='required',data-errorholder='Latest Version')
+                          .form-group
+                            .row
+                              .col-lg-6.col-md-6.col-sm-6
+                                input#users.form-control(type='text', placeholder='Users',name='userCount',data-errorholder='User Count')
+                          .form-group
+                            .row
+                              .col-lg-12.col-sm-12.col-md-12.col-xs-12
+                                textarea.txtArea_notes#aboutProduct.col-lg-12.col-md-12.col-sm-12.col-xs-12.form-control(type='text',name='description', placeholder='About Product')
+                                div.clearfix
+                          .form-group
+                            .row
+                              div.col-xs-12
+                                button.btn.btn-primary.margin0.form-control#addProductBtn(type='submit') Save
+                              div.col-xs-12.filterMargin
+                                button.btn.btn-default.margin0.form-control#productCancel(type="button") Reset
+                    div
+                      if user
+                        if productsUsed && profileData.functionalRole
+                          if productsUsed && productsUsed.length
+                            +products(productsUsed)
+                            .row.seeAllProfile.margin0
+                              .col-xs-12.text-center
+                                if !publicProfile && productsUsed.length > 2
+                                   div.see-all-align
+                                     a(href=isSuperUser?'#{"/search/connections/productsUsed?&connectionFrom=people"+productsUsedString+"&uid="+profileData.uid}':'/search/connections/productsUsed?'+productsUsedString+'&connectionFrom=people') See all
+                                       i.fa.fa-angle-double-right.fa_Marginleft
+                                else if productsUsed.length > 2
+                                   div.see-all-align
+                                     a(href='#{"/search/connections/productsUsed?&connectionFrom=people"+productsUsedString+"&uid="+profileData.uid}') See all
+                                       i.fa.fa-angle-double-right.fa_Marginleft
+                          else
+                              if !publicProfile
+                                span.noClients Please add products to profile
+                              else
+                                span.noClients There are no products
+                      else
+                        row.seeAllProfile
+                          .col-xs-12.text-center
+                            a(href="/register") Sign up to CSquire
+          .panel.panel-default
+            #service_ex.panel-heading.relative(role='tab')
+              h4.panel-title
+                a.collapsed.block.text-uppercase.text-center(role='button', data-toggle='collapse', data-parent='#accordion', href='#collapseFour_ex', aria-expanded='false', aria-controls='collapseFour')
+                  | Service Partners
+                if !publicProfile
+                  img.plus3.edit_plus.absolute(src="#{cdn('/plus.png')}" alt="Connect to companies" title="Connect to companies")
+            #collapseFour_ex.panel-collapse.collapse(role='tabpanel', aria-labelledby='service_ex')
+              .panel-body
+                div.addClients
+                  h4.text-uppercase.text-left.add-company add Service Partner
+                  select.addTo.form-control(name='compnayProfile', data-master='compnayProfile',data-placeholder='Enter company name', required='required',data-errorholder='compnayProfile',style='width:100%')
+                  input(type='hidden',name='type',value='servicePartner')
+                  span#comment(style="width: 48%;padding-left: 70px;color: red;")
+                  form#pstcomform(action="/addPastCompany?tab=clients",method="post" style="padding-top: 19px;")
+                    .form-group
+                      .row
+                        .col-lg-6.col-md-6.col-sm-6
+                          input.form-control#companyname(type='text',name='name' placeholder='Company Name',required='required',data-errorholder='Company Name')
+                        .col-lg-6.col-md-6.col-sm-6                  
+                          input.form-control#companyurl(type='text', name='companyWebsite',placeholder='Company Website',data-errorholder='Company Website',pattern='/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/')
+                    .form-group
+                      .row
+                        .col-lg-6.col-md-6.col-sm-6                  
+                          input.form-control#location(type='text', name='companyLocations', placeholder='Location (at least one)',data-errorholder='Location')
+                        .col-lg-6.col-md-6.col-sm-6
+                          .dropdown
+                            select#annualRevenue.sortSelectOnNum.form-control.select2(name='annualRevenue',data-placeholder='Annual Revenue',style="width: 100%",data-errorholder='Annual Revenue')
+                              +PreselectBox(revenues,[])
+                    .form-group              
+                      .row
+                        .col-lg-6.col-md-6.col-sm-6
+                          .dropdown
+                            select#headCount.sortSelectOnNum.form-control.select2(name='headCount', data-placeholder='Head Count',style="width: 100%",required='required',data-errorholder='Head Count')
+                              +PreselectBox(headcounts,[])
+                    .form-group 
+                      .row
+                        .col-lg-12.col-md-12.col-sm-12.col-xs-12
+                          textarea.txtArea_notes#desc.col-lg-12.col-md-12.col-sm-12.col-xs-12.form-control(name="description",placeholder="Company Short Description")
+                          div.clearfix
+                    .form-group
+                      .row 
+                        div.col-xs-12
+                            button.btn.btn-primary.margin0.form-control#addCompanyBtn(type='submit') Save                            
+                        div.col-xs-12.filterMargin
+                            button.btn.btn-default.margin0.form-control#companyCancel(type="button") Reset
+                div
+                  if user
+                     if servicePartner && servicePartner.length
+                       +company(servicePartner)
+                       .row.seeAllProfile.margin0
+                         .col-xs-12.text-center
+                           if !publicProfile && servicePartner.length > 2
+                             div.see-all-align
+                               a(href=isSuperUser?'#{"/search/connections/servicePartners?connectionFrom=people"+servicePartnerString+"&uid="+profileData.uid}':'/search/connections/servicePartners?'+servicePartnerString+'&connectionFrom=people') See all 
+                                 i.fa.fa-angle-double-right.fa_Marginleft                             
+                           else if servicePartner.length > 2
+                             div.see-all-align
+                               a(href='#{"/search/connections/servicePartners?connectionFrom=people"+servicePartnerString+"&uid="+profileData.uid}') See all
+                                 i.fa.fa-angle-double-right.fa_Marginleft
+                     else
+                      if !publicProfile
+                        span.noClients Please add service partners to profile
+                      else
+                        span.noClients There are no service partners
+                  else
+                    row.seeAllProfile
+                      .col-xs-12.text-center
+                        a(href="/register") Sign up to CSquire
+          .panel.panel-default
+            #technologyPartners.panel-heading.relative(role='tab')
+              h4.panel-title
+                a.collapsed.block.text-uppercase.text-center(role='button', data-toggle='collapse', data-parent='#accordion', href='#collapseFive_ex', aria-expanded='false', aria-controls='collapseFive')
+                  | Technology Partners
+                if !publicProfile
+                  img.plus3.edit_plus.absolute(src="#{cdn('/plus.png')}" alt="Connect to companies" title="Connect to companies")
+            #collapseFive_ex.panel-collapse.collapse(role='tabpanel', aria-labelledby='technologyPartners')
+              .panel-body
+                div.addClients
+                  h4.text-uppercase.text-left.add-company add Technology Partner
+                  select.addTo.form-control(name='compnayProfile', data-master='compnayProfile',data-placeholder='Enter company name', required='required',data-errorholder='compnayProfile',style='width:100%')
+                  input(type='hidden',name='type',value='technologyPartner')
+                  span#comment(style="width: 48%;padding-left: 70px;color: red;")
+                  form#pstcomform(action="/addPastCompany?tab=clients",method="post" style="padding-top: 19px;")
+                    .form-group
+                      .row
+                        .col-lg-6.col-md-6.col-sm-6
+                          input.form-control#companyname(type='text',name='name' placeholder='Company Name',required='required',data-errorholder='Company Name')
+                        .col-lg-6.col-md-6.col-sm-6                  
+                          input.form-control#companyurl(type='text', name='companyWebsite',placeholder='Company Website',data-errorholder='Company Website',pattern='/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/')
+                    .form-group
+                      .row
+                        .col-lg-6.col-md-6.col-sm-6                  
+                          input.form-control#location(type='text', name='companyLocations', placeholder='Location (at least one)',data-errorholder='Location')
+                        .col-lg-6.col-md-6.col-sm-6
+                          .dropdown
+                            select#annualRevenue.sortSelectOnNum.form-control.select2(name='annualRevenue',data-placeholder='Annual Revenue',style="width: 100%",data-errorholder='Annual Revenue')
+                              +PreselectBox(revenues,[])
+                    .form-group              
+                      .row
+                        .col-lg-6.col-md-6.col-sm-6
+                          .dropdown
+                            select#headCount.sortSelectOnNum.form-control.select2(name='headCount', data-placeholder='Head Count',style="width: 100%",data-errorholder='Head Count')
+                              +PreselectBox(headcounts,[])
+                    .form-group 
+                      .row
+                        .col-lg-12.col-md-12.col-sm-12.col-xs-12
+                          textarea.txtArea_notes#desc.col-lg-12.col-md-12.col-sm-12.col-xs-12.form-control(name="description",placeholder="Company Short Description")
+                          div.clearfix
+                    .form-group
+                      .row 
+                        div.col-xs-12
+                            button.btn.btn-primary.margin0.form-control#addCompanyBtn(type='submit') Save
+                        div.col-xs-12.filterMargin
+                            button.btn.btn-default.margin0.form-control#companyCancel(type="button") Reset
+                div
+                  if user
+                     if technologyPartner && technologyPartner.length
+                        +company(technologyPartner)
+                        .row.seeAllProfile.margin0
+                          .col-xs-12.text-center
+                            if !publicProfile && technologyPartner.length > 2
+                              div.see-all-align
+                                a(href=isSuperUser?'#{"/search/connections/technologyPartners?&connectionFrom=people"+technologyPartnerString+"&uid="+profileData.uid}':'/search/connections/technologyPartners?'+technologyPartnerString+'&connectionFrom=people') See all
+                                  i.fa.fa-angle-double-right.fa_Marginleft
+                            else if technologyPartner.length > 2
+                              div.see-all-align
+                                a(href='#{"/search/connections/technologyPartners?&connectionFrom=people"+technologyPartnerString+"&uid="+profileData.uid}') See all
+                                  i.fa.fa-angle-double-right.fa_Marginleft                         
+                     else
+                       if !publicProfile
+                          span.noClients Please add technology partners to profile
+                       else
+                         span.noClients There are no technology partners
+                  else
+                    row.seeAllProfile
+                      .col-xs-12.text-center
+                        a(href="/register") Sign up to CSquire 
+          //-.panel.panel-default
+            #knowledge_ex.panel-heading(role='tab')
+              h4.panel-title.font-primary
+                a.collapsed.block(role='button', data-toggle='collapse', data-parent='#accordion', href='#collapseTwo_ex', aria-expanded='false', aria-controls='collapseTwo')
+                  | Knowledge
+            #collapseTwo_ex.panel-collapse.collapse(role='tabpanel', aria-labelledby='knowledge_ex')
+              .panel-body
+                div Knowledge

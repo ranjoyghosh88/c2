@@ -1,0 +1,546 @@
+.company_profile
+  .row
+    .col-sm-12.col-md-12
+      .panel.panel-profile.panel-default
+        .panel-body
+          if editSection=='basic'
+             form.media(method='post',action='#{"/product/edit/"+profileData.uid}' enctype='multipart/form-data')
+              .row
+                .col-sm-12
+                  .btn_close
+                    a.cancle.pull-right.closeBtn(href='#{"/product/"+profileData.uid}',title='Close')
+                      span.fa.fa-times
+              .row
+                .col-sm-4.col-lg-3             
+                  .media-left
+                    input(type='hidden',value='#{profileData._id}',name='id')
+                    a(href='#')     
+                      if profileData.productWebsite
+                        a(href='#{"//"+profileData.productWebsite}', target='_blank')             
+                          if profileData.logo
+                            img.media-object.profilePic(src=profileData.logo)
+                          else
+                            img.media-object.profilePic(src="#{cdn('/ProductDummyLogo.jpg')}")
+                      else
+                        a
+                          if profileData.logo
+                            img.media-object.profilePic(src=profileData.logo)
+                          else
+                            img.media-object.profilePic(src="#{cdn('/ProductDummyLogo.jpg')}")
+                      div.text-center.upload_image
+                        button.btn.btn-link(name='profilePic',id='TrgrClk') Upload logo
+                        input(type='file',name='file',id='file')
+                .col-sm-8.col-lg-9
+                    .media-body
+                      .form
+                        .form-group
+                            input.form-control(type='text',required='required',data-errorholder='Name', placeholder='Name',name='name',value='#{profileData.name}')
+                        .form-group
+                            input.form-control.text-capitalize(type='text',data-errorholder='userCount',placeholder='Users',name='userCount',value='#{ profileData.userCount?profileData.userCount:""}')
+                        .form-group
+                            input.form-control.text-capitalize(type='text',data-errorholder='versionNumber',placeholder='Version Number',name='versionNumber',value='#{ profileData.versionNumber?profileData.versionNumber:""}')
+                        .form-group
+                            if profileData.followers && profileData.followers.profiles
+                              h3.media-heading Followers: #{followerProfile}
+                        .form-group.hidden-xs
+                          .row
+                            .col-sm-12.text-right
+                              button.btn.btn-primary.form-control.btn-heading(type='submit') Submit
+                              a.btn.btn-default.form-control.btn-heading(href='#{"/product/"+profileData.uid+"?editSection=basic"}') Reset
+                        .form-group.hidden-sm.visible-xs
+                          .row
+                            .col-xs-12
+                              button.btn.btn-primary.form-control.margin0(type='submit') Submit
+                            .col-xs-12.filterMargin
+                              a.btn.btn-default.form-control.margin0(href='#{"/product/"+profileData.uid+"?editSection=basic"}') Reset
+          else
+            .media
+              .row
+                  .col-sm-12
+                    if isAdmin
+                      form.pull-right.edit(method='get',action='#{"/product/"+profileData.uid}')
+                        input(type='hidden',name='editSection',value='basic')
+                        button.btn.btn-link.edit(title='Edit')
+                          span.fa.fa-pencil
+              .row
+                .col-lg-3.col-sm-4
+                  .media-left
+                    if profileData.companyWebsite
+                        a(target="_blank" href="#{'//'+profileData.companyWebsite}")    
+                          - if(profileData.logo)
+                              img.media-object.profilePic(src=profileData.logo,width='100px')
+                          - else              
+                              img.media-object.profilePic(src="#{cdn('/ProductDummyLogo.jpg')}")
+                      else 
+                          - if(profileData.logo)
+                              img.media-object.profilePic(src=profileData.logo,width='100px')
+                          - else              
+                              img.media-object.profilePic(src="#{cdn('/ProductDummyLogo.jpg')}")
+                .col-lg-9.col-sm-8
+                  .media-body.profileContainer 
+                    h1.media-heading.fullName.inline-block #{profileData.name + (company?'':'')}
+                    =" "
+                     if(company)
+                       h3.text-primary.inline-block
+                         a(href='#{"/company/"+company.uid}') by #{company.name}
+                    if profileData.userCount
+                      h3.text-capitalize Users: #{profileData.userCount}
+                    if profileData.versionNumber
+                      h3.text-capitalize Contributors: 
+                      h3.text-capitalize Latest Version: #{profileData.versionNumber}
+                    if  profileData.speciality && profileData.speciality.length 
+                        .row.text-left
+                         .col-sm-12
+                          for sp in profileData.speciality       
+                           p.media-heading.text-capitalize #{sp.name}
+  if isDesktop
+      ul.nav.nav-tabs.company_consulting.product_tabs.marginT_30.functional_profile(role='tablist')
+          li.active.text-center(role='presentation')
+            a(href='#about', aria-controls='about', role='tab', data-toggle='tab' style='width: 100%;') About
+          li.text-center(role='presentation')
+            a(href='#demo', aria-controls='products', role='tab', data-toggle='tab') Demos
+            if isAdmin
+              img.plus5.edit_plus.absolute(src="#{cdn('/plus.png')}" alt="Edit" title="Edit")
+          li.text-center(role='presentation')
+            a(href='#clients', aria-controls='clients', role='tab', data-toggle='tab') Clients
+            if isAdmin
+              img.plus3.edit_plus.absolute(src="#{cdn('/plus.png')}" alt="Edit" title="Edit")
+          li.text-center(role='presentation')
+            a(href='#servicePartners', aria-controls='clients', role='tab', data-toggle='tab') Service Partners
+            if isAdmin
+              img.plus3.edit_plus.absolute(src="#{cdn('/plus.png')}" alt="Edit" title="Edit")
+      .tab-content
+          #about.tab-pane.active.media(role='tabpanel')
+            if editSection=='detail'
+              .panel.panel-default
+                .panel-body
+                  .row
+                    .col-xs-12
+                      form.pull-right.edit(action="" method="post")
+                        a.cancle.pull-right.closeBtn(href='#{"/product/"+profileData.uid}',title='Close')
+                          span.fa.fa-times
+                  .row
+                    .col-xs-12 
+                      form.text-center(method='post',action='#{"/product/edit/"+profileData.uid}' enctype='multipart/form-data')
+                        input(type='hidden',value='#{profileData._id}',name='id')
+                        .row
+                          .col-xs-12
+                            textarea.form-control.txtArea_notes(name='description',placeholder='Please provide detailed description about the company. eg. <Company> is a business aligned technology services provider...',style='max-width:100%; height:130px') #{profileData.description}
+                        .row.filterMargin
+                          .form-group.text-left.col-md-3.col-sm-6 
+                            label.text-primary.text-capitalize Intended For                           
+                            if profileData.intendedFor
+                              select.form-control(name='intendedFor',data-placeholder='Intended For', multiple,data-errorholder='Intended For',style='width:100%')
+                                +PreselectBoxQuick(masterCollections.intendedController,profileData.intendedFor)
+                          .form-group.col-md-3.col-sm-6.text-left
+                            label.text-primary.text-capitalize Good For
+                            if profileData.goodFor
+                              select.form-control(name='goodFor', data-master='developmentSoftware',data-placeholder='Good For', multiple,data-errorholder='Good For',style='width:100%')
+                                +PreselectBox(masterCollections.developmentSoftware,profileData.developmentSoftware)                            
+                          .form-group.col-md-3.col-sm-6.text-left
+                            label.text-primary.text-capitalize Website
+                            if profileData.productWebsite
+                              input.form-control(type='text',required,name='productWebsite',data-errorholder='website',value="#{profileData.productWebsite}")
+                            else
+                              input.form-control(type='text',required,name='productWebsite',data-errorholder='website')
+                          //-.form-group.col-md-3.col-sm-6.text-left                            
+                            if profileData.company.length && profileData.company[0].companyWebsite
+                              label.text-primary.text-capitalize Website                                
+                              input.form-control(type='text',required,name='companyWebsite',data-errorholder='companyWebsite',value='#{profileData.company[0].companyWebsite}')
+                        .row                        
+                          .col-sm-12.text-right  
+                            .form-group.hidden-xs
+                                button.btn.btn-primary.form-control.btn-heading(type='submit') Submit
+                                a.btn.btn-default.form-control.btn-heading(href='#{"/product/"+profileData.uid+"?editSection=detail"}') Reset
+                          .row.hidden-sm.visible-xs
+                            .col-xs-12  
+                                button.btn.btn-primary.form-control.margin0(type='submit') Submit
+                              .col-xs-12.filterMargin
+                                a.btn.btn-default.form-control.margin0(href='#{"/product/"+profileData.uid+"?editSection=detail"}') Reset
+            else
+              .panel.panel-description.panel-default
+                .panel-body
+                  if isAdmin
+                    form.pull-right.edit(method='get',action='#{"/product/"+profileData.uid}')
+                      input(type='hidden',name='editSection',value='detail')
+                      button.btn.btn-link.edit(title='Edit')
+                        span.fa.fa-pencil
+                  .row
+                    .col-lg-12.col-xs-12                                      
+                      .quoted-text.expand-collapse
+                        if profileData.description && profileData.description.length
+                          pre #{profileData.description}
+                          button.btn.btn-link.seemoreQtext.block more
+                  .row
+                    .col-lg-12.col-xs-12  
+                              if productTags           
+                                .col-sm-12
+                                  h4.media-heading.text-left Tags                              
+                                  each val, index in productTags
+                                       if index == productTags.length-1
+                                        if index+1 <= 5
+                                            p= val.name
+                                          else
+                                            p.hide= val.name
+                                            p.btn.btn-link.bgnone.seemoreList more
+                                       else
+                                          if index+1 <= 5
+                                            p= val.name
+                                          else
+                                            p.hide= val.name                             
+          #demo.tab-pane(role='tabpanel')
+            .panel.panel-default
+              .panel-body
+                #demo
+                  if user
+                    div.addDemo
+                      h4.text-uppercase.text-left.add-company add Demo
+                      form#demo(action='#{"/product/addDemo?id="+profileData._id}',method="post" style="padding-top: 19px;")
+                        .form-group
+                          .row
+                            .col-lg-6.col-md-6.col-sm-6
+                              input.form-control.border_align(type='text', placeholder='Enter embed url',name='url',required='required',data-errorholder='url')
+                            .col-lg-6.col-md-6.col-sm-6
+                              input.form-control.border_align(type='text', placeholder='Description',name='desc',data-errorholder='description')
+                        .form-group.hidden-xs
+                          .row 
+                            div.col-sm-12.text-right
+                              button.btn.btn-primary.btn-heading.border_align#addProductBtn(type='submit') Save
+                              button.btn.btn-default.btn-heading.border_align#productCancel(type="button") Reset
+                        .form-group.visible-xs.hidden-sm
+                          .row
+                            div.col-xs-12
+                              button.btn.btn-primary.margin0.form-control.border_align#addProductBtn(type='submit') Save 
+                            div.col-xs-12.filterMargin
+                              button.btn.btn-default.margin0.form-control.border_align#productCancel(type="button") Reset   
+                    for demo in profileData.demo
+                      div.row.marginT_30.padding_b_30.items(style='border-bottom:1px solid #ddd;')
+                        .col-xs-12.col-sm-5(style="text-align:center")
+                          //-video(width="50%" controls poster="#{cdn('/CompanyDummyLogo.png')}")
+                            source(type="video/youtube" src="#{demo.url}")
+                          iframe(src="#{demo.url}" allowfullscreen height='200px;')
+                        .col-xs-12.col-sm-7
+                          if isAdmin
+                            form#removeDemo(action='#{"/product/removeDemo?id="+profileData._id}',method="post" style="padding-top: 19px;")
+                              input(type='hidden',name='product',value='#{profileData._id}')
+                              input(type='hidden',name='demoId',value='#{demo._id}')
+                              button.btn.btn-primary.margin0.pull-right.removeDemo(type='submit') Remove 
+                          .quoted-text.expand-collapse
+                            pre #{demo.desc}
+                            button.btn.btn-link.seemoreQtext.block more
+                    if profileData.screenshots && profileData.screenshots.length
+                     each screenshot, i in profileData.screenshots
+                       div.row.marginT_30.padding_b_30.items(style='border-bottom:1px solid #ddd;')
+                        .col-xs-12.col-sm-4(style="text-align:center")
+                          a(data-toggle="modal" data-target="#myModal"+i)
+                            img(src="#{screenshot}" width='100%')
+                          div.modal.fade(id="myModal"+i tabindex="-1" role="dialog" aria-labelledby="myModalLabel")
+                            div.modal-dialog(role="document")
+                              div.modal-content
+                                div.modal-body
+                                  img.modalImg(src="#{screenshot}")
+                  else
+                    div.row
+                      div.col-xs-12.text-center
+                        a(href="/register") Sign up to CSquire
+          #clients.tab-pane(role='tabpanel')
+            .panel.panel-default
+              .panel-body
+                  if user
+                      div.addClients
+                        input(type='hidden',value='product',name='connectFrom',id='connectFrom')
+                        input(type='hidden',value='#{profileData._id}',name='companyId',id='companyId')
+                        input(type='hidden',value='#{profileData.uid}',name='conFromName',id='conFromName')
+                        h4.text-uppercase.text-left.add-company add Clients
+                        +addCompany("clients","product",profileData._id,'pastClient','client')
+                          .form-group.hidden-sm.visible-xs
+                            .row 
+                              div.col-xs-12
+                                button.btn.btn-primary.margin0#addCompanyBtn(type='submit') Save                            
+                              div.col-xs-12.filterMargin
+                                button.btn.btn-default.margin0#companyCancel(type="button") Reset
+                      div
+                           //-h2 #{JSON.stringify(pastClient)}
+                           if pastClient && pastClient.length
+                             //-h5 #{JSON.stringify(pastClient)}
+                             +company(pastClient,"",profileData._id,'product')
+                             .row.seeAllProfile.margin0
+                               .col-xs-12.text-center
+                                 if isAdmin && pastClient.length > 2
+                                   div.see-all-align
+                                     a.fa.fa-angle-double-right(href=isSuperUser?'#{"/search/connections/company?connectionFrom=product"+"&uid="+profileData.uid}':'#{"/search/connections/company?"+"&connectionFrom=product&uid="+profileData.uid}') See all                               
+                                 else if pastClient.length > 2
+                                   div.see-all-align
+                                     a.fa.fa-angle-double-right(href='#{"/search/connections/company?connectionFrom=product"+"&uid="+profileData.uid}') See all
+                           else
+                            if isAdmin
+                              span.noClients Please add clients to profile
+                            else
+                              span.noClients There are no clients
+                  else
+                    div.row
+                      div.col-xs-12.text-center
+                        a(href="/register") Sign up to CSquire
+          #servicePartners.tab-pane(role='tabpanel')
+            .panel.panel-default
+              .panel-body
+                  if user
+                      div.addClients
+                        input(type='hidden',value='product',name='connectFrom',id='connectFrom')
+                        input(type='hidden',value='#{profileData._id}',name='companyId',id='companyId')
+                        input(type='hidden',value='#{profileData.uid}',name='conFromName',id='conFromName')
+                        h4.text-uppercase.text-left.add-company add service partners
+                        +addCompany("servicePartner","product",profileData._id,'servicePartner','service partner')
+                          .form-group.hidden-sm.visible-xs
+                            .row 
+                              div.col-xs-12
+                                button.btn.btn-primary.margin0#addCompanyBtn(type='submit') Save                            
+                              div.col-xs-12.filterMargin
+                                button.btn.btn-default.margin0#companyCancel(type="button") Reset
+                      div
+                        if servicePartner && servicePartner.length
+                          +company(servicePartner,"",profileData._id,'product')
+                          .row.seeAllProfile.margin0
+                            .col-xs-12.text-center
+                              if isAdmin && servicePartner.length > 2
+                                div.see-all-align
+                                  a.fa.fa-angle-double-right(href=isSuperUser?'#{"/search/connections/company?connectionFrom=product"+"&uid="+profileData.uid}':'#{"/search/connections/company?"+"&connectionFrom=product&uid="+profileData.uid}') See all                               
+                              else if servicePartner.length > 2
+                                div.see-all-align
+                                  a.fa.fa-angle-double-right(href='#{"/search/connections/company?connectionFrom=product"+"&uid="+profileData.uid}') See all
+                        else
+                         if isAdmin
+                           span.noClients Please add service partners to profile
+                         else
+                           span.noClients There are no service partners
+                  else
+                    div.row
+                      div.col-xs-12.text-center
+                        a(href="/register") Sign up to CSquire
+  else
+    #accordion.panel-groupdiv.hidden-lg.hidden-md.hidden-sm.visible-xs.marginT_30(role='tablist', aria-multiselectable='true')
+        .panel.panel-default
+          #about.panel-heading(role='tab')
+            h4.panel-title.font-primary
+              a.block(role='button', data-toggle='collapse', data-parent='#accordion', href='#collapseOne', aria-expanded='true', aria-controls='collapseOne')
+                | About
+          #collapseOne.panel-collapse.collapse.in(role='tabpanel', aria-labelledby='about')
+            if editSection=='detail'
+              .panel.panel-default
+                .panel-body
+                  .row
+                    .col-xs-12
+                      form.pull-right.edit(action="" method="post")
+                        a.cancle.pull-right.closeBtn(href='#{"/product/"+profileData.uid}',title='Close')
+                          span.fa.fa-times
+                  .row
+                    .col-xs-12 
+                      form.text-center(method='post',action='#{"/product/edit/"+profileData.uid}' enctype='multipart/form-data')
+                        input(type='hidden',value='#{profileData._id}',name='id')
+                        .row
+                          .col-xs-12
+                            textarea.form-control.txtArea_notes(name='description',placeholder='Please provide detailed description about the company. eg. <Company> is a business aligned technology services provider...',style='max-width:100%; height:130px') #{profileData.description}
+                        .row.filterMargin
+                          .form-group.text-left.col-md-3.col-sm-6 
+                            label.text-primary.text-capitalize Intended For                           
+                            if profileData.intendedFor
+                              select.form-control(name='intendedFor',data-placeholder='Intended For', multiple,data-errorholder='Intended For',style='width:100%')
+                                +PreselectBoxQuick(masterCollections.intendedController,profileData.intendedFor)
+                          .form-group.col-md-3.col-sm-6.text-left
+                            label.text-primary.text-capitalize Good For
+                            if profileData.goodFor
+                              select.form-control(name='goodFor', data-master='developmentSoftware',data-placeholder='Good For', multiple,data-errorholder='Good For',style='width:100%')
+                                +PreselectBox(masterCollections.developmentSoftware,profileData.developmentSoftware)                            
+                          .form-group.col-md-3.col-sm-6.text-left                            
+                            if profileData.company.length && profileData.company[0].companyWebsite
+                              label.text-primary.text-capitalize Website                                
+                              input.form-control(type='text',required,name='companyWebsite',data-errorholder='companyWebsite',value='#{profileData.company[0].companyWebsite}')
+                        .row                        
+                          .col-sm-12.text-right  
+                            .form-group.hidden-xs
+                                button.btn.btn-primary.form-control.btn-heading(type='submit') Submit
+                                a.btn.btn-default.form-control.btn-heading(href='#{"/product/"+profileData.uid+"?editSection=detail"}') Reset
+                          .row.hidden-sm.visible-xs
+                            .col-xs-12  
+                                button.btn.btn-primary.form-control.margin0(type='submit') Submit
+                              .col-xs-12.filterMargin
+                                a.btn.btn-default.form-control.margin0(href='#{"/product/"+profileData.uid+"?editSection=detail"}') Reset
+            else
+              .panel.panel-description.panel-default
+                .panel-body
+                  if isAdmin
+                    form.pull-right.edit(method='get',action='#{"/product/"+profileData.uid}')
+                      input(type='hidden',name='editSection',value='detail')
+                      button.btn.btn-link.edit(title='Edit')
+                        span.fa.fa-pencil
+                  .row
+                    .col-lg-12.col-xs-12                                      
+                      .quoted-text.expand-collapse
+                        if profileData.description && profileData.description.length
+                          pre #{profileData.description}
+                          button.btn.btn-link.seemoreQtext.block more
+                  .row
+                    .col-lg-12.col-xs-12  
+                              if productTags           
+                                .col-sm-12
+                                  h4.media-heading.text-left Tags                              
+                                  each val, index in productTags
+                                       if index == productTags.length-1
+                                        if index+1 <= 5
+                                            p= val.name
+                                          else
+                                            p.hide= val.name
+                                            p.btn.btn-link.bgnone.seemoreList more
+                                       else
+                                          if index+1 <= 5
+                                            p= val.name
+                                          else
+                                            p.hide= val.name                             
+        .panel.panel-default
+          #products.panel-heading.relative(role='tab')
+            h4.panel-title.font-primary
+              a.collapsed.block(role='button', data-toggle='collapse', data-parent='#accordion', href='#collapseTwo', aria-expanded='false', aria-controls='collapseTwo')
+                | Demos
+              if isAdmin
+                img.plus5.edit_plus.absolute(src="#{cdn('/plus.png')}" alt="Edit" title="Edit")
+          #collapseTwo.panel-collapse.collapse(role='tabpanel', aria-labelledby='expertise')
+            .panel-body
+                #demo
+                  if user
+                    div.addDemo
+                      h4.text-uppercase.text-left.add-company add Demo
+                      form#demo(action='#{"/product/addDemo?id="+profileData._id}',method="post" style="padding-top: 19px;")
+                        .form-group
+                          .row
+                            .col-lg-6.col-md-6.col-sm-6
+                              input.form-control.border_align(type='text', placeholder='Enter embed url',name='url',required='required',data-errorholder='url')
+                            .col-lg-6.col-md-6.col-sm-6
+                              input.form-control.border_align(type='text', placeholder='Description',name='desc',data-errorholder='description')
+                        .form-group.hidden-xs
+                          .row 
+                            div.col-sm-12.text-right
+                              button.btn.btn-primary.btn-heading.border_align#addProductBtn(type='submit') Save
+                              button.btn.btn-default.btn-heading.border_align#productCancel(type="button") Reset
+                        .form-group.visible-xs.hidden-sm
+                          .row
+                            div.col-xs-12
+                              button.btn.btn-primary.margin0.form-control.border_align#addProductBtn(type='submit') Save 
+                            div.col-xs-12.filterMargin
+                              button.btn.btn-default.margin0.form-control.border_align#productCancel(type="button") Reset   
+                    for demo in profileData.demo
+                      div.row.marginT_30.padding_b_30.items(style='border-bottom:1px solid #ddd;')
+                        .col-xs-12.col-sm-5(style="text-align:center")
+                          //-video(width="50%" controls poster="#{cdn('/CompanyDummyLogo.png')}")
+                            source(type="video/youtube" src="#{demo.url}")
+                          iframe(src="#{demo.url}" allowfullscreen width="100%")
+                        .col-xs-12.col-sm-7
+                          if isAdmin
+                            form#removeDemo(action='#{"/product/removeDemo?id="+profileData._id}',method="post" style="padding-top: 19px;")
+                              input(type='hidden',name='product',value='#{profileData._id}')
+                              input(type='hidden',name='demoId',value='#{demo._id}')
+                              button.btn.btn-primary.margin0.pull-right.removeDemo(type='submit') Remove 
+                          .quoted-text.expand-collapse
+                            pre #{demo.desc}
+                            button.btn.btn-link.seemoreQtext.block more
+                    if profileData.screenshots && profileData.screenshots.length
+                     each screenshot, i in profileData.screenshots
+                       div.row.marginT_30.padding_b_30.items(style='border-bottom:1px solid #ddd;')
+                        .col-xs-12.col-sm-4(style="text-align:center")
+                          a(data-toggle="modal" data-target="#myModal"+i)
+                            img(src="#{screenshot}" width='100%')
+                          div.modal.fade(id="myModal"+i tabindex="-1" role="dialog" aria-labelledby="myModalLabel")
+                            div.modal-dialog(role="document")
+                              div.modal-content
+                                div.modal-header
+                                div.modal-body
+                                  img.modalImg(src="#{screenshot}")
+                  else
+                    div.row
+                      div.col-xs-12.text-center
+                        a(href="/register") Sign up to CSquire
+        .panel.panel-default
+          #clients.panel-heading.relative(role='tab')
+            h4.panel-title.font-primary
+              a.collapsed.block(role='button', data-toggle='collapse', data-parent='#accordion', href='#collapseThree', aria-expanded='false', aria-controls='collapseThree')
+                | Clients
+              if isAdmin
+                img.plus3.edit_plus.absolute(src="#{cdn('/plus.png')}" alt="Edit" title="Edit")
+          #collapseThree.panel-collapse.collapse(role='tabpanel', aria-labelledby='clients')
+            .panel-body
+                  if user
+                      div.addClients
+                        input(type='hidden',value='product',name='connectFrom',id='connectFrom')
+                        input(type='hidden',value='#{profileData._id}',name='companyId',id='companyId')
+                        input(type='hidden',value='#{profileData.uid}',name='conFromName',id='conFromName')
+                        h4.text-uppercase.text-left.add-company add Clients
+                        +addCompany("clients","product",profileData._id,'pastClient','client')
+                          .form-group.hidden-sm.visible-xs
+                            .row 
+                              div.col-xs-12
+                                button.btn.btn-primary.margin0#addCompanyBtn(type='submit') Save                            
+                              div.col-xs-12.filterMargin
+                                button.btn.btn-default.margin0#companyCancel(type="button") Reset
+                      div
+                           //-h2 #{JSON.stringify(pastClient)}
+                           if pastClient && pastClient.length
+                             //-h5 #{JSON.stringify(pastClient)}
+                             +company(pastClient,"",profileData._id,'product')
+                             .row.seeAllProfile.margin0
+                               .col-xs-12.text-center
+                                 if isAdmin && pastClient.length > 2
+                                   div.see-all-align
+                                     a.fa.fa-angle-double-right(href=isSuperUser?'#{"/search/connections/company?connectionFrom=product"+"&uid="+profileData.uid}':'#{"/search/connections/company?"+"&connectionFrom=product&uid="+profileData.uid}') See all                               
+                                 else if pastClient.length > 2
+                                   div.see-all-align
+                                     a.fa.fa-angle-double-right(href='#{"/search/connections/company?connectionFrom=product"+"&uid="+profileData.uid}') See all
+                           else
+                            if isAdmin
+                              span.noClients Please add clients to profile
+                            else
+                              span.noClients There are no clients
+                  else
+                    div.row
+                      div.col-xs-12.text-center
+                        a(href="/register") Sign up to CSquire
+        .panel.panel-default
+          #servicePartners.panel-heading.relative(role='tab')
+            h4.panel-title.font-primary
+              a.collapsed.block(role='button', data-toggle='collapse', data-parent='#accordion', href='#collapseFour', aria-expanded='false', aria-controls='collapseThree')
+                | Service Partners
+              if isAdmin
+                img.plus3.edit_plus.absolute(src="#{cdn('/plus.png')}" alt="Edit" title="Edit")
+          #collapseFour.panel-collapse.collapse(role='tabpanel', aria-labelledby='servicePartners')
+            .panel-body
+                  if user
+                      div.addClients
+                        input(type='hidden',value='product',name='connectFrom',id='connectFrom')
+                        input(type='hidden',value='#{profileData._id}',name='companyId',id='companyId')
+                        input(type='hidden',value='#{profileData.uid}',name='conFromName',id='conFromName')
+                        h4.text-uppercase.text-left.add-company add service partners
+                        +addCompany("servicePartner","product",profileData._id,'servicePartner','service partner')
+                          .form-group.hidden-sm.visible-xs
+                            .row 
+                              div.col-xs-12
+                                button.btn.btn-primary.margin0#addCompanyBtn(type='submit') Save                            
+                              div.col-xs-12.filterMargin
+                                button.btn.btn-default.margin0#companyCancel(type="button") Reset
+                      div
+                        if servicePartner && servicePartner.length
+                          +company(servicePartner,"",profileData._id,'product')
+                          .row.seeAllProfile.margin0
+                            .col-xs-12.text-center
+                              if isAdmin && servicePartner.length > 2
+                                div.see-all-align
+                                  a.fa.fa-angle-double-right(href=isSuperUser?'#{"/search/connections/company?connectionFrom=product"+"&uid="+profileData.uid}':'#{"/search/connections/company?"+"&connectionFrom=product&uid="+profileData.uid}') See all                               
+                              else if servicePartner.length > 2
+                                div.see-all-align
+                                  a.fa.fa-angle-double-right(href='#{"/search/connections/company?connectionFrom=product"+"&uid="+profileData.uid}') See all
+                        else
+                         if isAdmin
+                           span.noClients Please add service partners to profile
+                         else
+                           span.noClients There are no service partners
+                  else
+                    div.row
+                      div.col-xs-12.text-center
+                        a(href="/register") Sign up to CSquire

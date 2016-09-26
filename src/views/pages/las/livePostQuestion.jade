@@ -1,0 +1,93 @@
+extends ../../layouts/layout_LAS
+include ../../mixin/headpanel
+include ../../mixin/formHeading
+include ../../mixin/SignupstepsTemplate
+include ../../mixin/registerFormcontinue
+include ../../mixin/formerror
+include ../../mixin/formsuccess
+include ../../mixin/quickSupportMixin
+
+
+block header
+    +headerQuickSupport({head:'POST A QUESTION'})
+
+block content
+  div.las_post_question
+    form.form-horizontal.signupForm#payment-form(method='post', action='/quickSupport/submitquestion'  )
+      .row#quickQuestionPost
+        .col-md-6.col-xs-12.marginT_30
+          
+           include ./quickSupportPostQuestion
+
+        .col-md-6.col-xs-12.marginT_30
+          div.greyBox.margin0
+            .rate
+                if lasData.sku.isDefault === true
+                 p
+                   span.text-tertiary #{price}
+                   //-span.font-small
+                     strike #{price}
+                else
+                 p 
+                   span.text-tertiary #{price}            
+                   span.font-small
+                      strike #{defaultPrice}
+                span #{lasData.sku.attributes.description}
+          .form-group.filterMargin
+            .col-xs-12
+                input.form-control.holderName(type='text',data-errorholder='Name on card',placeholder='Name on card')
+                label.error.alert.alert-danger(style="display:none") Please enter same name as on the card
+                input(type="hidden" name="skuValue" value='#{lasData.sku.id}')
+                input(type="hidden" name="stripeProduct" value='#{lasData.sku.product}')                
+          .form-group.credit_number
+            .col-xs-12
+              input.form-control#card-num(type='password',maxlength='16',size='4',data-errorholder='Credit Card Number', placeholder='Credit Card Number',value="0000000000000000",onkeypress='return isNumber(event)' readonly)
+              label.error.alert.alert-danger(style="display:none") Please enter credit card number
+              a.pull-right.text-primary.no_underline.font_small.hide
+                input#idShowNum(type="checkbox" style="margin-right:7px")
+                span#hideNum Show Card Number
+          .form-group
+            .col-xs-12
+                label Expiration Date
+                .row
+                  .col-xs-8
+                    .row
+                      .col-xs-7.col-sm-9.col-md-7
+                        input.form-control#card-exp.pull-left(type='password',data-errorholder='Month',size="5",maxlength="5", placeholder='MM/YY',readonly,value="0218")
+                        label.error.alert.alert-danger(style="display:none") Please provide expiry date
+                      .col-xs-5.text-right.col-sm-3.col-md-5
+                        input.form-control#card-cvc(type='password',data-errorholder='CVV',size="3",maxlength="3",placeholder='CVV',value="876",readonly)
+                        label.error.alert.alert-danger.text-left(style="display:none") Please enter CVV
+          .form-group.promotion_code
+            .col-xs-8
+              input.form-control(type='text',data-errorholder='Promotion Code', placeholder='Promotion Code' value = '' readonly)
+              label.error.alert.alert-danger(style="display:none") Please enter promotion code
+            .col-xs-4.text-right
+              a.btn.btn-default.border-primary#applyCode(href="javascript:void(null)") Apply Code
+          .form-group
+            .col-xs-12
+              .row
+                .col-xs-12
+                  input.feedback_checkbox#seprateEmailCheckbox(type="checkbox" onchange="valueChanged()")
+                  input(type="hidden" name="coupon")#addCoupon
+                  input(type="hidden" name="referralBy")#referralBy
+                  p.inline-block Do you wish to receive your invoice on a different Email address?
+              .row
+                .col-xs-12
+                  input.feedback.form-control.emailForInvoice(name="emailForInvoice" type="text" placeholder="Email")
+                  label.error.alert.alert-danger(style="display:none") Please enter email
+          .form-group
+            .col-xs-12.col-sm-4
+              div.btn.btn-primary.form-control.font-primary.margin0#showReview Proceed to Review Order
+          p Proceed to review your question and payment details. Dont worry we won't charge anything until you agree to pay.
+          p(align="center")
+            img.block.quickSupportLogo(src="#{cdn('/QuickSupportStacked.png')}" height="110px")
+  include ./quickSupportReview
+block append js
+ script(src="https://js.stripe.com/v2/")
+ script(src="//cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js")
+ script
+      | Stripe.setPublishableKey('#{stripePubKey}');
+ script(src=cdn('/liveApplication.js'))
+ script
+      | $('#phoneNum').mask('999-999-9999', {placeholder: ' '});$('#card-exp').mask('99/99', {placeholder: ' '});

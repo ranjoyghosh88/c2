@@ -1,0 +1,7 @@
+extends ../layouts/layout
+
+block content
+  div#errorPage
+    h1 OOPS!
+    h2 #{error.header}
+    h3(style="text-transform: lowercase;") #{error.text} #[a(href="mailto:admin@csquire.com") admin@csquire.com]

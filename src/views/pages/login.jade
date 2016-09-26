@@ -1,0 +1,43 @@
+extends ../layouts/layout 
+include ../mixin/headpanel
+include ../mixin/formHeading
+include ../mixin/formerror
+include ../mixin/formsuccess
+block content 
+    .container
+      +successFlash()
+    .container
+      +setFormHead({head:'Explore, Connect, Enable',text:""})  
+      form#form.form-horizontal.col-sm-8.col-sm-offset-2.bordered(method='post', action='/login')
+        input(type='hidden', name='_csrf', value='#{csrfToken}') 
+        -if(hidden)
+        -var queryStr='?';
+        -for(var field in hidden)
+          -queryStr=queryStr+field+'='+hidden[field]+'&';
+          input(type='hidden', name=field, value=hidden[field])
+        .form-group
+          .col-lg-offset-3.col-lg-6.col-sm-offset-2.col-sm-8
+            if Faileduser
+              input#username.form-control(type='email',required='required', name='username', placeholder='Your email', data-errorholder='Email',  value='#{Faileduser}')
+            else
+              input#username.form-control(type='email' ,required='required', name='username', data-errorholder='Email',  placeholder='Your email')
+        .form-group
+          .col-lg-offset-3.col-lg-6.col-sm-offset-2.col-sm-8
+            input#pass.form-control(type='password' ,required='required', name='password', data-errorholder='Password',  placeholder='Password')
+            if(error)
+                p.error.alert.alert-danger #{error}
+        .form-group
+          .col-lg-offset-3.col-lg-6.col-sm-offset-2.col-sm-8
+            //-.btn-group.login
+              button.btn.btn-primary
+                span
+                  i.fa.fa-lock
+              button.btn.btn-primary.btn-block.form-control(type='submit') Log In
+            button.btn.btn-primary.form-control.signin.btn-control(type='submit') Log In <i style="font-size:22px;position:absolute;left:30px;" class="fa fa-lock"></i>
+        hr.hr-margin
+        .form-group
+          .col-lg-offset-3.col-lg-6.col-sm-offset-2.col-sm-8
+            span.SignupLink.hide
+              a.col-xs-6.pull-left(href='/resetPassword')  Forgot Password?
+      .clearfix        
+

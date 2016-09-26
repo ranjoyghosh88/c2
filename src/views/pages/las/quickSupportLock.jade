@@ -1,0 +1,105 @@
+if lockedQuestion.length == 0
+    //- p Locked Question is Empty // there no feedback pending // there no question answered by you
+  else
+    .panel.panel-default.lockedQues
+      .panel-heading.text-uppercase.font-secondary.relative Question Locked by adviser
+        //- div.remaining_time
+        //-   span.font-primary
+        //-     span.glyphicon.glyphicon-time.fa_MarginRight
+        //-     strong 15:00
+        //-   .btn-group
+        //-     button.border-primary.font-primary.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+        //-       | Extend time 
+        //-       span.caret
+        //-     ul.dropdown-menu
+        //-       li
+        //-         a.text-capitalize.font-primary(href='#') By 15 Mins
+        //-       li
+        //-         a.text-capitalize.font-primary(href='#') By 30 Mins
+        //-       li
+        //-         a.text-capitalize.font-primary(href='#') By 45 Mins
+        //-       li
+        //-         a.text-capitalize.font-primary(href='#') By 60 Mins
+      .panel-body
+        .row
+          .col-sm-6.col-xs-12
+            .row
+              .col-sm-4.col-xs-5
+                label.las_heading.font-primary Contact Name
+              .col-sm-8.col-xs-7
+                span.text-capitalize 
+                a(href="/people/#{lockedQuestion.createdBy.uid}" target="_blank") #{lockedQuestion.createdBy.name} #{lockedQuestion.createdBy.lastName}
+          .col-sm-6.col-xs-12
+            .row
+              .col-sm-4.col-xs-5
+                label.las_heading.font-primary Product
+              .col-sm-8.col-xs-7
+                span.text-capitalize
+                  each val,i in lockedQuestion.product
+                    if i+1 == lockedQuestion.product.length
+                      = val.name
+                    else
+                      = val.name + ", "
+        .row
+          .col-sm-6.col-xs-12
+            .row
+              .col-sm-4.col-xs-5
+                label.las_heading.font-primary Industry
+              .col-sm-8.col-xs-7
+                span #{lockedQuestion.industry.name}
+          .col-sm-6.col-xs-12
+            .row
+              .col-sm-4.col-xs-5
+                label.las_heading.font-primary Business Process Area
+              .col-sm-8.col-xs-7
+                span
+                  each data,j in lockedQuestion.businessProcessArea
+                    if j+1 == lockedQuestion.businessProcessArea.length
+                      = data.name
+                    else
+                      = data.name + ", "
+        if lockedQuestion.tags.length > 0
+          .row
+            .col-sm-12.col-xs-12
+              .row
+                .col-sm-2.col-xs-5
+                  label.las_heading.font-primary Tags
+                .col-sm-10.col-xs-7
+                  span
+                    each data,j in lockedQuestion.tags
+                      if j+1 == lockedQuestion.tags.length
+                        = data.name
+                      else
+                        = data.name + ", "
+        .row
+          .col-xs-12.question
+            .row
+              .col-sm-2.col-xs-5
+                label.las_heading.font-primary.pull-left Question
+              .col-sm-10.col-xs-7
+                span.more #{lockedQuestion.question}
+        .row.marginT_30
+          .col-xs-12
+            form(action="/quickSupport/unlocking" method="post")
+              input(type="hidden",value="unlocked",name="status")
+              input(type="hidden",value="responder",name="unlockingBy")
+              input(type="hidden",value="#{lockedQuestion._id}",name="questionId")
+              input(type="hidden",value="#{lockedQuestion.responderHistory._id}",name="responderHistoryId")
+              .row
+                .col-sm-12.hidden-xs
+                    button.btn.btn-default.btn-primary.form-control.btn-heading-small.margin0(type="submit") Unlock
+                    if lockedQuestion.responderHistory.requesterJoined === true
+                      a.btn.btn-default.btn-primary.notqsextension.form-control.hide.btn-heading-small(href="/quickSupport/videocall/#{lockedQuestion._id}/#{lockedQuestion.responderHistory._id}/#{lockedQuestion.createdBy._id}") Join
+                      a.btn.btn-default.btn-primary.form-control.QSextension.hide.btn-heading-small(lockQuestionId="#{lockedQuestion._id}",responderHistoryId="#{lockedQuestion.responderHistory._id}",createdBy="#{lockedQuestion.createdBy._id}") Join
+                    else
+                      a.btn.btn-default.btn-default.form-control.btn-heading-small.disabled(href="javascript:void(null)") Join
+
+              .row.hidden-sm.visible-xs
+                .col-xs-12
+                  button.btn.btn-default.btn-primary.form-control.margin0(type="submit") Unlock
+                .col-xs-12
+                  if lockedQuestion.responderHistory.requesterJoined === true
+                    a.btn.btn-default.btn-primary.notqsextension.form-control.hide.filterMargin.margin0(href="/quickSupport/videocall/#{lockedQuestion._id}/#{lockedQuestion.responderHistory._id}/#{lockedQuestion.createdBy._id}") Join
+                    a.btn.btn-default.btn-primary.form-control.QSextension.hide.filterMargin.margin0(lockQuestionId="#{lockedQuestion._id}",responderHistoryId="#{lockedQuestion.responderHistory._id}",createdBy="#{lockedQuestion.createdBy._id}") Join
+                  else
+                      a.btn.btn-default.btn-default.form-control.filterMargin.margin0.disabled(href="javascript:void(null)") Join

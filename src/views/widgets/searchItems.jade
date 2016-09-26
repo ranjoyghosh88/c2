@@ -1,0 +1,132 @@
+﻿.search-items.row
+  -if(key)
+    input#profile-type(type="hidden",value= key)
+
+  .col-md-12.col-sm-12
+    .panel.panel-default.searchResults
+      -var updatedKey = urlKey || key
+      - if(!searchData.data.length)
+        .panel-heading
+          - if(!searchData.data.length)
+             | No matching records found
+          //- else
+            +pgnation(pagination,key+'?'+queryString)
+       - if(searchData.data.length)    
+        .panel-body
+           - for (var iIndex = 0; iIndex < searchData.data.length; iIndex++) {
+            - var data = searchData.data[iIndex]
+            - if(data)
+              - var href = data.uid =='guest'? '#' :"/"+key+"/"+data.uid
+                .row
+                  div.col-xs-12
+                    .col-sm-2.text-center   
+                      a.inline-block(href='#{href}')
+                        - if(key=='company')
+                          - if(data.logo)
+                            img.media-object(src=data.logo,width='100px')
+                          - else
+                            img.media-object(src=cdn('/CompanyDummyLogo.jpg'),width='100px')
+                        - else if(key=='people') 
+                          - if(data.name=='Anonymous')
+                            img.media-object(src="#{cdn(data.pictureUrl)}",width='100px')
+                          - else if(data.pictureUrl)
+                            img.media-object(src=data.pictureUrl,width='100px')
+                          - else
+                            img.media-object(src=cdn('/profile.jpg'),width='100px')
+                        - else
+                          - if(data.logo)
+                            img.media-object(src=data.logo,width='100px')
+                          - else
+                            img.media-object(src=cdn('/ProductDummyLogo.jpg'),width='100px')
+                    .col-sm-7.col-xs-12.text-center-mobile
+                      h3.heading.font-primary
+                       a(href='#{href}')
+                         span.profile-name
+                          | #{data.name} 
+                          -if(key=='people' && data.lastName)
+                            | #{data.lastName}
+                        -if(key=='product' && data.company && data.company.length)
+                            | <span style='font-size:14px;color:#2491d1'> by <a href='#{"/company/"+data.company[0].uid}' style='color:#329DDC'> #{data.company[0].name} </a> </span>
+                        -if(data.jobTitle) 
+                            | , <span class='' style='font-size:14px;color:#2491d1'>#{data.jobTitle.name} 
+                            if(data.company && data.company.length)
+                                | at <a href='/company/#{data.company[0].uid}' style='color:#2491d1'>#{data.company[0].name}</a></span>
+
+                      - if(key=='company')
+                        //- if(data.companyWebsite)
+                            br
+                            label 
+                              a(target="_blank" href='#{"//"+data.companyWebsite}') #{data.companyWebsite}
+                        - if(data.type && data.type._id!=1)
+                            br
+                            label #{data.type.name}
+                        - if (loggedUser && data.profileRelations && data.profileRelations.length && query.seeAll == 'connections')
+                            h5.font-primary(style='font-weight: 500;')#commaSeparation Connected as 
+                                  span #{data.profileRelations}
+                      - if(key=='people')  
+                        -if(data.professionalLevel)    
+                          br
+                          label Level: 
+                            span.professionalLvl.text-primary #{data.professionalLevel.name}
+                        -if(data.skills)
+                          br
+                          - for(i=0;i<data.skills.length;i++)
+                              span.skill.inline-block #{data.skills[i]}
+                        - if (loggedUser && data.profileRelations && data.profileRelations.length && query.seeAll == 'connections')
+                            h5.font-primary(style='font-weight: 500;')#commaSeparation Connected as 
+                                  span #{data.profileRelations}
+                      - if(key=='product')
+                        - if(data.company && data.company.length>0)
+                            br
+                            label
+                        - if (loggedUser && data.profileRelations && data.profileRelations.length && query.seeAll == 'connections')
+                            h5.font-primary(style='font-weight: 500;')#commaSeparation Connected as 
+                                  span #{data.profileRelations}
+
+                    .col-sm-3.col-xs-12.text-center-mobile.text-center
+                      //-if(key=='people')
+                        - if(data.name!=='Anonymous')
+                          a.btn.btn-default.disabled(disabled,href=(user?
+                          '#':'/register')) Contact Me
+                      //-else
+                        a.btn.btn-default.disabled(disabled,href=(user?'#':'/register')) Contact Us
+                      //h5 #{data.isCon} - #{key}
+                      if (data.isCon == true && data.connStatus=='APPROVED'  && loggedUser && data.name !== 'Anonymous' && isAdmin===true)
+                        if seeAll === 'connections'
+                          form.panel(action='/profile-con/#{query.connectionFrom}/#{key}/people/people/#{data.uid}/#{data._id}/false?conFromId=#{conFromId}',method='post')
+                            input#returnUrl(type="hidden",name="returnUrl", value= '#{returnUrl}')
+                            a.btn.btn-default.btn-primary.btn-heading.margin0.margin-mobile#remove-connection
+                             span Remove Connection
+                        else
+                          form.panel(action='/profile-con/people/#{key}/people/people/#{data.uid}/#{data._id}/false?conFromId=#{conFromId}',method='post')
+                           input#returnUrl(type="hidden",name="returnUrl", value= '#{returnUrl}')
+                           a.btn.btn-default.btn-primary.btn-heading.margin0.margin-mobile#remove-connection
+                            span Remove Connection
+                      else if(loggedUser && data.connStatus=='PENDING' && data.name !== 'Anonymous' && !(data._id.equals(loggedUser)))
+                        form.panel(action='',method='post')
+                          a.add-connection.btn.btn-default.disabled.btn-primary.btn-heading.text-center-mobile.margin0(data-connectto="#{key}" data-con="1" title="Add to connection" data-id='#{data._id}' data-connectFrom='people' data-connectFromId='#{loggedUser}')
+                            span Connection Pending
+                      else if(loggedUser && !data.connStatus && data.name !== 'Anonymous' && !(data._id.equals(loggedUser)))
+                        form.panel(action='',method='post')
+                          input#returnUrl(type="hidden", name="returnUrl", value= '#{returnUrl}')
+                          a.add-connection.btn.btn-default.btn-primary.btn-heading.margin0.margin-mobile(data-connectto="#{key}" data-con="1" title="Add to connection" data-id='#{data._id}' data-connectFrom='people' data-connectFromId='#{loggedUser}')
+                            span Connect
+                      -if(loggedUser && data.name !== 'Anonymous' && !(data._id.equals(loggedUser)) && isAdmin===true)
+                        //-a.btn.btn-default.btn-primary.btn-heading-small.margin0(href='/inbox/connectionRequest') Connect
+                        -if(data.isFav)
+                          a.text-uppercase.fav.add-favourite(title="Remove from favorites" data-fav=key data-id='#{data._id}')
+                            label.glyphicon.glyphicon-star.text-center.margin-mobile
+                        -else
+                          a.text-uppercase.add-favourite(title="Add to favorites" data-fav=key data-id='#{data._id}')
+                            label.glyphicon.glyphicon-star-empty.text-center.margin-mobile
+                      -else
+                        //-a.btn.btn-default.btn-primary.btn-heading-small.margin0(href='/register') Connect
+                        //-a.text-uppercase.add-favourite(title="Add to favorites" data-fav='company' data-id='#' href='/register')
+                            label.glyphicon.glyphicon-star-empty.text-center
+
+
+            - }
+                //-.media-body        
+          .panel-heading
+            +pgnation(pagination,updatedKey+'?'+queryString)
+          

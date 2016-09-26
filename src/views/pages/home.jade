@@ -1,0 +1,53 @@
+extends ../layouts/layout
+include ../mixin/search
+include ../mixin/formerror
+include ../mixin/formsuccess
+include ../mixin/clientSay
+
+block content
+	#home
+		#jumbotron.jumbotron.margin0
+			.container
+				.row
+					//-+searchBox({for: '', skill: ''})
+
+					.col-lg-12.col-md-12.col-sm-12.col-xs-12
+						h2.text-center.text-inverse
+							strong Why CSquire?
+				.row
+					.col-lg-12.col-md-12.col-sm-12.col-xs-12
+						div.boxes.text-center
+							span
+								a.text-uppercase.text-inverse(href='professionalPage') For IT and Finance <br> Executives
+								a.text-uppercase.text-inverse(href='vendorPage') For Consultants and <br> Developers
+
+			section#features
+				.container
+					.row
+						#askQuestion.col-lg-3.col-md-3.col-sm-6.col-xs-6
+							h2.text-center.text-primary.text-uppercase Ask A Question
+							p.text-center.text-inverse to our IT Knowledge Base
+							p.text-center
+								a.btn.btn-primary(href='https://kb.csquire.com') Ask Question
+						#findExpert.col-lg-3.col-md-3.col-sm-6.col-xs-6
+							h2.text-center.text-primary.text-uppercase Find An Expert
+							p.text-center.text-inverse that you can connect with personally
+							p.text-center
+								a.btn.btn-primary(href='#') Find Experts
+						#postRfp.col-lg-3.col-md-3.col-sm-6.col-xs-6
+							h2.text-center.text-primary.text-uppercase Request a proposal
+							p.text-center.text-inverse to hundreds of vetted IT vendors
+							p.text-center
+								a.btn.btn-primary(href='#') Get Started
+						#explore.col-lg-3.col-md-3.col-sm-6.col-xs-6
+							h2.text-center.text-primary.text-uppercase explore the market
+							p.text-center.text-inverse thousands of SW vendors, consultants
+							p.text-center
+								a.btn.btn-primary(href='#') Let's Explore
+
+					
+
+
+block js
+	script(src='//cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js')
+	script(src=cdn('/home.js'))

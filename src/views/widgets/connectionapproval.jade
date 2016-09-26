@@ -1,0 +1,39 @@
+div#connProfile.tab-pane.active(role="tabpanel")
+  table#table_ids(cellspacing='0', width='100%',style='border-bottom:0px')
+    thead
+      tr
+        th(style='border-bottom:none')
+          if pendingInviationCount > 0
+            h4.font-primary You have #{pendingInviationCount} pending connections invitation
+          else
+            h4.font-primary You have no pending connections invitation
+    tbody
+      each data in datas
+        tr
+          td
+            form.connection_form(method='post', action='/invitation/approval/people')
+             .panel.panel-default
+              .panel-body
+                .media
+                  .media-left
+                    a(href="/people/#{data.refId.uid}")
+                    if(data.refId.pictureUrl)
+                        img.media-object(src="#{data.refId.pictureUrl}")
+                    else
+                        img.media-object(src="#{cdn('/profile.jpg')}")
+                  .media-body
+                    h5.media-heading
+                    a(href="/people/#{data.refId.uid}")
+                        | #{data.refId.name} #{data.refId.lastName}
+                    |   , 
+                    label.text-primary #{data.refId.jobTitle.name} 
+                        label.text-lowercase at &nbsp;
+                        label
+                            a(href="/company/#{data.refId.company[0].uid}") #{data.refId.company[0].name}
+                    p(style="text-transform: lowercase;") wants to connect you as #{data.relation.split(',').join(", ")}
+                    p.connectionDate #{data.connectionDate}
+                    input(type="hidden" name="connectFromId" value="#{data.refId._id}")
+                  .media-right
+                    div.inline-block
+                    button.btn.btn-default.btn-primary(name="connectionStatus" value="APPROVED" type="submit") Accept
+                    button.btn.btn-default(name="connectionStatus" value="REJECT" type="submit") Ignore

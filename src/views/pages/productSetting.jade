@@ -1,0 +1,100 @@
+extends ../layouts/layout
+include ../mixin/quickSupportMixin
+
+block content
+	+headerQuickSupport({head:'Product Settings'})
+	#companySettings
+		.container
+			.row
+				.col-sm-12.col-xs-12.col-md-9
+					h4.font-primary Company Info
+					div.greyBox
+						.row
+							.col-sm-3.col-xs-4
+								label Product Name
+							.col-sm-9.col-xs-8
+								span #{product.name}
+						.row.filterMargin
+							.col-sm-3.col-xs-4
+								label Admin
+							.col-sm-9.col-xs-8
+								span.text-capitalize
+									each val,i in product.admin
+										if i+1 == product.admin.length
+											= val.name + " " + val.lastName
+										else
+											= val.name + " " + val.lastName + ", "
+					if !userIsOwner 
+						h5.font-primary You need to claim product page to enable quick support adviser feature for product.
+					if !isCompanyAssociate && userIsOwner
+						h5.font-primary #{product.name} product is not associate with any company. Please conatct #[a(href="mailto:admin@csquire.com") admin@csquire.com]
+					if userIsOwner && isCompanyAssociate
+						h4.font-primary Payment Preferences
+						div.greyBox.hide
+							.row
+								.col-sm-3.col-xs-4
+									label Stripe Account
+								div
+									if product.payments !== undefined && product.payments.stripe !== null && product.payments.stripe !== undefined
+										.col-sm-7.col-xs-7
+											span.block.stripeId #{product.payments.stripe.stripe_user_id}	
+										.col-xs-2(style="text-align:right")
+											a(href="/quickSupport/deauthorize?productId=#{product._id}") Remove
+									else
+										.col-sm-7.col-xs-7
+											span  
+												a(href="/quickSupport/authorize?productId=#{product._id}") Click here to manage stripe account
+						h4.font-primary.hide Quick Support Adviser
+						div.greyBox.hide
+							form(method='post', action='/quickSupport/addProductResponder')
+								.row
+									.col-sm-3.col-xs-4
+										label Add New Adviser
+									.col-sm-9.col-xs-8
+										input(type='hidden',name='productId',value='#{product._id}' 
+										id = 'productId')
+										select#ResponderSelect.form-control.filterSelectData(multiple name='quickSupportResponderList',required='required',data-errorholder='Responder',data-placeholder='Responder',style="width: 100%")
+											each val,i in product.employees
+												if product.responderIds == null || product.responderIds.indexOf(val._id) == -1
+													<option value=#{val._id}>#{val.name} #{val.lastName}</option>
+								.row
+									.col-xs-12
+										div.pull-right.filterMargin
+											button.btn.btn-default.btn-primary.btn-heading-small Add
+											a(href="/product/productSettings/#{product._id}").btn.btn-default.btn-heading-small Cancel
+							.row.filterMargin
+								.col-sm-3.col-xs-4
+									label Current Adviser
+								.col-sm-9.col-xs-6
+									//-.input-group
+										a.input-group-addon.dropdown-toggle.searchText.no_underline(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+											span.text All
+											i.fa.fa-chevron-down.text-primary
+										ul.dropdown-menu.searchToggle
+											li
+												a(href='#') Ben
+											li
+												a(href='#') Lewis
+										input.form-control(type='text', value='', placeholder='Add an employee')
+										a.btn.btn.btn-primary.input-group-addon(type='submit')
+											span.glyphicon.glyphicon-search
+									table.table.margin0.questionTable(cellspacing="0" cellpadding="0")
+										thead
+											tr
+												th(style="width:15%")
+													| Name
+												th(style="width:20%;text-align:right")
+													| Permision
+										tbody
+											if product.quickSupportResponderList && product.quickSupportResponderList.length > 0
+												each val,i in product.quickSupportResponderList
+													tr
+														td.text-capitalize #{val.name} #{val.lastName}
+														td.text-right.removeResponder
+															button.removeProductResponderButton.btn.btn-default.btn-primary.btn-heading-small(id="#{val._id}") Remove
+											else
+												tr
+													td There are no Quick support Adviser added
+													td.text-right.removeResponder
+append js
+	script(src=cdn('/accountSettings.js'))

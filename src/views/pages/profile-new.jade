@@ -1,0 +1,22 @@
+extends ../layouts/layout_searchbox_2column
+include ../mixin/formerror
+include ../mixin/formsuccess
+include ../mixin/products
+include ../mixin/company
+include ../mixin/personProfile
+include ../mixin/registerFormcontinue
+include ../mixin/overallRatings
+include ../mixin/upgrade
+
+
+block column_1  
+  include ../widgets/profile-new
+
+block column_2
+  include ../widgets/profileaside
+
+block append js
+  script(src='//cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js')
+  script(src=cdn('/profile.js'))
+  script.
+    _t.push({start:'#{title}'});

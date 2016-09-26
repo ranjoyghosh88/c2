@@ -1,0 +1,60 @@
+div#createSKU.container
+  .container
+      .row
+        .col-xs-12
+          h4.font-primary Product Detail Information
+          div.greyBox.margin0
+            .row
+              .col-sm-3.col-xs-12.text-left
+                label.widthadjust Product Name
+              .col-sm-9.col-xs-12
+                span #{getStripeProductDetails.name}
+            .row.filterMargin
+              .col-sm-3.col-xs-12.text-left
+                label.widthadjust Description
+              .col-sm-9.col-xs-12
+                span #{getStripeProductDetails.description}
+            .row.filterMargin
+              .col-sm-3.col-xs-12.text-left
+                label.widthadjust Attributes
+              .col-sm-9.col-xs-12
+                if(getStripeProductDetails.attributes[0] && getStripeProductDetails.attributes[0]!=='version')
+                  span#attrVals #{getStripeProductDetails.attributes}
+                input(type='hidden', id='openPop', value="#{skuCreate}")
+                input(type='hidden', id='prodId', value="#{getStripeProductDetails.id}")
+      .row.marginT_30
+        .col-xs-12
+          div
+            h4.font-primary.pull-left SKUs
+            button.btn.btn-primary.btn-heading-small.pull-right.addSKUBtn(type='button',id='#{getStripeProductDetails.id}') Add SKU
+      .row
+        .col-xs-12
+          div.table-small-responsive
+            table.table.table-bordered.skuCreateTable(cellspacing="0" cellpadding="0")
+              thead
+                tr
+                  th SKU Id
+                  th Price
+                  th Attributes
+                  th &nbsp;
+              tbody
+                if stripeAllSkuOfProductId && stripeAllSkuOfProductId.length
+                  each stripeSKUList in stripeAllSkuOfProductId
+                    tr
+                      td #{stripeSKUList.id}
+                      td $ #{stripeSKUList.price/100}
+                      td 
+                        if(getStripeProductDetails.attributes[0] && getStripeProductDetails.attributes[0]!=='version')
+                          span #{stripeSKUList.attributes[getStripeProductDetails.attributes[0]]}
+                        if(getStripeProductDetails.attributes[1])
+                          span , #{stripeSKUList.attributes[getStripeProductDetails.attributes[1]]}
+                        if(getStripeProductDetails.attributes[2])
+                          span , #{stripeSKUList.attributes[getStripeProductDetails.attributes[2]]}
+                        if(getStripeProductDetails.attributes[3])
+                          span , #{stripeSKUList.attributes[getStripeProductDetails.attributes[3]]}
+                      td.text-center
+                        a(title="Edit" type="button" data-toggle="modal" data-target="#SKUCreate")
+                          span(id="#{stripeSKUList.id}",class="skuEdit glyphicon glyphicon-edit connection-small text-primary" aria-hidden="true")
++qsMappingModel()
++createSKUModel()
++updateSkuModel()

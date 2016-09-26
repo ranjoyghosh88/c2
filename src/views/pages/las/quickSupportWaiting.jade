@@ -1,0 +1,64 @@
+.las.las_dashboard
+  include ./quickSupportLock
+
+  .panel.marginT_30
+    .panel-body.padding0
+          include ./quickSupportTab
+          #TabContent.tab-content(style="border:1px solid #ddd")
+            #my-waiting.tab-pane.fade.in.active.margin0
+              .panel
+                if expertWaiting.length == 0
+                  .panel-body
+                    p Your questions are not locked by CSquire advisers till now
+                else  
+                  .panel-body.hide
+                      h4.font-primary Filter by
+                      div.row.las_filters
+                        div.col-sm-8
+                          label.margin0 Can Wait
+                          select.form-control#productSelection(multiple name='product',data-master='products', data-errorholder='Product', required='required',data-placeholder='',style="width: 100%")
+                        div.col-sm-4
+                          label.block Day/ Week/ Month/ Year
+                          input.form-control(type="text")
+                          span.absolute.glyphicon.glyphicon-calendar
+                      div.row.marginT_30.hidden-xs
+                        .col-sm-12
+                          button.btn.btn-default.border-primary.btn-heading-small.margin0 Submit
+                          button.btn-link.fa_Marginleft Clear Filter
+                      div.row.marginT_30.visible-xs.hidden-sm
+                        .col-xs-12
+                          button.btn.btn-default.border-primary.margin0 Submit
+                        .col-xs-12
+                          button.btn-link.fa_Marginleft Clear Filter
+                  div.panel
+                        .panel-body.padding0
+                          table.table.margin0(cellspacing="0" cellpadding="0")
+                            thead
+                              tr
+                                th(style="padding-left:15px;")
+                                  | Question
+                                  i.fa.fa-chevron-down.fa_Marginleft
+                                th
+                                  | Locked By
+                                  i.fa.fa-chevron-down.fa_Marginleft
+                                th
+                             each item in expertWaiting
+                              tr
+                                td
+                                  span.more #{item.question}
+                                td.lockedBy
+                                  a(href="/people/#{item.responderHistory.userId.uid}" style="color: #329ddc;" target="_blank") #{item.responderHistory.userId.name} #{item.responderHistory.userId.lastName}
+                                  if item.responderHistory.company
+                                    | &nbsp;(behalf of 
+                                    a(href="/company/#{item.responderHistory.company.uid}" target="_blank" style="color: #329ddc;") #{item.responderHistory.company.name})
+                                  //- span.block Can wait for 15 Mins
+                                td
+                                  a.btn.btn-default.btn-primary.notqsextension.hide.border-primary.btn-heading-small.margin0(href="/quickSupport/videocall/#{item._id}/#{item.responderHistory._id}/#{item.createdBy._id}") Join
+                                  a.btn.btn-default.btn-primary.QSextension.hide.border-primary.btn-heading-small.margin0(lockQuestionId="#{item._id}",responderHistoryId="#{item.responderHistory._id}",createdBy="#{item.createdBy._id}") Join
+                                  form.btn-grp(style="display:inline-block" action="/quickSupport/unlocking" method="post")
+                                    input(type="hidden",value="requester",name="unlockingBy")
+                                    input(type="hidden",value="unlocked",name="status")
+                                    input(type="hidden",value="#{item._id}",name="questionId")
+                                    input(type="hidden",value="#{item.responderHistory._id}",name="responderHistoryId")
+                                    button.btn.btn-default.btn-heading-small(type="submit") Reject
+                                  //- button.btn.btn-default.btn-heading-small(type="submit") Join ...

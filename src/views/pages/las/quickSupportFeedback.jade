@@ -1,0 +1,76 @@
+.las.las_dashboard
+  include ./quickSupportLock
+
+  .panel.marginT_30
+    .panel-body.padding0
+          include ./quickSupportTab
+          #TabContent.tab-content(style="border:1px solid #ddd")                        
+            #my-pending.tab-pane.fade.in.active.margin0
+              .panel.hide
+                .panel-body
+                  h4.font-primary Filter by 
+                  div.row.las_filters
+                    div.col-sm-8
+                      label Feedback Status
+                      select.form-control(multiple name='',data-master='', data-errorholder='', required='required',data-placeholder='',style="width: 100%")
+                  div.row.marginT_30.btn-grp.hidden-xs
+                    .col-sm-12
+                      button.form-control.btn.btn-default.border-primary.btn-heading-small.margin0 Clear Filter
+                      button.form-control.btn.btn-default.border-primary.btn-heading-small Submit
+                  div.row.marginT_30.btn-grp.visible-xs.hidden-sm
+                    .col-xs-12
+                      button.form-control.btn.btn-default.border-primary.margin0 Clear Filter
+                    .col-xs-12
+                      button.form-control.btn.btn-default.border-primary Submit
+              .panel
+                .panel-body.padding0
+                  div
+                    table.table.margin0.feedbackTable
+                      thead
+                        tr
+                          th(style="width:20%")
+                            | Question
+                            i.fa.fa-chevron-down.fa_Marginleft
+                          th(style="width:10%")
+                            | Requester Feedback
+                            i.fa.fa-chevron-down.fa_Marginleft
+                          th(style="width:10%")
+                            | Responder Feedback
+                            i.fa.fa-chevron-down.fa_Marginleft
+                          th(style="width:10%")
+                            | Call End Date
+                            i.fa.fa-chevron-down.fa_Marginleft
+                      tbody
+                       each item in feedbackPedingList
+                          tr
+                            td
+                              span.pendindFeedback.more #{item.qsQuestionId.question}
+                            td.text-capitalize
+                              if item.qsQuestionId.createdBy._id == userID
+                                if item.requesterFeedback == undefined
+                                  a(href="/quickSupport/requesterFeedback/#{item.qsQuestionId._id}/#{item._id}") Pending
+                                else
+                                  | Completed
+                              else 
+                                if item.requesterFeedback == undefined
+                                  | Pending
+                                else
+                                  | Completed
+
+                            td
+                              if item.userId._id == userID
+                                if item.responderFeedback == undefined
+                                  a(href="/quickSupport/requesterFeedback/#{item.qsQuestionId._id}/#{item._id}") Pending
+                                else
+                                  | Completed
+                              else
+                                if item.responderFeedback == undefined
+                                  | Pending
+                                else
+                                  | Completed
+                            td
+                              span.pendindFeedback.lasDate
+                                if item.callEndedDate == undefined
+                                  | #{item.lastupdateDate}
+                                else
+                                  | #{item.callEndedDate}

@@ -1,0 +1,52 @@
+extends ../../layouts/layout
+include ../../mixin/headpanel
+include ../../mixin/formHeading
+include ../../mixin/formerror
+include ../../mixin/formsuccess
+block content 
+    .container
+    .container
+      +successFlash()
+    .container.register
+          +setFormHead({head:'Explore, Connect, Enable',text:""})
+
+          div    
+            form#singupform.form-horizontal.col-sm-8.col-sm-offset-2.bordered(method='post', action='/register/step1')  
+                #accordion.panel-group(role='tablist', aria-multiselectable='true')
+                      .panel.panel-default
+                          #headingOne(role='tab')
+                            h4.panel-title.form-group.row
+                              .col-lg-6.col-lg-offset-3.col-sm-8.col-sm-offset-2
+                                a.btn.btn-primary.form-control.linkedin.btn-control(href='/oauth/linkedin')  Sign up with LinkedIn <i style="font-size:22px;position:absolute;left:30px;" class="fa fa-linkedin"></i>
+                      
+                             
+                      .panel.panel-default
+                          #headingTwo.panel-heading.hidden(role='tab')
+                            h4.panel-title.form-group.row
+                              .col-lg-6.col-lg-offset-3.col-sm-8.col-sm-offset-2
+                                a.btn.btn-default.collapsed.form-control(data-toggle='collapse', data-parent='#accordion', href='#collapseTwo', aria-expanded='true', aria-controls='collapseTwo')  Sign Up 
+                          #collapseTwo.panel-collapse(role='tabpanel', aria-labelledby='headingTwo')
+                            div
+                              div
+                                .form-group
+                                  .col-lg-6.col-lg-offset-3.col-sm-8.col-sm-offset-2
+                                    input#_csrf(type='hidden', name='_csrf', value='{{csrfToken}}')
+                                    input#email.form-control(type='email', name='email',data-errorholder='Email',  placeholder='Your email',required='required')
+                                .form-group
+                                  .col-lg-6.col-lg-offset-3.col-sm-8.col-sm-offset-2
+                                    input#password.form-control(type='password', name='password',data-errorholder='Password' ,data-toggle="tooltip",data-placement="right",title="Password should contain at least 8 characters  with at least one of each - lowercase, uppercase & numeric character.", placeholder='Password',required='required')
+                                .form-group
+                                  .col-lg-6.col-lg-offset-3.col-sm-8.col-sm-offset-2
+                                    input#cpassword.form-control(type='password', name='cpassword',data-errorholder='Cpassword' ,data-toggle="tooltip",data-placement="right",title="Password should contain at least 8 characters  with at least one of each - lowercase, uppercase & numeric character.", placeholder='Confirm password',required='required')
+                                    if(error)
+                                      label.error.alert.alert-danger  Email already registered. <a href='/login'>Login?</a>
+
+                                .form-group
+                                  .col-lg-6.col-lg-offset-3.col-sm-8.col-sm-offset-2
+                                    button#step1.btn.btn-primary.form-control.btn-control(type='submit', value='Sign Up') Sign Up <i style="font-size:22px;position:absolute;left:30px;" class="fa fa-lock"></i>
+            .clearfix                        
+            .form-group.row#belowButton.text-center
+              .col-sm-12
+                a.btn.btn-link(href='/login')  Already have an account? Login    
+   
+  

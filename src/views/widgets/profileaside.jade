@@ -1,0 +1,203 @@
+- function formatTextCapitalize(x) {
+-   return x.replace(/\b\w/g , function(m){ return m.toUpperCase(); } );
+-}
+
+//-.panel.panel-default
+//-  .panel-heading Professionals Like you
+//-  .panel-body
+//-    div.clientImg.secondary
+//-    div.clientImg.secondary
+//-    div.clientImg.secondary
+//-    div.col-xs-12
+//-      a.btn.btn-link(href='#') see all <i class="fa fa-angle-double-right"></i>
+
+if isSuperUser && manageProfile!=profileData.uid
+  .panel
+    a.button-heading.text-uppercase.follow.block.fav(href="#{'/profile?uid='+profileData.uid+'&manageProfile=true'}")
+      span Manage Profile
+if !publicProfile
+  //- .panel
+  //-     a.button-heading#follow ADD COMPANY <i class="fa fa-plus pull-right"></i>
+  //- .panel
+  //-   a.button-heading#follow ADD PRODUCT <i class="fa fa-plus pull-right"></i>
+
+
+if !publicProfile
+  .panel.panel-default
+    .panel-heading.text-uppercase.text-center Who viewed your profile
+    .panel-body.text-center
+      if isPremium && profileData.profileView        
+        if profileData.profileView.length > 0
+          each item in profileData.profileView
+            if item.ProfileData
+              - if(item.ProfileData.email=='guest@user.com')
+                - item.ProfileData.pictureUrl=cdn(item.ProfileData.pictureUrl);
+                - item.ProfileData.uid=null;
+              if item.ProfileData.pictureUrl
+                a.clientImg.secondary(href='#{item.ProfileData.uid?"/people/"+item.ProfileData.uid:"#"}',title='#{formatTextCapitalize(item.ProfileData.name+" "+item.ProfileData.lastName)}',style='#{"background-image:url("+item.ProfileData.pictureUrl+") !important"}')
+              else
+                a.clientImg.secondary(href='#{item.ProfileData.uid?"/people/"+item.ProfileData.uid:"#"}',title='#{formatTextCapitalize(item.ProfileData.name+" "+item.ProfileData.lastName)}',style='#{"background-image:url("+cdn("/profile.jpg")+") !important"}')              
+          div.col-xs-12
+            a.btn.btn-link(href='/search/whoViewed/people') See All<i class="fa fa-angle-double-right" style="margin-left:5px"></i>
+        else
+          span There are no profile views since past 7 day's
+      else
+        +toPremium('Sign up for premium membership')
+
+      //- span.btn.btn-link Coming soon...
+
+if !publicProfile
+  .panel.panel-default
+    .panel-heading.text-uppercase.text-center Connections
+    .panel-body.text-center.connections
+      - var totalLength = 0;
+      - if(profileData.connections){
+      -  if(profileData.connections.profiles.length)
+      -   totalLength += profileData.connections.profiles.length;
+      - }
+      if totalLength>0
+        +connection(profileConnection || [],"people",cdn('/profile.jpg'))
+        div.col-xs-12
+          a.btn.btn-link.seeAll(href="#{isSuperUser?'/search/connections/people?connectionFrom=people&uid='+profileData.uid:'/search/connections/people?connectionFrom=people'}") See All <i class="fa fa-angle-double-right"></i>
+      else
+        span There are no connections
+
+if !publicProfile
+  .panel.panel-default
+    .panel-heading.text-uppercase.text-center Following
+    .panel-body.text-center
+      - var following= resultFp;
+      if following.length>0
+        each item in following
+          - item.lastName=item.lastName?item.lastName:' ';
+          - if(item.logo)
+            - item.logo=item.logo;
+          - else if(item.pictureUrl)
+            - item.logo=item.pictureUrl
+          - else
+            - item.logo=item.type=='people'?cdn('/profile.jpg'): cdn('/CompanyDummyLogo.png');
+          if item.pictureUrl
+            a.clientImg.secondary(href='#{"/"+item.type+"/"+item.uid}',title='#{formatTextCapitalize(item.name+" "+item.lastName)}',style='#{"background-image:url("+item.logo+") !important"}')
+          else
+            a.clientImg.secondary(href='#{"/"+item.type+"/"+item.uid}',title='#{formatTextCapitalize(item.name+" "+item.lastName)}',style='#{"background-image:url("+item.logo+") !important"}')            
+        div.col-xs-12
+          a.btn.btn-link(href=isSuperUser?'#{"/search/followings/people?type=profile&uid="+profileData.uid}':'/search/followings/people') See All <i class="fa fa-angle-double-right"></i>
+      else
+        span No one being followed
+      //-span.btn.btn-link Coming soon...
+
+
+if !publicProfile
+  .panel.panel-default
+    .panel-heading.text-uppercase.text-center Followers
+    .panel-body.text-center
+      - var followers= profileData.followers.profiles;
+      if followers.length>0
+        each item in followers
+          if item.pictureUrl
+            a.clientImg.secondary(href='#{"/people/"+item.uid}',title='#{formatTextCapitalize(item.name+" "+item.lastName)}',style='#{"background-image:url("+item.pictureUrl+") !important"}')
+          else
+            a.clientImg.secondary(href='#{"/people/"+item.uid}',title='#{formatTextCapitalize(item.name+" "+item.lastName)}',style='#{"background-image:url("+cdn("/profile.jpg")+") !important"}')            
+        div.col-xs-12
+          a.btn.btn-link(href=isSuperUser?'#{"/search/followers/people?type=profile&uid="+profileData.uid}':'/search/followers/people') See All <i class="fa fa-angle-double-right"></i>
+      else
+        span There are no followers
+
+
+if publicProfile && user && !isMangingCompProd
+  if(isCon && isCon.connectionStatus === 'APPROVED')
+   form.panel(action='/profile-con/people/people/people/people/#{profileData.uid}/#{profileData._id}/false',method='post')
+     a.button-heading.text-uppercase.follow.block#remove-connection
+       span Remove from Connection 
+       <i class="fa fa-minus pull-right text-inverse"></i>
+       //img(src="#{cdn('/connection_aside.png')}")
+  else if(isCon && isCon.connectionStatus === 'PENDING')
+   form.panel(action='',method='post')
+     a.button-heading.text-uppercase.disabled.follow.block#add-connection()
+       span Connection Pending
+       //<i class="fa fa-plus pull-right text-inverse"></i>
+       img(src="#{cdn('/connection_aside.png')}")
+  else
+   form.panel(action='',method='post')
+     a.button-heading.text-uppercase.follow.block#add-connection(data-connectto="people" data-id='#{profileData._id}')
+       span Add Connection
+       //<i class="fa fa-plus pull-right text-inverse"></i>
+       img(src="#{cdn('/connection_aside.png')}")
+
+
+
+if publicProfile && !isMangingCompProd
+  .panel
+    if user
+      if !isFollower
+        a.button-heading#follow.followHim.text-uppercase.block(uid='#{profileData.uid}',myUid='#{myUid}',_id='#{profileData._id}') Follow <i class="fa fa-star-o pull-right"></i>
+        a.button-heading#follow.unfollowHim.hidden.text-uppercase.block(uid='#{profileData.uid}',myUid='#{myUid}',_id='#{profileData._id}') Unfollow <i class="fa fa-star pull-right" style="color:yellow"></i>
+      else
+        a.button-heading#follow.followHim.hidden.text-uppercase.block(uid='#{profileData.uid}',myUid='#{myUid}',_id='#{profileData._id}') Follow <i class="fa fa-star-o pull-right"></i>
+        a.button-heading#follow.unfollowHim.text-uppercase.block(uid='#{profileData.uid}',myUid='#{myUid}',_id='#{profileData._id}') Unfollow <i class="fa fa-star pull-right" style="color:yellow"></i>
+    else
+      a.button-heading#follow.text-uppercase.block(href='/register') Follow <i class="fa fa-star-o pull-right text-inverse"></i>
+if publicProfile
+  .panel
+    if user
+      a.button-heading.text-uppercase.disabled.block#follow Message <i class="fa fa-envelope-o pull-right text-inverse"></i>
+
+input#_id(type="hidden",value= profileData._id)
+
+if(key)
+  input#profile-type(type="hidden",value= key)
+  
+if publicProfile && user && !isMangingCompProd
+  .panel
+   if(isFav)
+     a.button-heading.text-uppercase.follow.block.fav#add-favourite(data-fav='people' data-id='#{profileData._id}')
+       span Remove from Favourite 
+       <i class="fa fa-minus pull-right text-inverse"></i>
+   else
+     a.button-heading.text-uppercase.follow.block#add-favourite(data-fav='people' data-id='#{profileData._id}')
+       span Add to Favorite
+       <i class="fa fa-plus pull-right text-inverse"></i>
+else if !user
+  .panel
+    a.button-heading.text-uppercase.follow.block(href='/register')
+         span Add to Favorite
+         <i class="fa fa-plus pull-right text-inverse"></i>
+if publicProfile
+  .panel.panel-default
+    .panel-heading.text-uppercase.text-center Similar Professionals
+    .panel-body.text-center
+      if resltProfiles.length>0
+        each item in resltProfiles
+          if item.pictureUrl && user
+            a.clientImg.secondary(href='#{"/people/"+item.uid}',title='#{formatTextCapitalize(item.name+" "+item.lastName)}',style='#{"background-image:url("+item.pictureUrl+") !important"}')
+          else
+            a.clientImg.secondary(href='#{"/people/"+item.uid}',title='#{formatTextCapitalize(item.name+" "+item.lastName)}',style='#{"background-image:url("+cdn("/profile.jpg")+") !important"}')
+        div.col-xs-12
+          a.btn.btn-link(href='#{"/search/similarProffessionals/people?uid="+profileData.uid+"&"+seeallProff}') See All <i class="fa fa-angle-double-right"></i>
+      else
+          span There are no Similar Professionals
+
+if user && publicProfile
+  .panel.panel-default
+    .panel-heading.text-uppercase.text-center Connections in common
+    .panel-body.text-center
+      if connProfiles && connProfiles.length>0
+        each item in connProfiles
+          if item.__t === "companyProfile"
+            if item.logo
+              a.clientImg.secondary(href='#{"/company/"+item.uid}',title='#{formatTextCapitalize(item.name)}',style='#{"background-image:url("+item.logo+") !important"}')
+            else
+              a.clientImg.secondary(href='#{"/company/"+item.uid}',title='#{formatTextCapitalize(item.name)}',style='#{"background-image:url("+cdn("/CompanyDummyLogo.png")+") !important"}')
+          else if item.__t === "productProfile"
+            if item.logo
+              a.clientImg.secondary(href='#{"/product/"+item.uid}',title='#{formatTextCapitalize(item.name)}',style='#{"background-image:url("+item.logo+") !important"}')
+            else
+              a.clientImg.secondary(href='#{"/product/"+item.uid}',title='#{formatTextCapitalize(item.name)}',style='#{"background-image:url("+cdn("/CompanyDummyLogo.png")+") !important"}')
+          else
+            if item.pictureUrl
+              a.clientImg.secondary(href='#{"/people/"+item.uid}',title='#{formatTextCapitalize(item.name+" "+item.lastName)}',style='#{"background-image:url("+item.pictureUrl+") !important"}')
+            else
+              a.clientImg.secondary(href='#{"/people/"+item.uid}',title='#{formatTextCapitalize(item.name+" "+item.lastName)}',style='#{"background-image:url("+cdn("/profile.jpg")+") !important"}')
+        div.col-xs-12
+      else
+          span There are no connections in common

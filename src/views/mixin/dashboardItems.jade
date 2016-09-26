@@ -1,0 +1,44 @@
+mixin dashboardItems(connectionsTab)
+    - var tabDetals = [{'heading': 'Waiting','number': '0'},{'heading': 'All Question','number': '0'},{'heading': 'Answered','number': '0'},{'heading': 'Pending Feedback','number': '0'}]
+    - connectionsTab = connectionsTab || tabDetals
+    for tab in connectionsTab
+        .row
+            .col-xs-2
+                span.inline-block.badge-outerCircle.text-center.bg-primary #{tab.number}
+            .col-sm-10
+                if(tab.addClass==='disabled')
+                    span.inline-block.badge-heading #{tab.heading}
+                else
+                    a(href=tab.href?'#{tab.href}':'#').inline-block.badge-heading(class="#{tab.addClass}") #{tab.heading}
+mixin dashboardItemsrfp(rfpTab,openRfps,respondedRfps)
+    - var tabDetalsrfp = [{'heading': 'Published','number': '0'},{'heading': 'Responded','number': '0'},{'heading': 'Awarded','number': '0'},{'heading': 'Questions','number': '0'}]
+    - respondedRfps=respondedRfps||[]
+    - openRfps=openRfps||[]
+    - rfpTab = rfpTab || tabDetalsrfp
+    - rfpTab2 = rfpTab2 || tabDetalsrfp
+    - rfpTab[0].number=openRfps.length;
+    - rfpTab2[1].number=respondedRfps.length;
+    for tab in rfpTab
+        .row
+            .col-xs-2
+                span.inline-block.badge-outerCircle.text-center.bg-primary #{tab.number}
+            .col-sm-10
+                a(href='/rfp-dashboard').inline-block.badge-heading #{tab.heading}
+mixin dashboardItemsclaim(approvalRequiredforProduct,approvalRequiredforCompany)
+    - var tabDetalsclaim = [{'heading': 'Company','number': approvedCompanyClaimscount,'url':'/search/claimed/company?claimStatus=approved&search='},{'heading': 'Product','number': approvedProductClaimsCount,'url':'/search/claimed/product?claimStatus=approved&search='},{'heading': 'For Approval','number': (approvalRequiredforProduct?approvalRequiredforProduct.length:0) + (approvalRequiredforCompany?approvalRequiredforCompany.length:0),'url':'/inbox/connectionRequest#claimedProfile'},{'heading': 'Pending','number': (pendingCompanyClaims?pendingCompanyClaims.length:0)+(pendingProductClaims?pendingProductClaims.length:0),'url':'/search/claimed/company?claimStatus=pending&search='}]
+    - claimTabm = tabDetalsclaim
+    for tab in claimTabm
+        .row
+            .col-xs-2
+                span.inline-block.badge-outerCircle.text-center.bg-primary #{tab.number}
+            .col-sm-10
+                a(href='#{tab.url}').inline-block.badge-heading #{tab.heading}
+mixin dashboardItemsSavedLeads(connectionsTab)
+    - var tabDetals = [{'heading': 'Search','number': '0'},{'heading': 'Knowledge','number': '0'},{'heading': 'Purchases','number': '0'},{'heading': 'Leads','number': '0'}]
+    - connectionsTab = connectionsTab || tabDetals
+    for tab in connectionsTab
+        .row
+            .col-xs-2
+                span.inline-block.badge-outerCircle.text-center.bg-primary #{tab.number}
+            .col-sm-10
+                a(href=tab.href?'#{tab.href}':'#').inline-block.badge-heading #{tab.heading}

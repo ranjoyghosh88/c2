@@ -1,0 +1,22 @@
+extends ../../layouts/layout
+include ../../mixin/headpanel
+include ../../mixin/formHeading
+include ../../mixin/SignupstepsTemplate
+include ../../mixin/registerFormcontinue
+block content 
+    +headpanels('Sign up as ' + role )
+    .container
+      +signSteps({step:'step2'})
+    .container.error-container 
+    .container
+      form.form-horizontal.signupForm(method='post', action='/register/step3')
+        +previousData(formdata)
+        input#_csrf(type='hidden', name='_csrf', value='{{csrfToken}}')
+        +setFormHead({head:'Which Software Suites  Do You Specialize in?',text:"Let potential clients know everything you can do"})
+        .form-group
+          .col-md-4.col-md-offset-4.col-sm-8.col-sm-offset-2
+            select.form-control#enterpriseSoftwares(name='enterpriseSoftwares',data-taggable='true', data-master='enterpriseSoftware', multiple, data-errorholder='Software suites', data-placeholder='QuickBooks, Powerplan, SAP, etc.',required='required',style="width: 100%")
+              //-+selectBox(masterCollections.enterpriseSoftware,"Please Select a Development Software")
+        .form-group
+          .col-md-4.col-md-offset-4.col-sm-8.col-sm-offset-2
+            button.btn.signup.btn-primary.form-control(type='submit') Continue 

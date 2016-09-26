@@ -1,0 +1,50 @@
+extends ../layouts/layout
+include ../mixin/formerror
+include ../mixin/formsuccess
+include ../mixin/registerFormcontinue
+include ../mixin/overallRatings
+include ../mixin/upgrade
+include ../mixin/quickSupportMixin
+
+block content    
+  -var name = getNameData
+  +headerQuickSupport({head:'Invite your contacts to CSquire Network'})
+  .container
+    .row
+      .col-md-8.col-md-offset-2.col-xs-12.col-xs-offset-0
+        form.form.row#inviteUI(action='/inviteDetails',method='post')
+          .col-xs-12.col-lg-
+            div.row
+              .col-xs-12
+                div.createInvite.marginT_30
+                  div.row(style="padding-bottom:10px")
+                    .col-sm-3.col-xs-12
+                      input.form-control.addValid.nameValid(type="text",name="firstName", placeholder="First Name")
+                      span.absolute.asterisk *
+                    .col-sm-3.col-xs-12
+                      input.form-control(type="text", name="lastName", placeholder="Last Name")
+                    .col-sm-5.col-xs-12
+                      input.form-control.addValid.emailValid(type="text", name="emailAddress" placeholder="Email")
+                      span.absolute.asterisk *
+                    .col-sm-1.text-center
+                      span.glyphicon.glyphicon-trash.remove(title="Delete")
+                      //-i.fa.fa-times.pull-right.text-inverse.remove(style="color: #2d8fca !important;font-size: 38px;")
+                div.personal_note.hide
+                  label Include a personal note: 
+                    span (optional)
+                  br
+                  textarea(rows="5" name="inviteMessage") Hi,
+                           |I would like to invite you to CSquire Network.
+                           | 
+                       //- |- #{username.toUpperCase()}
+            div.row.filterMargin
+              .col-sm-11.col-xs-12.button-group
+                button.btn.btn-default.btnAdd.border-primary(type="button") Invite More
+                a.btn.btn-default.pull-right(href="/dashboard",style='line-height:inherit') Cancel
+                input.btn.btn-primary.pull-right#btnGet(style='margin-right:15px' type='submit', value='Send Invitation')
+                &nbsp;
+                div.showError.alert.alert-danger(style="display:none")
+  
+
+block append js
+  script(src=cdn('/profile.js'))

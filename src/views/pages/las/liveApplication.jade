@@ -1,0 +1,37 @@
+extends ../../layouts/layout_LAS
+include ../../mixin/registerFormcontinue
+include ../../mixin/quickSupportMixin
+
+block header
+    +headerQuickSupport({head:'SUPPORT QUEUE'})
+
+block content
+
+block column_1
+  if tab === 'waiting'
+   include ./quickSupportWaiting
+  else if tab === 'question'
+   include ./quickSupportQuestions
+  else if tab === 'answered'
+   include ./quickSupportAnswered
+  else if tab === 'feedback'
+   include ./quickSupportFeedback
+  else if tab === 'asked'
+   include ./quickSupportAsked
+
+block append js
+  script(src='//cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js')
+  script(src='//cdn.datatables.net/1.10.10/js/dataTables.bootstrap.min.js')
+  if tab === 'answered'
+    link(rel='stylesheet', href=cdn('/lib/bootstrap/bootstrap-datepicker/css/bootstrap-datepicker3.css'))
+    script(src=cdn('/lib/bootstrap/bootstrap-datepicker/js/bootstrap-datepicker.min.js'))
+  if tab === 'question'
+    link(rel='stylesheet', href='//gitcdn.github.io/bootstrap-toggle/2.2.0/css/bootstrap-toggle.min.css')
+    script(src='//gitcdn.github.io/bootstrap-toggle/2.2.0/js/bootstrap-toggle.min.js')
+  script
+      | var businessProcessArea="#{businessProcessArea}";
+      | var product="#{product}";
+      | var industry="#{industry}";
+      | var chromeID="#{chromeId}";
+  script(src=cdn('/liveApplication.js'))
+  script(src='https://static.opentok.com/v2/js/opentok.min.js')

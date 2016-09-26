@@ -1,0 +1,25 @@
+extends ../../layouts/layout_LAS
+include ../../mixin/headpanel
+include ../../mixin/formHeading
+include ../../mixin/SignupstepsTemplate
+include ../../mixin/registerFormcontinue
+include ../../mixin/formerror
+include ../../mixin/formsuccess
+include ../../mixin/quickSupportMixin
+
+block header
+    +headerQuickSupport({head:'EDIT QUESTION'})
+
+block content
+  div.las_post_question
+    if edit == true
+      form.form-horizontal.signupForm#edit-question-form(method='post', action='/quickSupport/updateQuestion')
+        .row#quickQuestionPost
+          .col-sm-6.col-xs-12.marginT_30.col-sm-offset-3
+            include ./quickSupportPostQuestion
+            
+block append js
+ script(src="//cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js")
+ script(src=cdn('/liveApplication.js'))
+ script
+      | $('#phoneNum').mask('999-999-9999', {placeholder: ' '});$('#card-exp').mask('99/99', {placeholder: ' '});

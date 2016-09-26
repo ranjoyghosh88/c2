@@ -1,0 +1,34 @@
+mixin headerQuickSupport(data)
+    div.container-fluid.headpanel.margin0
+      h3.text-uppercase(style="margin:15px 0")
+        label.block.text-uppercase.font-md.black.font-primary(style="font-weight:normal")=data.head
+
+mixin popupGeneric(id)
+      .modal.fade(tabindex='-1', role='dialog', aria-labelledby='popupGeneric' id="#{id}")
+        .modal-dialog
+          .modal-content
+            .modal-header.text-inverse.font-secondary.text-uppercase
+              button.close.text-inverse(type='button', data-dismiss='modal', aria-label='Close')
+                span(aria-hidden='true') ×
+              h4#popupGeneric.modal-title.setHeaderMessage
+            .modal-body.las_sample_question
+              .panel.panel-default
+                .panel-body.padding0
+                  p.messageGeneric
+
+
+mixin reLoadpopup()
+      .modal.fade(tabindex='-1', role='dialog', aria-labelledby='reLoadpopup' id="reLoadpopup")
+        .modal-dialog
+          .modal-content
+            .modal-header.text-inverse.font-secondary.text-uppercase
+              button.close.text-inverse(type='button', data-dismiss='modal', aria-label='Close')
+                span(aria-hidden='true') ×
+              h4#popupGeneric.modal-title Note
+            .modal-body.las_sample_question
+              .panel.panel-default
+                .panel-body.padding0
+                  p You have attempted to leave this page.  If you leave the page, your call will be ended.  Are you sure you want to end the call?
+                  p
+                    button.btn.btn-default.rejectExtend.btn-heading-small(type="button" style="margin-right:5px;") No
+                    button.btn.btn-default.btn-primary.acceptExtend.btn-heading-small(type="button" style="margin-left:5px;") End Call

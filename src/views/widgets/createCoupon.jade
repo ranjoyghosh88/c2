@@ -1,0 +1,41 @@
+div#createCoupon.container
+  .container
+      .row
+        .col-xs-12
+          div
+            h4.font-primary.pull-left Coupons
+            button.btn.btn-primary.btn-heading-small.pull-right(type='button', data-toggle='modal', data-target='#createCouponPopup') Create Coupon
+      .row
+        .col-xs-12
+          div.table-small-responsive
+            table.table.table-bordered.couponCreateTable(cellspacing="0" cellpadding="0")
+              thead
+                tr
+                  th Coupon ID
+                  th Value
+                  th Redeem By
+                  th Duration
+                  th Max Redemptions
+              tbody
+                if stripeCouponList && stripeCouponList.length
+                  each couponList in stripeCouponList
+                    tr
+                      td #{couponList.id}
+                      - if(couponList.amount_off===null)
+                        td #{couponList.percent_off} % Off
+                      - if(couponList.percent_off===null)
+                        td $ #{couponList.amount_off/100} Off
+                      - if(couponList.redeem_by!==null)
+                        td #{moment(couponList.redeem_by*1000).format("DD MMM YYYY")}
+                      - else
+                        td &nbsp;
+                      td #{couponList.duration}
+                      - if(couponList.max_redemptions!==null)
+                        td #{couponList.max_redemptions}
+                      - else
+                        td &nbsp;
+                else
+                  tr
+                    td(colspan="4") No coupon present
++qsMappingModel()
++createCouponModel()

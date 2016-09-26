@@ -1,0 +1,12 @@
+extends layouts/layout
+
+block content
+  div#errorPage
+    h1 OOPS!
+    if error.header
+      h2 #{error.header}
+      h3 go back to <a href='/'>home</a>
+    else
+      h2 It looks like you have taken a wrong turn
+      h3 go back to <a href='/'>home</a>
+      p #{error.message}

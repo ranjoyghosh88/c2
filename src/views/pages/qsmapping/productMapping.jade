@@ -1,0 +1,36 @@
+extends ../../layouts/layout
+include ../../mixin/headpanel
+include ../../mixin/qsMappingMixin
+
+block content
+	+headpanels('Stripe Mapping')
+	div.container
+		div.row
+			div.adminMapping.marginT_30
+				ul.nav.nav-tabs(role='tablist')
+					li.col-xs-12.col-sm-4.col-md-2.text-center(role='presentation',class='#{tab=="productMapping"?"active":""}')
+						a(href='/qsMapping') Product Mapping
+					li.col-xs-12.col-md-2.col-sm-4.text-center(role='presentation',class='#{tab=="referralMapping"?"active":""}')
+						a(href='/qsMapping/referralMapping') Referral Mapping
+					li.col-xs-12.col-md-2.col-sm-4.text-center(role='presentation',class='#{tab=="couponMapping"?"active":""}')
+						a(href='/qsMapping/couponMapping') Coupon Mapping
+					li.col-xs-12.col-md-3.col-sm-4.text-center(role='presentation',class='#{tab=="planMapping"?"active":""}')
+						a(href='/qsMapping/planMapping') Subscription Plan Mapping
+				.tab-content
+					if tab=="productMapping"
+						#productMapping.tab-pane.active(role='tabpanel')
+							include ../../widgets/stripeProductMapping
+					if tab=="referralMapping"
+						#referralMapping.tab-pane.active(role='tabpanel')
+							include ../../widgets/qsReferralMapping
+					if tab=="couponMapping"
+						#couponMapping.tab-pane.active(role='tabpanel')
+							include ../../widgets/stripeCouponMapping
+					if tab=="planMapping"
+						#planMapping.tab-pane.active(role='tabpanel')
+							include ../../widgets/planMapping
+block append js
+	script(src='//cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js')
+	script(src='//cdn.datatables.net/1.10.10/js/dataTables.bootstrap.min.js')
+	script(src=cdn('/dashboard.js'))
+	script(src=cdn('/qsMapping.js'))

@@ -1,0 +1,12 @@
+extends ../../layouts/layout
+include ../../mixin/headpanel
+include ../../mixin/qsMappingMixin
+
+block content
+	include ../../widgets/qsReferralMapping
+
+block append js
+	script(src='//cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js')
+	script(src='//cdn.datatables.net/1.10.10/js/dataTables.bootstrap.min.js')
+	script(src=cdn('/dashboard.js'))
+	script(src=cdn('/qsMapping.js'))

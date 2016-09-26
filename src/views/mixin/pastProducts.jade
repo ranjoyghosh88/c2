@@ -1,0 +1,217 @@
+mixin carousel_products(data,collectionData,type,currComp)
+  - var href=data;
+  - collectionData = collectionData || []    
+  - type = type || null    
+  - currComp = currComp || null    
+    .carousel.slide.visible-lg(data-ride='carousel',data-type='multi',id="#{href.id+'1'}")
+          // Wrapper for slides
+          .carousel-inner(role='listbox')            
+            if (collectionData.length)
+              - for(var x=0;x<collectionData.length; x++)
+                - var data= collectionData[x];
+                if data===collectionData[0]
+                  div.item.active
+                    if collectionData[x].refId && !collectionData[x].refId._id.equals(currComp)
+                      div.carousel-data.col-md-3.col-sm-6.col-xs-12.col-lg-3
+                        a.remove                          
+                          if href.editable
+                            span.glyphicon.glyphicon-remove-sign
+                          +addCarouselItem(data || [],type,"#{cdn('/CompanyDummyLogo.png')}")
+                    - x++;
+                    if collectionData[x] && !collectionData[x].refId._id.equals(currComp)
+                      - data= collectionData[x];
+                      div.carousel-data.col-md-3.col-sm-6.col-xs-12.col-lg-3
+                        a.remove
+                          if href.editable
+                            span.glyphicon.glyphicon-remove-sign
+                          +addCarouselItem(data || [],type,"#{cdn('/CompanyDummyLogo.png')}")
+                    - x++;
+                    if collectionData[x] && !collectionData[x].refId._id.equals(currComp)
+                      - data= collectionData[x];
+                      div.carousel-data.col-md-3.col-sm-6.col-xs-12.col-lg-3
+                        a.remove
+                          if href.editable
+                            span.glyphicon.glyphicon-remove-sign
+                          +addCarouselItem(data || [],type,"#{cdn('/CompanyDummyLogo.png')}")
+                    - x++;
+                    if collectionData[x] && !collectionData[x].refId._id.equals(currComp)
+                      - data= collectionData[x];
+                      div.carousel-data.col-md-3.col-sm-6.col-xs-12.col-lg-3
+                        a.remove
+                          if href.editable
+                            span.glyphicon.glyphicon-remove-sign
+                          +addCarouselItem(data || [],type,"#{cdn('/CompanyDummyLogo.png')}")
+                
+                else
+                  div.item
+                    if collectionData[x].refId && !collectionData[x].refId._id.equals(currComp)
+                      div.carousel-data.col-md-3.col-sm-6.col-xs-12.col-lg-3
+                        a.remove
+                          if href.editable
+                            span.glyphicon.glyphicon-remove-sign
+                          +addCarouselItem(data || [],type,"#{cdn('/CompanyDummyLogo.png')}")
+                    - x++;
+                    if collectionData[x] && !collectionData[x].refId._id.equals(currComp)
+                      - data= collectionData[x];
+                      div.carousel-data.col-md-3.col-sm-6.col-xs-12.col-lg-3
+                        a.remove
+                          if href.editable
+                            span.glyphicon.glyphicon-remove-sign
+                          +addCarouselItem(data || [],type,"#{cdn('/CompanyDummyLogo.png')}")
+                    - x++;
+                    if collectionData[x] && !collectionData[x].refId._id.equals(currComp)
+                      - data= collectionData[x];
+                      div.carousel-data.col-md-3.col-sm-6.col-xs-12.col-lg-3
+                        a.remove
+                          if href.editable
+                            span.glyphicon.glyphicon-remove-sign
+                          +addCarouselItem(data || [],type,"#{cdn('/CompanyDummyLogo.png')}")
+                    - x++;
+                    if collectionData[x] && !collectionData[x].refId._id.equals(currComp)
+                      - data= collectionData[x];
+                      div.carousel-data.col-md-3.col-sm-6.col-xs-12.col-lg-3
+                        a.remove
+                          if href.editable
+                            span.glyphicon.glyphicon-remove-sign
+                          +addCarouselItem(data || [],type,"#{cdn('/CompanyDummyLogo.png')}")
+          // Controls
+          a.left.carousel-control(href="#{'#'+href.id+'1'}", role='button', data-slide='prev')
+            span.glyphicon.glyphicon-chevron-left(aria-hidden='true')
+            span.sr-only Previous
+          a.right.carousel-control(href="#{'#'+href.id+'1'}", role='button', data-slide='next')
+            span.glyphicon.glyphicon-chevron-right(aria-hidden='true')
+            span.sr-only Next    
+    .carousel.slide.visible-md(data-ride='carousel',data-type='multi',id="#{href.id+'2'}")
+          // Wrapper for slides
+          .carousel-inner(role='listbox')
+            if (collectionData.length)
+              - for(var x=0;x<collectionData.length; x++)
+                - var data= collectionData[x];
+                if data===collectionData[0]
+                  div.item.active
+                    if collectionData[x].refId && !collectionData[x].refId._id.equals(currComp)
+                      div.carousel-data.col-md-3.col-sm-6.col-xs-12.col-lg-3
+                        a.remove
+                          if href.editable
+                            span.glyphicon.glyphicon-remove-sign
+                         +addCarouselItem(data || [],type,"#{cdn('/CompanyDummyLogo.png')}")
+                    - x++;
+                    if collectionData[x] && !collectionData[x].refId._id.equals(currComp)
+                      - data= collectionData[x];
+                      div.carousel-data.col-md-3.col-sm-6.col-xs-12.col-lg-3
+                        a.remove
+                          if href.editable
+                            span.glyphicon.glyphicon-remove-sign
+                          +addCarouselItem(data || [],type,"#{cdn('/CompanyDummyLogo.png')}")
+                else
+                  div.item
+                    if collectionData[x].refId && !collectionData[x].refId._id.equals(currComp)
+                      div.carousel-data.col-md-3.col-sm-6.col-xs-12.col-lg-3
+                        a.remove
+                          if href.editable
+                            span.glyphicon.glyphicon-remove-sign
+                          +addCarouselItem(data || [],type,"#{cdn('/CompanyDummyLogo.png')}")
+                    - x++;
+                    if collectionData[x] && !collectionData[x].refId._id.equals(currComp)
+                      - data= collectionData[x];
+                      div.carousel-data.col-md-3.col-sm-6.col-xs-12.col-lg-3
+                        a.remove
+                          if href.editable
+                            span.glyphicon.glyphicon-remove-sign
+                          +addCarouselItem(data || [],type,"#{cdn('/CompanyDummyLogo.png')}")
+          // Controls
+          a.left.carousel-control(href="#{'#'+href.id+'2'}", role='button', data-slide='prev')
+            span.glyphicon.glyphicon-chevron-left(aria-hidden='true')
+            span.sr-only Previous
+          a.right.carousel-control(href="#{'#'+href.id+'2'}", role='button', data-slide='next')
+            span.glyphicon.glyphicon-chevron-right(aria-hidden='true')
+            span.sr-only Next    
+    .carousel.slide.visible-xs.visible-sm(data-ride='carousel',data-type='multi',id="#{href.id+'3'}")
+          // Wrapper for slides
+          .carousel-inner(role='listbox')
+            if (collectionData.length)
+              each data in collectionData
+                if data===collectionData[0]
+                  if data.refId && !data.refId._id.equals(currComp)
+                    div.item.active
+                      div.carousel-data.col-md-3.col-sm-6.col-xs-12.col-lg-3
+                        a.remove
+                          if href.editable
+                            span.glyphicon.glyphicon-remove-sign
+                          +addCarouselItem(data || [],type,"#{cdn('/CompanyDummyLogo.png')}")
+                else
+                  if data.refId && !data.refId._id.equals(currComp)
+                    div.item
+                      div.carousel-data.col-md-3.col-sm-6.col-xs-12.col-lg-3
+                        a.remove
+                          if href.editable
+                            span.glyphicon.glyphicon-remove-sign
+                          +addCarouselItem(data || [],type,"#{cdn('/CompanyDummyLogo.png')}")
+          // Controls
+          a.left.carousel-control(href="#{'#'+href.id+'3'}", role='button', data-slide='prev')
+            span.glyphicon.glyphicon-chevron-left(aria-hidden='true')
+            span.sr-only Previous
+          a.right.carousel-control(href="#{'#'+href.id+'3'}", role='button', data-slide='next')
+            span.glyphicon.glyphicon-chevron-right(aria-hidden='true')
+            span.sr-only Next
+            
+mixin carousel_products_dummy(data)      
+    .carousel.slide(data-ride='carousel',data-type='multi',id=data.id)
+          // Wrapper for slides
+          .carousel-inner(role='listbox')
+            div.item.active
+              div.carousel-data.col-md-3.col-sm-6.col-xs-12.col-lg-3
+                a.remove
+                  if data.editable
+                    span.glyphicon.glyphicon-remove-sign
+                  img(src='#{cdn("/vendorLogo1.jpg")}', alt='') 
+            div.item
+              div.carousel-data.col-md-3.col-sm-6.col-xs-12.col-lg-3
+                a.remove
+                  if data.editable
+                    span.glyphicon.glyphicon-remove-sign
+                  img(src='#{cdn("/vendorLogo1.jpg")}', alt='')
+            div.item
+              div.carousel-data.col-md-3.col-sm-6.col-xs-12.col-lg-3
+                a.remove
+                  if data.editable
+                    span.glyphicon.glyphicon-remove-sign
+                  img(src='#{cdn("/vendorLogo1.jpg")}', alt='')
+            div.item
+              div.carousel-data.col-md-3.col-sm-6.col-xs-12.col-lg-3
+                a.remove
+                  if data.editable
+                    span.glyphicon.glyphicon-remove-sign
+                  img(src='#{cdn("/vendorLogo1.jpg")}', alt='')
+            div.item
+              div.carousel-data.col-md-3.col-sm-6.col-xs-12.col-lg-3
+                a.remove
+                  if data.editable
+                    span.glyphicon.glyphicon-remove-sign
+                  img(src='#{cdn("/vendorLogo1.jpg")}', alt='')
+            div.item
+              div.carousel-data.col-md-3.col-sm-6.col-xs-12.col-lg-3
+                a.remove
+                  if data.editable
+                    span.glyphicon.glyphicon-remove-sign
+                  img(src='#{cdn("/vendorLogo1.jpg")}', alt='')
+            div.item
+              div.carousel-data.col-md-3.col-sm-6.col-xs-12.col-lg-3
+                a.remove
+                  if data.editable
+                    span.glyphicon.glyphicon-remove-sign
+                  img(src='#{cdn("/vendorLogo1.jpg")}', alt='')
+            div.item
+              div.carousel-data.col-md-3.col-sm-6.col-xs-12.col-lg-3
+                a.remove
+                  if data.editable
+                    span.glyphicon.glyphicon-remove-sign
+                  img(src='#{cdn("/vendorLogo1.jpg")}', alt='')
+          // Controls
+          a.left.carousel-control.bgnone(href="#{'#'+data.id}", role='button', data-slide='prev')
+            span.glyphicon.glyphicon-chevron-left(aria-hidden='true')
+            span.sr-only Previous
+          a.right.carousel-control.bgnone(href="#{'#'+data.id}", role='button', data-slide='next')
+            span.glyphicon.glyphicon-chevron-right(aria-hidden='true')
+            span.sr-only Next
+

@@ -1,0 +1,223 @@
+.row#companyProfile
+  .col-sm-12.col-md-12
+    .panel.panel-default
+          .panel-body
+            if editSection=='basic'
+              form.media(method='post',action='#{"/company/edit/"+profileData.uid}' enctype='multipart/form-data')
+                .row
+                  .col-sm-12
+                    .btn_close
+                      a.cancle.pull-right(href='#{"/company/"+profileData.uid}',title='Cancel')
+                        span.fa.fa-times
+                .row
+                  .col-sm-4.col-lg-3
+                    .media-left
+                      input(type='hidden',value='#{profileData.name}',name='id')
+                      if profileData.companyWebsite
+                        //-a(target="_blank" href="#{'//'+profileData.companyWebsite}")    
+                          - if(profileData.logo)
+                              img.media-object.profilePic(src=profileData.logo,width='100px')
+                          - else              
+                              img.media-object.profilePic(src="#{cdn('/CompanyDummyLogo.png')}")
+                        - if(profileData.logo)
+                            img.media-object.profilePic(src=profileData.logo,width='100px')
+                        - else              
+                            img.media-object.profilePic(src="#{cdn('/CompanyDummyLogo.jpg')}")
+                      else 
+                          - if(profileData.logo)
+                              img.media-object.profilePic(src=profileData.logo,width='100px')
+                          - else              
+                              img.media-object.profilePic(src="#{cdn('/CompanyDummyLogo.png')}")
+                      button.btn.btn-link(name='profilePic',id='TrgrClk') Change Picture
+                      input(type='file',name='file',id='file')
+                  .col-sm-8.col-lg-9
+                    .media-body
+                      .form
+                        .form-group.col-xs-12
+                          .col-sm-10.col-xs-12
+                            input.form-control.text-capitalize(type='text',required='required',data-errorholder='Name', placeholder='Name',name='name',value='#{profileData.name}')
+                        .form-group.col-xs-12
+                          .col-sm-10.col-xs-12
+                            select.form-control(name='type', data-placeholder='Company Type',data-errorholder='Company Type',style='width:100%')
+                              +PreselectBox(masterCollections.vendorTypes,[profileData.type])
+                        .form-group.col-xs-12
+                          .col-sm-10.col-xs-12
+                            input.form-control.text-capitalize(type='text',required='required',data-errorholder='locations',placeholder='Locations',name='companyLocations',value='#{ profileData.companyLocations?profileData.companyLocations:""}')
+                        .form-group.col-xs-12
+                          .col-xs-12
+                            if profileData.followers && profileData.followers.profiles
+                              h3.media-heading Followers: #{followerProfile}
+                        .form-group.col-xs-12
+                          .col-xs-12
+                            h3.media-heading.margin0 Overall Rating:
+                              +rating(3,{})
+                        .form-group.col-sm-5.col-xs-12
+                          .col-xs-12
+                            button.btn.btn-primary.form-control(type='submit') Submit  
+                        .form-group.col-sm-5.col-xs-12
+                          .col-xs-12
+                            a.btn.btn-default.form-control(href='#{"/company/"+profileData.uid+"?editSection=basic"}') Reset
+            else
+              .media
+                .row
+                  .col-sm-12
+                    if isAdmin
+                      form.pull-right.edit(method='get',action='#{"/company/"+profileData.uid}')
+                        input(type='hidden',name='editSection',value='basic')
+                        button.btn.btn-link.edit(title='Edit')
+                          span.fa.fa-pencil
+                .row
+                  .col-lg-3.col-sm-4
+                    .media-left
+                      if profileData.companyWebsite
+                        //-a(target="_blank" href="#{'//'+profileData.companyWebsite}")    
+                          - if(profileData.logo)
+                              img.media-object(src=profileData.logo,width='100px')
+                          - else              
+                              img.media-object(src="#{cdn('/CompanyDummyLogo.png')}")
+                        - if(profileData.logo)
+                              img.media-object(src=profileData.logo,width='100px')
+                        - else              
+                              img.media-object(src="#{cdn('/CompanyDummyLogo.png')}")
+                      else
+                        a(href='#')    
+                          - if(profileData.logo)
+                              img.media-object(src=profileData.logo,width='100px')
+                          - else              
+                              img.media-object(src="#{cdn('/CompanyDummyLogo.png')}")
+                  .col-lg-9.col-sm-8
+                    .media-body
+                      h1.media-heading.fullName= profileData.name
+                      h3.media-heading.text-capitalize #{profileData.type._id!=1?profileData.type.name:''}
+                      h3.media-heading.text-capitalize #{profileData.companyLocations}
+                      if profileData.followers && profileData.followers.profiles
+                        h3.media-heading.text-capitalize Followers: #{followerProfile}
+                      h3.media-heading.text-capitalize Overall Rating:
+                          +rating(3,{})
+                   
+                   
+                
+if editSection=='detail'
+  .panel.panel-default.companyDescription
+    .panel-heading.text-center.text-uppercase About #{profileData.name}
+      a.cancle.pull-right(href='#{"/company/"+profileData.uid}',title='Cancel')
+        span.fa.fa-times
+    form.panel-body.text-center(method='post',action='#{"/company/edit/"+profileData.uid}' enctype='multipart/form-data')
+      input(type='hidden',value='#{profileData.name}',name='id')
+      .row
+        .col-xs-12
+          textarea.form-control(name='description',placeholder='Please provide detailed description about the company. eg. <Company> is a business aligned technology services provider...',style='max-width:100%') #{profileData.description}
+       .row
+          if profileData.type._id != 3
+             div.form-group.col-xs-12
+               h4 Specialties
+               select.form-control(name='speciality', data-taggable='true',data-master='enterpriseSoftware',data-placeholder='speciality', multiple,data-errorholder='speciality',style='width:100%')
+                 +setSelected(masterCollections.enterpriseSoftware,profileData.speciality)
+       .row
+          .form-group.col-md-3.col-sm-6 
+            h4.text-left.text-primary.text-capitalize location
+            if profileData.companyLocations
+              input.form-control(type='text',required,name='companyLocations',data-errorholder='locations',value='#{profileData.companyLocations}')
+            else
+              input.form-control(type='text',required,name='companyLocations',data-errorholder='locations')
+          .form-group.col-md-3.col-sm-6 
+            h4.text-left.text-primary.text-capitalize website
+            if profileData.companyWebsite
+              input.form-control(type='text',required,name='companyWebsite',data-errorholder='website',value="#{profileData.companyWebsite}")
+            else
+              input.form-control(type='text',required,name='companyWebsite',data-errorholder='website')
+          .form-group.col-md-3.col-sm-6 
+            h4.text-left.text-primary.text-capitalize company size 
+            select#headCount.sortSelectOnNum.form-control.select2(name='headCount', data-placeholder='Head Count',style="width: 100%")
+              +PreselectBox(masterCollections.headCount,[profileData.headCount])
+          .form-group.col-md-3.col-sm-6 
+            h4.text-left.text-primary.text-capitalize annual revenue
+            select#annualRevenue.sortSelectOnNum.form-control.select2(name='annualRevenue',data-placeholder='Annual Revenue',style="width: 100%")
+              +PreselectBox(masterCollections.annualRevenue,[profileData.annualRevenue])
+
+        .row  
+          .form-group.col-md-3.col-sm-5.col-md-offset-6.col-sm-offset-2
+            button.btn.btn-primary.form-control(type='submit') Submit  
+          .form-group.col-md-3.col-sm-5
+            a.btn.btn-default.form-control(href='#{"/company/"+profileData.uid+"?editSection=detail"}') Reset
+
+
+else
+  .panel.panel-default.companyDescription
+    .panel-heading.text-center.text-uppercase About #{profileData.name}
+      if isAdmin
+        form.pull-right.edit(method='get',action='#{"/company/"+profileData.uid}')
+          input(type='hidden',name='editSection',value='detail')
+          button.btn.btn-link.edit(title='Edit')
+            span.fa.fa-pencil
+    .panel-body
+       if profileData.description
+        pre.details #{profileData.description}
+       .row(style='margin-bottom:0')
+         div.col-xs-12
+           if profileData.type._id == 3
+             h4 Products
+             if profileData.products
+               -for(i=0;i<profileData.products.length;i++)
+                  if i+1 <= 9
+                    a.tag(href='#{"/product/"+profileData.products[i].uid}') #{profileData.products[i].name}
+                  else
+                    a.tag.hide(href='#{"/product/"+profileData.products[i].uid}') #{profileData.products[i].name}
+           else
+             h4 Specialties
+             if profileData.speciality
+               -for(i=0;i<profileData.speciality.length;i++)
+                  if i+1 <= 9
+                    span.tag #{profileData.speciality[i].name}
+                  else
+                    span.tag.hide #{profileData.speciality[i].name}
+            -if(( profileData.type._id == 3 && profileData.products && profileData.products.length>0) || (profileData.type._id !=3 && profileData.speciality && profileData.speciality.length>0 ))
+              if profileData.speciality.length >= 10 && profileData.type._id !=3
+                p.btn.btn-link.bgnone.seemoreList more
+              else if profileData.products.length >= 10 && profileData.type._id ==3
+                p.btn.btn-link.bgnone.seemoreList more
+       .row
+          if profileData.companyLocations
+           div.col-md-3.col-sm-6 
+             h4.descData location
+             span.text-capitalize #{profileData.companyLocations}
+          if profileData.companyWebsite
+           div.col-md-3.col-sm-6 
+             h4.descData website
+             a(target="_blank" href="#{'//'+profileData.companyWebsite}")= profileData.companyWebsite
+          if profileData.headCount
+           div.col-md-3.col-sm-6 
+             h4.descData company size
+             if profileData.headCount
+                span #{profileData.headCount.name} employees
+          if profileData.annualRevenue
+           div.col-md-3.col-sm-6
+             h4.descData annual revenue
+             if profileData.annualRevenue
+                span= profileData.annualRevenue.name
+
+           
+
+.panel.panel-default.panel-description
+  .panel-heading.text-center.text-uppercase Testimonials
+    if isAdmin && isPremium
+      form.pull-right.edit.disabled
+        input(type='hidden',name='editSection',value='testimonials')
+        button.btn.btn-link.edit.disabled(title='Edit',disabled)
+          span.fa.fa-pencil
+  //.panel-body
+    span.btn.btn-link Coming soon...
+  .panel-body.text-center
+    if isPremium
+      .quoted-text
+          div.fa.fa-quote-left.pull-left
+          i Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+      div.clientImg.secondary
+      .clientInfo.inline-block
+        i Deisy Graham
+        i President and CEO at ABC
+    else if user
+      +toPremium('Sign up for premium membership to view testimonials')
+    else
+      a.btn.btn-link.whiteSpaceInherit(href='/register') Sign up to CSquire
+    

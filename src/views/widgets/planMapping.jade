@@ -1,0 +1,182 @@
+div#stripeMapping
+  div.panel.panel-default
+    div.panel-body.padding0
+      div.padding15
+        h4.font-primary Add CSquire Subscription Plan Mapping
+        form.form-horizontal.signupForm#plan-mapping-form.filterMargin
+              .row.rowMargin
+                .col-sm-4.col-xs-12
+                  if isMappingEdit
+                    input(type="hidden"  name="csquireService" value = "#{editPlan.csquireService._id}")
+                    input(type="hidden"  name="planId" value = "#{editPlan.planId}")
+                    input(type="hidden"  name="action" value = "edit")
+                  label.width20 Service Name
+                  select#PlanService.form-control.pull-right(name='csquireService',data-placeholder='Select Service Name',data-errorholder='serviceName' style='width:70%')
+                    if isMappingEdit
+                      +PreselectCsquireServiceRole(csquireServices, editPlan.csquireService)
+                    else
+                      +selectCsquireServiceRole(csquireServices,'csquireService')
+                  label.error.alert.alert-danger.marginLabel(style="display:none") Please enter Service Name
+                .col-sm-4.col-xs-12.mobileTopMargin
+                  label.width20 Subscription Plan Name
+                  select#planId.form-control(name='planId',data-placeholder='Select Subscription Plan',data-errorholder='serviceName' style='width:70%')
+                    if isMappingEdit
+                      if stripePlanList && stripePlanList.length
+                        +preSelectStripePlan(stripePlanList, editPlan.planId)
+                    else
+                      if stripePlanList && stripePlanList.length
+                        +selectStripePlan(stripePlanList,'planId')
+                  label.error.alert.alert-danger.marginLabel(style="display:none") Please enter plan Name
+              .row
+                .col-xs-12
+                  label.filterMargin 
+              .row
+                .col-xs-12.radioContainer                    
+                  div.inline-block
+                    if isMappingEdit && editPlan.isCompanyProfilePlan
+                      input.default-plan-company#companyPlan(type="checkbox" class = "companyCheck checkPlan" name = "isCompanyProfilePlan" value = "true" checked = "checked" data-toggle="modal-confirm" data-message="Current company custom mapping will be removed, do you want to proceed?" data-title="ALERT!" data-target="#submit-confirm")
+                    else
+                      input.default-plan-company#companyPlan(type="checkbox" class = "companyCheck checkPlan" name = "isCompanyProfilePlan" value = "true" data-toggle="modal-confirm" data-message="Current company custom mapping will be removed, do you want to proceed?" data-title="ALERT!" data-target="#submit-confirm")
+                    span Applies to companies
+                  div.inline-block.company-person-div
+                    if isMappingEdit && editPlan.isPersonalProfilePlan
+                      input#personPlan(type="checkbox" class = "companyCheck checkPlan" name = "isPersonalProfilePlan" value = "true" checked = "checked" data-toggle="modal-confirm" data-message="Current person custom mapping will be removed, do you want to proceed?" data-title="ALERT!" data-target="#submit-confirm")
+                    else
+                      input#personPlan(type="checkbox" class = "companyCheck checkPlan" name = "isPersonalProfilePlan" value = "true" data-toggle="modal-confirm" data-message="Current person custom mapping will be removed, do you want to proceed?" data-title="ALERT!" data-target="#submit-confirm")
+                    span Applies to People
+                  div.inline-block.company-person-div
+                    if isMappingEdit && editPlan.isProductProfilePlan
+                      input#productPlan(type="checkbox" class = "companyCheck checkPlan" name = "isProductProfilePlan" value = "true" checked = "checked" data-toggle="modal-confirm" data-message="Current product custom mapping will be removed, do you want to proceed?" data-title="ALERT!" data-target="#submit-confirm")
+                    else
+                      input#productPlan(type="checkbox" class = "companyCheck checkPlan" name = "isProductProfilePlan" value = "true" data-toggle="modal-confirm" data-message="Current product custom mapping will be removed, do you want to proceed?" data-title="ALERT!" data-target="#submit-confirm")
+                    span Applies to products
+              .row
+                .col-xs-12
+                  label.filterMargin Custom Plans
+              .row.filterMargin
+                .col-sm-4                                 
+                  div#company-div
+                    label.widthadjust Companies
+                    select.form-control.checkSelect.checkPlan(name='csquireCompanyProfiles', id = "csquireCompanyProfiles" data-master="companyProfile", data-placeholder='Enter company name', multiple,data-errorholder='serviceName' style='width:70%')
+                      if isMappingEdit == true && editPlan.csquireCompanyProfiles && editPlan.csquireCompanyProfiles.length > 0
+                        +PreselectBoxQuickDefault(data, editPlan.csquireCompanyProfiles)
+                .col-sm-4.mobileTopMargin
+                  div.company-person-div#person-div
+                    label.widthadjust People
+                    select.form-control.checkSelect.checkPlan(name='csquirePersonalProfiles', id = "csquirePersonalProfiles" data-master="personalProfile" data-placeholder='Enter people name', multiple,data-errorholder='serviceName' style='width:70%')
+                      if isMappingEdit == true && editPlan.csquirePersonalProfiles && editPlan.csquirePersonalProfiles.length > 0
+                        +PreselectBoxQuick(data, editPlan.csquirePersonalProfiles)
+                .col-sm-4.mobileTopMargin#all-select
+                  div.company-person-div#product-div
+                    label.widthadjust Products
+                    select.form-control.checkSelect.checkPlan(name='csquireProductProfiles', id = "csquireProductProfiles" data-master="productProfile", data-placeholder='Enter product name', multiple,data-errorholder='serviceName' style='width:70%')
+                      if isMappingEdit == true && editPlan.csquireProductProfiles && editPlan.csquireProductProfiles.length > 0
+                        +PreselectBoxQuickDefault(data, editPlan.csquireProductProfiles)
+                label.error.alert.alert-danger(style="display:none;margin-left:110px!important") Please select atleast one mapping
+              .row.marginT_30
+                .col-xs-12
+                  if isMappingEdit
+                    button.btn.btn-primary.btn-default.btn-heading.margin0(type="button" id = "addPlanMapping") Edit
+                  else
+                    button.btn.btn-primary.btn-default.btn-heading.margin0(type="button" id = "addPlanMapping") Add
+                  a(id = "clearAllPlanFilter" class = "form-control btn btn-default border-primary btn-heading") Clear all               
+      div.bordertop.filterMargin
+      div.padding15
+        h4.font-primary Subscription Plan Mappings
+        form(method='get' novalidate)
+                .row.filterMargin
+                  .col-xs-12
+                    label Select a service name
+                .row
+                  .col-xs-12.col-sm-5
+                    select#csquireServiceFilter.form-control(name='csquireService',data-placeholder='Select service name',data-errorholder='serviceName' style='width:100%')
+                      if isServiceFilter
+                        +PreselectCsquireServiceFilter(csquireServices, serviceFilterArray)
+                      else
+                        +selectCsquireServiceFilter(csquireServices,'csquireService')
+                  .col-xs-12.col-sm-6
+                    button.btn.btn-primary.btn-default.btn-heading(type='submit') Submit
+                    a.hide(id = "clearFilter" class = "form-control btn btn-default border-primary btn-heading") Clear Filter
+            div.table-small-responsive
+              table.table.table-bordered.productMappingTable.marginT_30(cellspacing="0" cellpadding="0")
+                thead
+                  tr
+                    th Service Name
+                    th Plan Name
+                    th Applies To All
+                    th Companies
+                    th Person
+                    th Products
+                    th
+                    th 
+                tbody
+                  if subscribedPlan.length > 0
+                  - subscribedList = [];
+                  each subscribedPlans,j in subscribedPlan
+                    - subscribedList.push(subscribedPlans.planId+subscribedPlans.csquireService._id)
+                  if planMappingList && planMappingList.length > 0
+                    each mapping in planMappingList
+                      - alreadySubscribed = mapping.planId+mapping.csquireService._id;
+                      tr
+                        td #{mapping.csquireService.name}
+                        td 
+                          a(planId = "#{mapping.planId}" class = "planDetails")
+                            | #{mapping.planId} 
+                        td 
+                          - var defaultMapping=[];
+                          if(mapping.isCompanyProfilePlan === true)
+                            -defaultMapping.push(" " + 'Companies')
+                          if(mapping.isPersonalProfilePlan === true)
+                            -defaultMapping.push(" " + 'Person')
+                          if(mapping.isProductProfilePlan === true)
+                            -defaultMapping.push(" " + 'Products')
+                          if defaultMapping.length == 0
+                            span 
+                              | -
+                          else
+                            span 
+                              | #{defaultMapping.join(', ')}
+                        td
+                          if mapping.csquireCompanyProfiles && mapping.csquireCompanyProfiles.length > 0
+                            - var mappingCompanyProfiles=[];
+                            each val,i in mapping.csquireCompanyProfiles
+                                -mappingCompanyProfiles.push(" " + val.name)
+                            | #{mappingCompanyProfiles.join(', ')}
+                          else  
+                            | -
+                        td
+                          if mapping.csquirePersonalProfiles && mapping.csquirePersonalProfiles.length > 0
+                            - var mappingPersonalProfiles=[];
+                            each val,i in mapping.csquirePersonalProfiles
+                                -mappingPersonalProfiles.push(" " + val.name)
+                            | #{mappingPersonalProfiles.join(', ')}
+                          else  
+                            | -
+                        td
+                          if mapping.csquireProductProfiles && mapping.csquireProductProfiles.length > 0
+                            - var mappingProductProfiles=[];
+                            each val,i in mapping.csquireProductProfiles
+                                -mappingProductProfiles.push(" " + val.name)
+                            | #{mappingProductProfiles.join(', ')}
+                          else  
+                            | -
+                        if(subscribedList.indexOf(alreadySubscribed)<0)
+                          td.text-center 
+                            a(href="/qsMapping/editPlanMapping/#{mapping.csquireService._id}/#{mapping.planId}")
+                              span(class="glyphicon glyphicon-edit connection-small" aria-hidden="true" title="Edit")
+                          td.text-center 
+                            a(href="/qsMapping/deletePlanMapping/#{mapping.csquireService._id}/#{mapping.planId}" data-confirm="Are you sure you want to   delete?" title="Delete")
+                              span.fa_MarginRight(class="glyphicon glyphicon-trash connection-small" aria-hidden="true" title="Delete")
+                        else
+                          td.text-center(title="Plan already Subscribed")
+                            a(href="", class="disabledPlanButton",title="Plan already Subscribed")
+                              span(class="glyphicon glyphicon-edit connection-small" aria-hidden="true" title="Edit")
+                          td.text-center(title="Plan already Subscribed") 
+                            a(href="", class="disabledPlanButton",title="Plan already Subscribed")
+                              span.fa_MarginRight(class="glyphicon glyphicon-trash connection-small" aria-hidden="true" title="Delete")
+                  else
+                    tr
+                      td(colspan="8") No Plan mapping present
+    +qsMappingModel()
+    +planDetailsModel()
+    +confirmBox()

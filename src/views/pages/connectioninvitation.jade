@@ -1,0 +1,32 @@
+extends ../layouts/layout
+include ../mixin/upgrade
+block vars
+  - function formatTextCapitalize(x) {
+  -   return x.replace(/\b\w/g , function(m){ return m.toUpperCase(); } );
+  -}
+
+block content
+  .container
+    .row#inbox
+      .col-xs-12.col-sm-4.col-md-3.col-lg-2.inbox-height
+        include ../widgets/inboxaside
+      .col-xs-12.col-sm-8.col-md-9.col-lg-10.inbox-height.inbox_aside.tab-content
+        include ../widgets/connectionapproval
+        if isPremium
+            include ../widgets/claimedProfile
+        else
+            div#claimedProfile.tab-pane(role="tabpanel")
+                +toPremium('Sign up for premium membership')
+append js
+  script.
+    $(function(){
+      var hash = window.location.hash;
+      hash && $('ul.nav a[href="' + hash + '"]').tab('show');
+
+      $('#inbox.nav.nav-pills.inbox a').click(function (e) {
+        $(this).tab('show');
+        var scrollmem = $('body').scrollTop();
+        window.location.hash = this.hash;
+        $('html,body').scrollTop(scrollmem);
+      });
+    });

@@ -1,0 +1,50 @@
+extends ../../layouts/layout
+include ../../mixin/headpanel
+include ../../mixin/formHeading
+include ../../mixin/SignupstepsTemplate
+include ../../mixin/registerFormcontinue
+include ../../mixin/formerror
+include ../../mixin/formsuccess
+
+block content 
+    +headpanels('Sign up as Member ')
+    .container
+      +signSteps('')
+    .container.error-container 
+    .container
+      +errorFlash()
+      +successFlash()
+      form.form-horizontal.signupForm(method='post', action='/register/step2')
+        +previousData()
+        input#_csrf(type='hidden', name='_csrf', value='#{csrfToken}')
+        input#groupName(type='hidden', name='groupName')
+        +setFormHead({head:'Tell the Community a Little About Yourself',text:"Don't be shy. We won't bite."})
+        .form-group
+          .col-sm-4.col-sm-offset-4
+            input.form-control(type='text', name='givenName', value='#{givenName}')
+        .form-group
+          .col-sm-4.col-sm-offset-4
+            input#surname.form-control(type='text', name='surname', value='#{surname}')
+        .form-group
+          .col-sm-4.col-sm-offset-4
+            input#location.form-control(type='text', name='location', placeholder='Location')
+        .form-group
+          .col-sm-4.col-sm-offset-4
+            select#groups.form-control.functionalrole(name='groups')
+               - for (var i = 0; i < groups.length; i++) {
+                   option(value='#{groups[i].href}')  #{groups[i].name}
+                -}
+        .form-group
+          .col-sm-4.col-sm-offset-4
+            label Professional Level
+            select.form-control(name='Level', id='professionalevel')
+        .form-group
+          .col-sm-4.col-sm-offset-4
+            input.form-control(type='text', name='currentCompany', autocomplete='off', placeholder='Current Company')
+        .form-group
+          .col-sm-4.col-sm-offset-4
+            label Job Title
+            select.form-control(name='jobTitle', id='jobTitle' )    
+        .form-group
+          .col-sm-offset-4.col-sm-4
+            button.btn.btn-primary.form-control(type='submit') Continue 

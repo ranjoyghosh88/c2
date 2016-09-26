@@ -1,0 +1,62 @@
+if publicProfile && user && !isMangingCompProd
+  if(isCon)
+   form.panel(action='/profile-con/people/people/people/people/#{profileData.uid}/#{profileData._id}/false',method='post')
+     a.button-heading.text-uppercase.follow.block#remove-connection
+       span Remove from Connection 
+       <i class="fa fa-minus pull-right text-inverse"></i>
+       //img(src="#{cdn('/connection_aside.png')}")
+  else
+   form.panel(action='',method='post')
+     a.button-heading.text-uppercase.follow.block#add-connection(data-connectto="people", data-id='#{profileData._id}')
+       span Add Connection
+       //<i class="fa fa-plus pull-right text-inverse"></i>
+       img(src="#{cdn('/connection_aside.png')}")
+if(key)
+  input#profile-type(type="hidden",value= key)
+if publicProfile && !isMangingCompProd
+  .panel
+    if user
+      if !isFollower
+        a.button-heading#follow.followHim.text-uppercase.block(uid='#{profileData.uid}',myUid='#{myUid}',_id='#{profileData._id}') Follow <i class="fa fa-star-o pull-right"></i>
+        a.button-heading#follow.unfollowHim.hidden.text-uppercase.block(uid='#{profileData.uid}',myUid='#{myUid}',_id='#{profileData._id}') Unfollow <i class="fa fa-star pull-right" style="color:yellow"></i>
+      else
+        a.button-heading#follow.followHim.hidden.text-uppercase.block(uid='#{profileData.uid}',myUid='#{myUid}',_id='#{profileData._id}') Follow <i class="fa fa-star-o pull-right"></i>
+        a.button-heading#follow.unfollowHim.text-uppercase.block(uid='#{profileData.uid}',myUid='#{myUid}',_id='#{profileData._id}') Unfollow <i class="fa fa-star pull-right" style="color:yellow"></i>
+    else
+      a.button-heading#follow.text-uppercase.block(href='/register') Follow <i class="fa fa-star-o pull-right text-inverse"></i>
+    i.fa.fa-minus.pull-right.text-inverse
+div.panel
+  if user
+    a.follow.button-heading.text-uppercase.block(href="#") Message
+      i.fa.fa-envelope-o.pull-right.text-inverse
+if publicProfile && user && !isMangingCompProd
+  .panel
+   if(isFav)
+     a.button-heading.text-uppercase.follow.block.fav#add-favourite(data-fav='people' data-id='#{profileData._id}')
+       span Remove from Favourite 
+       <i class="fa fa-minus pull-right text-inverse"></i>
+   else
+     a.button-heading.text-uppercase.follow.block#add-favourite(data-fav='people' data-id='#{profileData._id}')
+       span Add to Favorite
+       <i class="fa fa-plus pull-right text-inverse"></i>
+else if !user
+  .panel
+    a.button-heading.text-uppercase.follow.block(href='/register')
+         span Add to Favorite
+         <i class="fa fa-plus pull-right text-inverse"></i>
+.panel.panel-default
+    .panel-heading.text-uppercase.text-center Similar Professionals
+    .panel-body.text-center
+      div.clientImg.secondary
+      div.clientImg.secondary
+      div.clientImg.secondary
+      div.col-xs-12
+        a.btn.btn-link(href='#') See All <i class="fa fa-angle-double-right"></i>
+.panel.panel-default
+    .panel-heading.text-uppercase.text-center Connections In Common
+    .panel-body.text-center
+      div.clientImg.secondary
+      div.clientImg.secondary
+      div.clientImg.secondary
+      div.col-xs-12
+        a.btn.btn-link(href='#') See All <i class="fa fa-angle-double-right"></i>

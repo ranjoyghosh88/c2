@@ -1,0 +1,219 @@
+extends ../../layouts/layout
+include ../../mixin/search
+include ../../mixin/formerror
+include ../../mixin/formsuccess
+include ../../mixin/clientSay
+block rfpTemplates
+  style.
+    #content{
+       min-height:400px;
+    }
+  div.
+      <script  type='text/html' id='summary-tmpl'>
+        <div class="row">
+                    <div class="col-sm-12 col-xs-10 col-xs-offset-1 col-sm-offset-0">
+                        <form method="post" action="#" class="form-horizontal signupForm" novalidate="novalidate">
+                            <div class="form-group form-head">
+                                <div class="row">
+                                    <h4 class='col-xs-12 marginT_30'  style='width:auto;font-weight:normal;padding:0;margin-bottom:0;font-family:Open Sans, sans-serif;'>
+                                        <label class='col-xs-12' style='font-size:16px'>Company Information</label>
+                                    </h4>
+                                </div>
+                                <div class="panel-body" style='padding: 15px 0;'>
+                                      <div class="row">
+                                        <!--<% if(rfpProfile.title){ %>
+                                          <div class="question black">Title</div>
+                                          <div class="answer black"><%=rfpProfile.title %></div>
+                                        <% } %>-->
+                                        <% if(rfpProfile.companyId){ %>
+                                            <div class='col-sm-6'>
+                                                  <div class="question black">What Company is this RFP for?</div>
+                                                  <div class="answer black"><%=rfpProfile.companyId.name %></div>
+                                            </div>
+                                        <% } %>
+                                        <% if(rfpProfile.timeFrame){ %>
+                                          <div class='col-sm-6'>
+                                              <div class="question black">What is the desired timeframe to purchase?</div>
+                                              <div class="answer black"><%=rfpProfile.timeFrame %></div>
+                                          </div>
+                                        <% } %>
+                                        <% if(rfpProfile.budget){ %>
+                                            <div class='col-sm-6'>
+                                              <div class="question black">What is the current budget for this purchase?</div>
+                                              <div class="answer black"><%=rfpProfile.budget %></div>
+                                            </div>
+                                        <% } %>
+                                        <% if(rfpProfile.solutionsInPlaceIds){ %>
+                                           <div class='col-sm-6'>
+                                                <div class="question black">What solutions are currently in place?</div>
+                                                <% for(var indx2=0;indx2<rfpProfile.solutionsInPlaceIds.length;indx2++){ %>
+                                                    <div class="answer black"><%=rfpProfile.solutionsInPlaceIds[indx2].name %></div>
+                                                <% } %>
+                                            </div>
+                                            <% } %>
+                                        <% if(rfpProfile.whyRFP){ %>
+                                            <div class='col-sm-6'>
+                                              <div class="question black">What brings you to the RFP process?</div>
+                                              <div class="answer black"><%=rfpProfile.whyRFP %></div>
+                                            </div>
+                                        <% } %>
+                                    </div>
+                                  </div>
+                                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                 
+                                  <div class="panel panel-default">
+                                    <a class="panel-heading" role="tab" id="headingOne" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseOne" style='display:block;'>
+                                      <div class="panel-title" style='width:auto;'>
+                                        <span>
+                                                RFP Recipients
+                                        </span>
+                                        <span class="indicator pull-right collapsed"><span class="fa fa-angle-double-down black text-primary"></span></span>
+                                      </div>
+                                    </a>
+                                    <div id="collapseTwo" class="panel-body panel-collapse collapse col-sm-12" role="tabpanel" aria-labelledby="headingOne">
+                                      <div class="">
+
+                                            <% _.each(reciepents,function(item,index){ %>
+                                                <div class="panel panel-default rfpRecipientList_panel">
+                                                <div class="panel-body" style='border-top:none !important;'>
+                                                <div class="rfp-build-questions">
+                                                    <div class="row featured-row">
+                                                        <div class="col-xs-12">
+                                                            <img src="/images/favicon_inverse_new.png" class="absolute featured" >
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">                         
+                                                        <div class="col-sm-3 list_cmpny_logo text-center">
+                                                            <img src="<%=item.logo|| '/images/CompanyDummyLogo.png' %>" style='width:100px;max-height:100px;'>
+                                                        </div>                          
+                                                        <div class="col-sm-8">
+                                                            <h4 class="text-capitalize"><%=item.name %></h4>
+                                                            <% if(item.type){ %>
+                                                                <span><%=item.type.name=="Regular Company"?'':item.type.name %></span>
+                                                            <% } %>
+                                                        </div>                          
+                                                    </div>
+                                                </div>
+                                                </div>
+                                                </div>
+                                            <% }); %>
+                                      </div>
+                                    </div>
+                                  </div>
+                                    <% _.each(questionGroups,function(que,ind){ %>
+                                            <div class="panel panel-default">
+                                                    <a class="panel-heading collapsed" role="tab"  data-toggle="collapse" data-parent="#accordion" href="<%='#collapse'+ind %>" aria-expanded="false" aria-controls="<%='collapse'+ind %>" id="<%='heading'+ind %>" style='display:block;'>
+                                                      <div class="panel-title"  style='width:auto;'>
+                                                        <span>
+                                                                <%=que.title %>
+                                                        </span>
+                                                        <span class="indicator pull-right collapsed" ><span class="fa fa-angle-double-down black text-primary"></span></span>
+                                                      </div>
+                                                    </a>
+                                                <div id="<%='collapse'+ind %>" class="panel-body panel-collapse collapse col-sm-12" role="tabpanel" aria-labelledby="<%='heading'+ind %>">
+                                                  <div class="">
+                                                        <table class='table table-bordered'>
+                                                            <tr>
+                                                                <td colspan='2'>
+                                                                    <p>
+                                                                        Total Questions
+                                                                        <span class="badge"><%=que.questions.length %></span>
+                                                                    </p>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <span>Critical (Value)</span>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <span>Scored</span>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <span>Weight</span>
+                                                                </td>
+                                                            </tr>
+                                                            <% _.each(que.questions,function(queItem,indx){ %>
+                                                                <% if( (que.isStdQuestion&&queItem.isStandard) || (!queItem.isStandard) ){ %>
+                                                                    <tr>
+                                                                        <td>
+                                                                            <label><%=indx+1 %></label>
+                                                                        </td>
+                                                                        <td>
+                                                                            <p><%=queItem.title %></p>
+                                                                            <% if(queItem.subGroup){ %>
+                                                                                <p class="questions_small">Subgroup – <label class="margin0"><%=queItem.subGroup %></label></p>
+                                                                            <% } %>
+                                                                            
+                                                                            <p class="questions_small"><%=questionTypes[queItem.type] %></p>
+                                                                        </td>
+                                                                        <% if(queItem.critical){ %>
+                                                                            <td class="text-center">
+                                                                                <input type="checkbox" checked="checked" disabled/>
+                                                                            </td>
+                                                                            <td class="text-center">
+                                                                                <input type="checkbox"  disabled/>
+                                                                            </td>
+                                                                        <% }else{ %>
+                                                                            <td class="text-center">
+                                                                                <input type="checkbox"  disabled/>
+                                                                            </td>
+                                                                            <td class="text-center">
+                                                                                <input type="checkbox" checked="checked" disabled/>
+                                                                            </td>
+                                                                        <% } %>
+                                                                        <td class="text-center">
+                                                                           <input type="hidden" value="<%=queItem.weight %>" disabled class="weight"/>
+                                                                        </td>
+                                                                    </tr>
+                                                                <% } %>
+                                                            <% }); %>
+                                                        </table>
+                                                  </div>
+                                                </div>
+                                            </div>
+                                    <% }); %>
+                                </div>                         
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-8 text-center">
+                                        <a href="/rfp-dashboard" class="back inline-block filterMargin">Go to previous step</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+       </script>
+block content
+  div.
+    <div class="rfp-wizard">
+     <div>
+        <div class="container-fluid headpanel">
+            <h3 class="text-uppercases"><span id='rfp-title-placeHolder'>#{rfp.title}</span> </h3>
+        </div>
+        <div class="header-counter filterMargin container" id="rfpSteps">
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 text-center">
+                    <h3 class='bold font-md text-primary' style='margin-top:0;'>Review Proposal</h3>
+                    <label class="block"></label>                  
+                </div>
+            </div>
+        </div>
+            <div class="container error-container"></div>
+            <div class="container">
+                <div id='rfp-review'></div>
+            </div>
+        </div>
+    </div>
+block js
+    script(src='//cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js')
+    script(src='//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js')
+    script(src='//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.2.3/backbone-min.js')
+    script(src='//cdnjs.cloudflare.com/ajax/libs/async/1.4.2/async.min.js')
+    script(src=cdn('/rfp-backbone-demo/definition.js'))
+    script(src=cdn('/rfp-backbone-demo/rfp-models.js'))
+    script(src=cdn('/rfp-backbone-demo/rfp-views.js'))
+    script(src=cdn('/rfp-backbone-demo/rfp-review.js'))
+    script.
+     var rfpObj = {_id:'#{_id}'};

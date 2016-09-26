@@ -1,0 +1,134 @@
+extends ../../layouts/layout_LAS
+include ../../mixin/quickSupportMixin
+include ../../mixin/quickSupport_controlsBar
+
+block header
+    -var name = getNameData
+    +headerQuickSupport({head:'you are talking to' + ' '+ name})
+
+block column_1
+   div.row.las.las_video
+     - var ht= 'auto';
+     div.col-xs-12.col-md-6.marginT_30.screenViewRender.compareHeight
+       //- div#screen-previewborder: 2px solid white;
+       if Mode == 1
+         -ht= '223px';
+         div#subscribers.text-center.video_box.relative(style="background:black;")
+          +controls()
+          div#subVideo
+          #screen-preview.hide
+          p.text-center(style="color: white;").waitingMessage Waiting for 
+           span.text-capitalize #{name} to join...
+          div#publisher
+       else if Mode == 2
+        -ht= '135px';
+        div#subscribers.text-center.audio_box.relative(style="padding-top:0px")
+          +controls()
+          #screen-preview.hide
+          p.text-center(style="color: #333;").waitingMessage Waiting for 
+           span.text-capitalize #{name} to join...
+          div#subVideo
+          h3.font-primary.text-capitalize.audioUserName.hide  #{getNameData}
+          //- label(style="font-size:15px").text-primary.text-capitalize.block it consultant at db asjdbhasjdb
+          //- label(style="font-size:16px").text-capitalize.block ashgdvasgh asjdasdj 
+          div#pubVideo
+     div.col-xs-12.col-md-6.marginT_30.question_details.compareHeight
+      div.screenShare_hide
+        div.row
+          .col-xs-12
+            h4.font-primary.margin0 Question Details
+        div.row.col
+          .col-sm-3.col-xs-4
+            label.las_heading.font-primary Industry
+          .col-sm-9.col-xs-8
+            span #{questionData.industry.name}
+        div.col.row
+          .col-sm-3.col-xs-4
+            label.las_heading.font-primary Product
+          .col-sm-9.col-xs-8
+            span 
+              each val,i in questionData.product
+                if i+1 == questionData.product.length
+                  = val.name
+                else
+                  = val.name + " ,"
+        div.col.row
+          .col-sm-3.col-xs-4
+            label.las_heading.font-primary Business Process Area
+          .col-sm-9.col-xs-8
+            span 
+              each data,j in questionData.businessProcessArea
+                if j+1 == questionData.businessProcessArea.length
+                  = data.name
+                else
+                  = data.name + " ,"
+        if questionData.tags.length > 0
+          div.col.row
+            .col-sm-3.col-xs-4
+              label.las_heading.font-primary Tags
+            .col-sm-9.col-xs-8
+              span 
+                each val,i in questionData.tags
+                  if i+1 == questionData.tags.length
+                    = val.name
+                  else
+                    = val.name + " ,"
+        div.col.row
+          .col-sm-3.col-xs-4
+            label.las_heading.font-primary Question
+          .col-sm-9.col-xs-8.screenShare_question
+            span.more #{questionData.question}
+   div.row
+     div.col-xs-12.filterMargin
+       label.block Notes
+       if iamResponder === true
+        textarea.txtArea_notes.responderNote(style="max-width:100%;width:100%",data-id="#{questionData.responderHistory._id}")
+       else
+        textarea.txtArea_notes.requesterNote(style="max-width:100%;width:100%",data-id="#{questionData.responderHistory._id}")
+       p.noteTime(style="text-align:right")
+       button.btn.btn-default.border-primary.filterMargin.btn-heading-small.margin0.hide Save
+    .modal.fade.las_bs-example-modal-sm#screenView(tabindex='-1', role='dialog', aria-labelledby='mySmallModalLabel')
+      .modal-dialog.modal-sm
+        .modal-content
+          .modal-header.text-inverse.font-secondary.text-uppercase
+            button.close.text-inverse(type='button', data-dismiss='modal', aria-label='Close')
+              span(aria-hidden='true') ×
+            h4#mySmallModalLabel.modal-title Note
+          .modal-body.las_sample_question
+            .panel.panel-default
+              .panel-body.padding0
+                p(style="margin:0px;padding:10px") Screen Sharing is going on once that complete you can share your screen.
+                
+
+    .modal.fade.las_bs-example-modal-sm#installDownload(tabindex='-1', role='dialog', aria-labelledby='mySmallModalLabel')
+      .modal-dialog
+        .modal-content
+          .modal-header.text-inverse.font-secondary.text-uppercase
+            button.close.text-inverse(type='button', data-dismiss='modal', aria-label='Close')
+              span(aria-hidden='true') ×
+            h4#mySmallModalLabel.modal-title Note
+          .modal-body.las_sample_question
+            .panel.panel-default
+              .panel-body.padding10
+                p Please install chrome extension to start the screen share
+                p Extension can be installed by clicking below button and once done refresh the browser
+                a.btn.btn-default.btn-primary(target='_blank' href='https://chrome.google.com/webstore/detail/csquire-screen-sharing/#{chromeId}?utm_source=chrome-app-launcher-info-dialog') Install
+
+    +reLoadpopup()
+
+//- block prepend js
+//-  script(src='https://static.opentok.com/v2/js/opentok.min.js')
+//-  script
+//-       | var apiKey="#{apiKey}";var sessionId="#{sessionId}";var token="#{token}";var mode ="#{Mode}";var pictureUrl="#{pictureUrl}";var pictureUrlSub="#{pictureUrlSub}";
+//-  script(src=cdn('/liveVideo.js'))
+
+//- block append stylesheet
+//-   link(rel='stylesheet', href='//cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/flipclock.css')
+
+block append js
+  script(src=cdn('/liveApplication.js'))
+  script(src='https://static.opentok.com/v2/js/opentok.min.js')
+  script(src='//cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/flipclock.js')
+  script
+      | var chromeID="#{chromeId}";var apiKey="#{apiKey}";var sessionId="#{sessionId}";var token="#{token}";var mode ="#{Mode}";var pictureUrl="#{pictureUrl}";var pictureUrlSub="#{pictureUrlSub}";
+  script(src=cdn('/liveVideo.js'))

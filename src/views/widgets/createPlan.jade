@@ -1,0 +1,40 @@
+div#createPlan.container
+  .container
+      .row
+        .col-xs-12
+          div
+            h4.font-primary.pull-left Subscription Plans
+            button.btn.btn-primary.btn-heading-small.pull-right(type='button', data-toggle='modal', data-target='#createPlanPopup') Create Plan
+      .row
+        .col-xs-12
+          div.table-small-responsive
+            table.table.table-bordered.planCreateTable(cellspacing="0" cellpadding="0")
+              thead
+                tr
+                  th Plan Name
+                  th Amount ($)
+                  th Interval
+                  th Trial Period (In Days)
+                  th Description
+                  th &nbsp;
+              tbody
+                if stripePlanList && stripePlanList.length
+                  each planList in stripePlanList
+                    tr
+                      td #{planList.name}
+                      td #{(planList.amount/100).toFixed(2)}
+                      - if(planList.interval_count>1)
+                        td #{planList.interval_count} #{planList.interval}s
+                      -else
+                        td #{planList.interval_count} #{planList.interval}
+                      - if(planList.trial_period_days !== null)
+                        td #{planList.trial_period_days}
+                      - else 
+                        td &nbsp;
+                      td #{planList.statement_descriptor}
+                      td.text-center
+                        a(title="Edit" type="button" data-toggle="modal" data-target="#planEdit")
+                          span(id="#{planList.id}",class="planEdit glyphicon glyphicon-edit connection-small text-primary" aria-hidden="true")
++qsMappingModel()
++createPlanModel()
++updatePlanModel()

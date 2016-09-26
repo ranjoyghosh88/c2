@@ -1,0 +1,13 @@
+extends ../../layouts/layout_LAS
+ 
+block content
+   h3 Live Application Call
+   p Awaiting for incoming call..
+   button#hangup Hang Up
+   button#call Dial in...
+   input#number(value="+917387267772")
+block append js
+ script(src="//static.twilio.com/libs/twiliojs/1.2/twilio.min.js")
+ script
+      | var twilioToken="#{twilioToken}";
+ script(src=cdn('/liveCall.js'))

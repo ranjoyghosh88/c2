@@ -1,0 +1,187 @@
+mixin products(products,tab,conFromId,connectFrom)
+	//-h4 #{JSON.stringify(products.length)}
+	-var iscon = false;
+	-var isfav = false;
+	-var modal='';
+	if connectFrom=='company'
+		- modal='companies'
+	else if connectFrom=='product'
+		-modal='products'
+	else
+		-modal=''
+	-var isAdmin = (conFromId && conFromId!=='undefined');
+	-var conFromIds = conFromId?'&conFromId='+conFromId:''
+	-var connectFrom = connectFrom || 'people'
+	- tab = tab || null
+	for product in products
+		- iscon=false;
+		- isfav=false;
+		for prof in product.refId.connections.profiles
+			- if(prof.refId == loggedUser){
+				- iscon=true;
+				- break;
+			- }
+		for prof in product.refId.favouritedBy
+			- if(loggedUser == prof){
+				- isfav=true;
+				- break;
+			- }
+		if modal
+			for prof in product.refId.connections.companies
+				//h2 #{JSON.stringify(prof)} #{conFromId}
+				- if(prof.refId == conFromId && conFromId!=='undefined' && conFromId){
+					- iscon=true;
+					- break;
+				- }
+		.row.featured-row.hidden
+				div.col-xs-12
+					img.absolute.featured(src="#{cdn('/favicon_inverse.png')}")
+			div.row.items.marginT_30.padding_b_30
+				div.col-xs-12
+					.row.relative
+						.col-sm-3.col-xs-12.text-center
+							input#_id(type="hidden",value= product.refId._id)
+							a.productImage(href="/product/#{product.refId.uid}")
+								img.image-width(src=src=product.refId.logo?"#{product.refId.logo}":"#{cdn('/ProductDummyLogo.jpg')}")
+						.col-sm-6.col-lg-7.col-xs-12
+							h3.margin0 
+								a.anchorHeading.font-primary(href="/product/#{product.refId.uid}") #{product.refId.name}
+									if product.refId.company.length && product.refId.company[0].uid
+										span #{','}&nbsp
+										a(href="/company/#{product.refId.company[0].uid}") #{product.refId.company[0].uid}
+							h5.font-primary(style='font-weight: 500;') Connected as #{product.relation}
+						.col-sm-3.col-lg-2.col-xs-12.text-center
+							.connection_box.filterMargin
+								.row
+									.col-sm-4.col-xs-6
+										if isfav
+											a.text-uppercase.block.fav.add-favourite(title="Remove from favorites" data-fav='product'  data-id='#{product.refId._id}')
+												label.glyphicon.glyphicon-star.block.text-center
+										else
+											a.text-uppercase.block.add-favourite(title="Add to favorites" data-fav='product' data-id='#{product.refId._id}')
+												label.glyphicon.glyphicon-star-empty.block.text-center
+									.col-sm-6.col-xs-6
+										if iscon
+												form.panel(action='/profile-con/#{connectFrom}/product/people/people/#{product.refId.uid}/#{product.refId._id}/false?redirct=1&tab=#{tab}#{conFromIds}',method='post')
+													input#returnUrl(type="hidden",name="returnUrl", value= '#{returnUrl}')
+													a.text-uppercase.block.remove-connection(title="Remove from connection")
+														img.connection-small(src="#{cdn('/connections.png')}")
+										else
+												form.panel(action='',method='post')
+													input#returnUrl(type="hidden",name="returnUrl", value= '#{returnUrl}')
+													a.text-uppercase.block.add-connection(data-connectto="product" data-con="1" title="Add to connection" data-id='#{product.refId._id}' data-connectFrom='#{connectFrom}' data-connectFromId='#{conFromId}')
+														img.connection-small(src="#{cdn('/connections_active.png')}")
+
+
+
+mixin compProducts(products,tab,conFromId,connectFrom)
+	-var iscon = false;
+	-var isfav = false;
+	-var isAdmin = (conFromId && conFromId!=='undefined');
+	-var conFromIds = conFromId?'&conFromId='+conFromId:''
+	-var connectFrom = connectFrom || 'people';
+	-var modal='';
+	if connectFrom=='company'
+		- modal='companies'
+	else if connectFrom=='product'
+		-modal='products'
+	else
+		-modal=''
+	- tab = tab || null
+	for product in products
+		- iscon=false;
+		- isfav=false;
+		for prof in product.connections.profiles
+			if prof.refId == loggedUser
+				- iscon=true;
+				- break;
+		for prof in product.favouritedBy
+			if (loggedUser == prof)
+				- isfav=true;
+				- break;
+		if modal
+			for prof in product.connections[modal]
+				//h2 #{JSON.stringify(prof)} #{conFromId}
+				- if(prof.refId == conFromId && isAdmin){
+					- iscon=true;
+					- break;
+				- }
+		.row.featured-row.hidden
+				div.col-xs-12
+					img.absolute.featured(src="#{cdn('/favicon_inverse.png')}")
+		div.row.items.marginT_30.padding_b_30
+			div.col-xs-12
+			.row.relative
+				.col-sm-3.col-xs-12.text-center
+					input#_id(type="hidden",value= product._id)
+					a.productImage(href="/product/#{product.uid}")
+						img.image-width(src=src=product.logo?"#{product.logo}":"#{cdn('/ProductDummyLogo.jpg')}")
+				.col-sm-6.col-lg-7.col-xs-12
+					h3.margin0
+						a.anchorHeading.font-primary(href="/product/#{product.uid}") #{product.name}
+							if companyName
+								span #{''}&nbsp
+								a(href="/company/#{companyUid}") by #{companyName}
+					if product.goodFor.length
+						for gdf in  product.goodFor
+							label  #{gdf.name}  
+				.col-sm-3.col-lg-2.col-xs-12.text-center
+					.connection_box
+						.row
+							.col-sm-4.col-xs-6
+								//h2 #{isSuperUser}--#{isAdmin}
+								if !isAdmin
+									if isfav
+										a.text-uppercase.block.fav.add-favourite(title="Remove from favorites" data-fav='product' data-id='#{product._id}')
+											label.glyphicon.glyphicon-star.block.text-center
+									else
+										a.text-uppercase.block.add-favourite(title="Add to favorites" data-fav='product' data-id='#{product._id}')
+											label.glyphicon.glyphicon-star-empty.block.text-center
+							.col-sm-6.col-xs-6
+								if isAdmin
+									form.panel(action='/product/updateCompanyProduct/#{conFromId}/#{product._id}/$pull',method='post')
+										a.text-uppercase.block.remove-connection(title="Remove from company")
+											img.connection-small(src="#{cdn('/delete_active.png')}" style="width:40%")
+
+mixin addProduct(tab,id,type,url,companyName,custType,header)
+	-tab =tab || null
+	- id = id || null
+	- type = type || null
+	- url = url || null
+	- custType = custType||null
+	- companyName = companyName || null
+	- header = header || null
+	select.addTo.form-control(name='productprofiles', data-master='productProfile',  data-placeholder='Enter product name', required='required',data-errorholder='productProfile',style='width:100%;float:left;')
+	input(type='hidden',name='type',value=custType)
+	input(type='hidden',name='header',value=header)
+	span.comment
+	form#pstpro(action='#{url?url:"/addProduct?tab=" + tab}',method="post" style="padding-top: 19px;")
+		input(type='hidden',value='#{id}',name='connectFromId',id='connectFromId')
+		input(type='hidden',value='#{type}',name='connectFrom',id='connectFrom')
+		input(type='hidden',value='#{companyName}',name='companyName',id='companyName')
+		.form-group
+			.row
+				.col-lg-6.col-md-6.col-sm-6
+					input#productName.form-control(type='text', placeholder='Product Name',name='name',required='required',data-errorholder='Product Name')
+				.col-lg-6.col-md-6.col-sm-6
+					input#latestVersion.form-control(type='text', placeholder='Latest Version',name='versionNumber',data-errorholder='Latest Version')
+		.form-group
+			.row
+				.col-lg-6.col-md-6.col-sm-6
+					input#users.form-control(type='text', placeholder='Users',name='userCount',data-errorholder='User Count')
+		.form-group
+			.row
+				.col-lg-12.col-sm-12.col-md-12.col-xs-12
+					textarea.txtArea_notes#aboutProduct.form-control(type='text',name='description', placeholder='About Product')
+					div.clearfix
+		.form-group.hidden-xs
+			.row 
+				div.col-sm-12.text-right
+					button.btn.btn-primary.btn-heading#addProductBtn(type='submit') Save
+					button.btn.btn-default.btn-heading#productCancel(type="button") Reset
+		.form-group.visible-xs.hidden-sm
+			.row
+				div.col-xs-12
+					button.btn.btn-primary.margin0.form-control#addProductBtn(type='submit') Save 
+				div.col-xs-12.filterMargin
+					button.btn.btn-default.margin0.form-control#productCancel(type="button") Reset   

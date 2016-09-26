@@ -1,0 +1,4 @@
+mixin errorFlash()
+	- if(error && error != 'Email already exists' && error != 'Invalid username or password.')
+		.alert.alert-danger
+			p Error: #{error}

@@ -1,0 +1,20 @@
+a.button-heading.block.hidden() Inbox
+	img.pull-left(src="#{cdn('/inbox_normal.png')}")
+a.button-heading.block.hidden() Send
+	img.pull-left(src="#{cdn('/send_normal.png')}")
+a.button-heading.block.hidden() Trash
+	img.pull-left(src="#{cdn('/delete_normal.png')}")
+a.button-heading.block.hidden() Archive
+	img.pull-left(src="#{cdn('/archive_normal.png')}")
+ul.nav.nav-pills.inbox#inbox(role="tablist")
+	li.active(role="presentation")
+		a.padding0(href="#connProfile" aria-controls="connProfile" role="tab" data-toggle="tab")
+			img.pull-left.connection_img(src="#{cdn('/connection_normal.png')}")
+			| Connections
+			span.badge.bg-primary.text-center.pull-right #{pendingInviationCount}
+	li.margin0(role="presentation")
+		a.padding0(href="#claimedProfile" aria-controls="claimedProfile" role="tab" data-toggle="tab")
+			span.badge.bg-primary.text-center.pull-right #{claimCount}
+			img.pull-left.claim_img(src="#{cdn('/ClaimNormal.png')}")
+			|  Claims
+			//-span.badge.bg-primary.text-center 4

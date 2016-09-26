@@ -1,0 +1,74 @@
+.las.las_dashboard
+  include ./quickSupportLock
+
+  .panel.marginT_30
+    .panel-body.padding0
+          include ./quickSupportTab
+          #TabContent.tab-content(style="border:1px solid #ddd")                        
+            #my-pending.tab-pane.fade.in.active.margin0
+              .panel.hide
+                .panel-body
+                  h4.font-primary Filter by 
+                  div.row.las_filters
+                    div.col-sm-8
+                      label Feedback Status
+                      select.form-control(multiple name='',data-master='', data-errorholder='', required='required',data-placeholder='',style="width: 100%")
+                  div.row.marginT_30.btn-grp.hidden-xs
+                    .col-sm-12
+                      button.form-control.btn.btn-default.border-primary.btn-heading-small.margin0 Clear Filter
+                      button.form-control.btn.btn-default.border-primary.btn-heading-small Submit
+                  div.row.marginT_30.btn-grp.visible-xs.hidden-sm
+                    .col-xs-12
+                      button.form-control.btn.btn-default.border-primary.margin0 Clear Filter
+                    .col-xs-12
+                      button.form-control.btn.btn-default.border-primary Submit
+              .panel
+                .panel-body.padding0
+                  div
+                    table.table.margin0.feedbackTable
+                      thead
+                        tr
+                          th(style="width:10%")
+                          th(style="width:30%")
+                            | Question
+                            i.fa.fa-chevron-down.fa_Marginleft
+                          th(style="width:20%")
+                            | adviser Name
+                            i.fa.fa-chevron-down.fa_Marginleft
+                          th(style="width:10%")
+                            | Status
+                            i.fa.fa-chevron-down.fa_Marginleft
+                          th(style="width:10%")
+                            | Created Date
+                            i.fa.fa-chevron-down.fa_Marginleft
+                      tbody
+                       each item in asked
+                          tr
+                            td
+                              if item.supportStatus == 'pending' || item.supportStatus == 'Locked' || item.supportStatus == 'closed' || item.supportStatus == 'completed'
+                                a(href="javascript:void(null)").btn-heading-small.btn.btn-default.border-primary.margin0.disabled Edit
+                              else
+                                a(href="/quickSupport/editquestion/#{item._id}").btn-heading-small.btn.btn-default.border-primary.margin0 Edit
+                            td
+                              span.pendindFeedback.more #{item.question}
+                            td
+                              if item.supportStatus == 'completed' || item.supportStatus == 'closed'
+                                if item.responderHistory.company
+                                 | #{item.responderHistory.userId.name} #{item.responderHistory.userId.lastName} (behalf of #{item.responderHistory.company.name})
+                                else
+                                 | #{item.responderHistory.userId.name} #{item.responderHistory.userId.lastName}
+                              else
+                                | -
+
+                            td.text-capitalize
+                              //- if item.supportStatus == 'completed'
+                              //-  | Completed
+                              //- else if item.supportStatus == 'closed'
+                              //-  | Closed
+                              | #{item.supportStatus}
+                            td.lasDate
+                              //- if item.supportStatus == 'completed'
+                              //-  | Completed
+                              //- else if item.supportStatus == 'closed'
+                              //-  | Closed
+                              | #{item.createdDate}

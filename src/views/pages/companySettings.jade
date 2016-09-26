@@ -1,0 +1,108 @@
+extends ../layouts/layout
+include ../mixin/quickSupportMixin
+
+block content
+	+headerQuickSupport({head:'Company Settings'})
+	#companySettings
+		.container
+			.row
+				.col-sm-12.col-xs-12.col-md-9
+					h4.font-primary Company Info
+					div.greyBox
+						.row
+							.col-sm-3.col-xs-4
+								label Company Name
+							.col-sm-9.col-xs-8
+								span #{data.name}
+						.row.filterMargin
+							.col-sm-3.col-xs-4
+								label Admin
+							.col-sm-9.col-xs-8
+								span
+									each val,i in data.admin
+										if i+1 == data.admin.length
+											if val.displayName && val.displayLastName
+												= val.displayName + " " + val.displayLastName
+											else
+												= val.name + " " + val.lastName
+										else
+											if val.displayName && val.displayLastName
+												= val.displayName + " " + val.displayLastName + ", "
+											else
+												= val.name + " " + val.lastName
+					if !userIsOwner && !isSuperUser
+						h5.font-primary You need to claim company page to enable quick support adviser feature for company.
+					if userIsOwner || isSuperUser
+						h4.font-primary Payment Preferences
+						div.greyBox
+							.row
+								.col-sm-3.col-xs-4
+									label Stripe Account
+								div
+									if data.payments !== undefined && data.payments.stripe !== null && data.payments.stripe !== undefined
+										.col-sm-6.col-xs-8.tableDisplay
+											span.middleAlign.block.stripeId #{data.payments.stripe.stripe_user_id}	
+										.col-xs-3.col-sm-3.pull-right.remove.col-xs-offset-4.col-sm-offset-0
+											a.btn.btn-default.btn-primary.btn-heading.margin0(href="/quickSupport/deauthorize?companyId=#{data._id}") Remove
+									else
+										.col-sm-9.col-xs-8.text-right
+											span  
+												a.btn.btn-default.btn-primary.btn-heading(href="/quickSupport/authorize?companyId=#{data._id}") Manage
+						h4.font-primary Quick Support Adviser
+						div.greyBox
+							form(method='post', action='/quickSupport/addResponder')
+								.row
+									.col-sm-3.col-xs-4
+										label Add New Adviser
+									.col-sm-9.col-xs-8
+										input(type='hidden',name='companyId',value='#{data._id}' 
+										id = 'companyId')
+										select#ResponderSelect.form-control.filterSelectData(multiple name='quickSupportResponderList',required='required',data-errorholder='Adviser',data-placeholder='Adviser',style="width: 100%")
+											each val,i in data.employees
+												if data.responderIds == null || data.responderIds.indexOf(val._id) == -1
+													<option value=#{val._id}>#{val.name} #{val.lastName}</option>
+								.row
+									.col-xs-12
+										div.pull-right.filterMargin
+											button.btn.btn-default.btn-primary.btn-heading-small Add
+											a(href="/company/CompanySettings/#{data._id}").btn.btn-default.btn-heading-small Cancel
+							.row.filterMargin
+								.col-sm-3.col-xs-4
+									label Current Adviser
+								.col-sm-9.col-xs-6
+									//-.input-group
+										a.input-group-addon.dropdown-toggle.searchText.no_underline(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+											span.text All
+											i.fa.fa-chevron-down.text-primary
+										ul.dropdown-menu.searchToggle
+											li
+												a(href='#') Ben
+											li
+												a(href='#') Lewis
+										input.form-control(type='text', value='', placeholder='Add an employee')
+										a.btn.btn.btn-primary.input-group-addon(type='submit')
+											span.glyphicon.glyphicon-search
+									table.table.margin0.questionTable(cellspacing="0" cellpadding="0")
+										thead
+											tr
+												th(style="width:15%")
+													| Name
+												th(style="width:20%;text-align:right")
+													| Permision
+										tbody
+											if data.quickSupportResponderList.length > 0
+												each val,i in data.quickSupportResponderList
+													tr
+														td 
+															if val.displayName && val.displayLastName
+																span #{val.displayName} #{val.displayLastName}
+															else
+																span #{val.name} #{val.lastName}
+														td.text-right.removeResponder
+															button.removeResponderButton.btn.btn-default.btn-primary.btn-heading-small(id="#{val._id}") Remove
+											if data.quickSupportResponderList.length === 0
+												tr
+													td There are no Quick support Adviser added
+													td.text-right.removeResponder
+append js
+	script(src=cdn('/accountSettings.js'))

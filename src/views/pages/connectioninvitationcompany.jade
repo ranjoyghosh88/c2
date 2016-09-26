@@ -1,0 +1,15 @@
+extends ../layouts/layout_Inbox
+block vars
+  - function formatTextCapitalize(x) {
+  -   return x.replace(/\b\w/g , function(m){ return m.toUpperCase(); } );
+  -}
+
+block column_header
+  include ../widgets/inboxHeader
+
+block column_1  
+  include ../widgets/inboxaside
+
+block column_2
+  include ../widgets/connectioncompanyapproval
+         

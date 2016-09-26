@@ -1,0 +1,112 @@
+mixin previousData(data,options)
+	input(name='formdata', value=data, type='hidden')
+
+mixin companyData(data,options)
+	input(name='companydata', value=data, type='hidden')
+mixin companyexists(data,options)
+	input(name=data, value=data, type='hidden')
+mixin selectBox(data,text)
+		option
+		each item in data
+			option(value=item._id)= item.name
+mixin connectionsSelect(data,text)
+		each item in data
+			//-option(value=item.connectedAs data-connect=item.connectAs data-connectedAs=item.connectedAs data-connectionFromType=item.connectionFrom data-connectionToType=item.connectionTo data-uid=connectionTo.uid data-_id=connectionTo._id)= item.connectAs
+			option(value=item._id data-connect=item.connectAs data-connectedAs=item.connectedAs data-connectionFromType=item.connectionFrom data-connectionToType=item.connectionTo data-uid=connectionTo.uid data-_id=connectionTo._id)= item.connectAs
+				
+mixin selectBoxRole(data,text)
+		option
+		each item in data
+			option(value=item._id)= item.name
+mixin selectBoxTitle(data,text)
+		option
+		each item in data
+			option(value=item._id)= item.name
+mixin selectBoxHeadCount(data,text)
+		option
+		each item in data
+			option(value=item._id)= item.name
+mixin selectBoxRevenue(data,text)
+		option
+		each item in data
+			option(value=item._id)= item.name
+mixin PreselectBox(data,selectedData)
+		- selectedData = selectedData || []
+		- data = data || []
+		- var result=[]
+		- var notExist=true
+		each item in data
+			- for(var i=0;i<selectedData.length;i++)
+				- if(selectedData[i] && selectedData[i].name)
+					- if(item.name!=selectedData[i].name)
+						- notExist=true
+					- else
+						- notExist=false
+						- break
+				- else
+					- notExist=true		
+			if notExist==true
+				- result.push(item)
+		-if(selectedData.length<=1 && !selectedData[0])
+			option
+		each item in selectedData
+			-if(item && item.name)
+				option(value=item._id,selected='selected')= item.name
+		//-each item in result
+			option(value=item._id)= item.name
+
+mixin PreselectBoxQuick(data,selectedData)
+		- selectedData = selectedData || []
+		- data = data || []
+		- var result=[]
+		- var notExist=true
+		each item in data
+			- for(var i=0;i<selectedData.length;i++)
+				- if(selectedData[i] && selectedData[i].name)
+					- if(item.name!=selectedData[i].name)
+						- notExist=true
+					- else
+						- notExist=false
+						- break
+				- else
+					- notExist=true		
+			if notExist==true
+				- result.push(item)
+		-if(selectedData.length<=1 && !selectedData[0])
+			option
+		each item in selectedData
+			-if(item && item.name)
+				option(value=item._id,selected='selected')= item.name
+		each item in result
+			option(value=item._id)= item.name
+
+mixin setSelected(data,selectedData)
+	option
+	each item in selectedData
+		option(value=item._id,selected='selected')= item.name
+
+- function formatTextCapitalize(x) {
+-   return x.replace(/\b\w/g , function(m){ return m.toUpperCase(); } );
+-}
+
+mixin connection(connection,type,dummyImg)
+	each item,i in connection
+		- if(item && item.refId && item.connectionStatus=='APPROVED' && i<3) {
+		- item = item.refId
+		- var name = item.name+(item.lastName?" "+item.lastName:'');
+		- var temp = item.pictureUrl || item.logo || dummyImg;
+				a.clientImg.secondary(href='#{type+"/"+item.uid}',title='#{formatTextCapitalize(name)}',style='#{"background-image:url("+temp+") !important"}')
+		-}
+		
+mixin addCarouselItem(items,type,dummyImg)
+	- if(items && items.refId) {
+	- item = items.refId
+	- var name = item.name+(item.lastName?" "+item.lastName:'');
+	- var rel = items.relation
+	- var temp = item.pictureUrl ||item.logo || dummyImg;
+			a.clientImg.secondary(href='#{"/"+type+"/"+item.uid}',title='#{formatTextCapitalize(name)}',style='#{"background-image:url("+temp+") !important"}')
+			div
+				label #{formatTextCapitalize(name)}
+			div
+				label #{formatTextCapitalize(rel)}
+	-}

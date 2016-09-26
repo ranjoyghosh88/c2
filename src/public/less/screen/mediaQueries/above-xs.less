@@ -1,0 +1,114 @@
+@media only screen and (min-width:768px){
+	body{
+		padding-bottom:115px;
+	}
+	#header{
+		#logo{
+			.imgReplace('@{imgCDN}/logo.png', 148px,50px); 
+			background-size:100% 50%;
+		}
+		#navbar{
+			width:75%;
+		}
+	}
+	#content{
+		#home{
+			#jumbotron{
+				.boxes a{
+					width:240px;
+					font-size:16px;
+				}
+			}
+		}
+	}
+	#footer{
+		#copyright{text-align: left;}
+		#social{text-align: right;}
+	}
+	.jumbotron {
+  		padding: 0 15px;
+  		.nav.navigation a {
+  			padding:5px 7px;
+  		}
+  		.right_nav.nav.navigation {
+  			float:right;
+  			li {
+  				margin-right:10px;
+  			}
+  		}
+  	}
+  	#relation-form,#inviteUI{
+  		h3{
+  			font-size: 22px;
+  		}
+     .notSelect2 {
+       width:50% !important;
+     }
+    }
+    div.dashboard{
+		.panel.claimedCompany{
+			.claimedCompanyLogo{
+				img{
+					width:60px;
+				}
+			}
+		}
+		.panel.claimedCompany{
+			img{
+				width: 55%;
+			}
+		}
+		.panel.favorites{
+			.panel-body {
+				img{
+					width: 55%;
+				}
+			}
+		}
+		.badge-heading{
+			margin:6px 0 0 15px;
+		}
+	}
+	#inbox{
+		.inbox_aside .panel .media{
+			.media-right{
+				button[value="REJECT"]{
+					margin-top:10px;
+				}
+			}
+		}
+	}
+	.tab-content{
+		.tab-pane{
+			.row.items{
+				.connection-small{
+					width:75%;
+					margin-top:2px;
+				}			
+			}
+		}
+	}
+	/*LAS pages */
+	.las{
+		#my-question{
+			thead,tbody{
+				tr{
+					th:nth-child(3),td:nth-child(3){
+						width:50%;
+					}
+					th:last-child,td:last-child{
+						width:20%;
+					}
+				}
+			}
+		}
+		#my-waiting table{
+			td:first-child{
+				width:40%;
+			}
+			td:last-child{
+				width:35%;
+			}
+		}
+	}
+}

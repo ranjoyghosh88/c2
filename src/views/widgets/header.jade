@@ -1,0 +1,102 @@
+include ../mixin/search
+include ../widgets/navbar
+
+#header.newSearch
+  nav.navbar.navbar-default.margin0
+    .container
+      .row
+        .col-md-12.col.lg-12
+    
+          .navbar-header.row
+            button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#navbar',aria-expanded='false')
+              span.sr-only Toggle navigation
+              span.icon-bar
+              span.icon-bar
+              span.icon-bar
+            a#logo.navbar-brand(href='/dashboard', title='CSquire')
+            div.navbar-collapse.collapse.pull-right.col-xs-12.col-sm-10.col-md-9.col-lg-9#navbar
+                //ul.nav.navbar-nav.navbar-left.navigation
+                              if !hideSearch
+                                li
+                                  +searchBox2
+                - if(!noNav)  
+                  - if(user) 
+                        ul.nav.navbar-nav.navbar-right.navigation.hidden-xs
+                              li
+                                //-a.visible-xs.btn.btn-link(href='#', disabled) Inbox
+                                //-a.visible-xs.btn.btn-link(href='#', disabled) Saved Searches
+                                //-a.visible-xs.btn.btn-link(href='#', disabled) Saved Tags
+                                //-a.visible-xs.btn.btn-link(href='#', disabled) Training Completed
+                                a.visible-xs.btn.btn-link(href='/accountSettings') Settings
+                                a.visible-xs.btn.btn-link(href='/logout') Logout
+                              li.dropdown.hidden-xs
+                                a.dropdown-toggle.userMenu()
+                                  div.clientText.inline-block.text-right
+                                    span.inline-block
+                                      if loginData.displayName && loginData.displayLastName
+                                        strong #{loginData.displayName} #{loginData.displayLastName}
+                                    br
+                                    span.inline-block.text-primary.text-capitalize(title='#{loginData.jobTitle.name}') #{loginData.jobTitle.name}
+                                    //admin
+                                  if loginData.pictureUrl
+                                    img.clientImg.secondary.pull-right(src='#{loginData.pictureUrl}')
+                                  else
+                                    img.clientImg.secondary.pull-right(src="#{cdn('/profile.jpg')}")
+                                //-a.glyphicon.glyphicon-menu-hamburger.dropdown-toggle(href='#', data-toggle='dropdown') 
+                                ul.dropdown-menu.header-dropdown
+                                  //-li
+                                    a.btn.btn-link(href='#', disabled) Inbox
+                                  //-li
+                                    a.btn.btn-link(href='#', disabled) Saved Searches
+                                  //-li
+                                    a.btn.btn-link(href='#', disabled) Saved Tags
+                                  //-li
+                                    a.btn.btn-link(href='#', disabled) Training Completed
+                                  li
+                                    a.btn.btn-link.hide(href='/accountSettings') Settings
+                                  li  
+                                    a(href='/logout') Logout
+                        ul.nav.navbar-nav.navbar-right.navigation.visible-xs
+                              li( class=(activePage === 'dashboard' ? 'active' : ''))
+                                a.btn.btn-link(href='#') Dashboard
+                              li( class=(activePage === '' ? '' : ''))
+                                a.btn.btn-link(href='#') Quick Support
+                              li( class=(activePage === '' ? '' : ''))
+                                a.btn.btn-link(href='#') Manage
+                              li.hidden(class=(activePage === '' ? '' : ''))
+                                a.btn.btn-link(href='#',) Logs
+                              li.dropdown( class=(activePage === '' ? '' : ''))
+                                a.btn.btn-link.xs-dropdown(href='#settings', role='button', data-toggle='collapse', aria-controls='collapseExample', aria-expanded='false',title='Settings') Settings
+                                  i.fa.fa-chevron-down.text-primary
+                                div.collapse#settings
+                                  ul
+                                    li
+                                      a.btn.btn-link.no_underline(href='/qsMapping') Stripe Mapping
+                                    li
+                                      a.btn.btn-link.no_underline(href='/qsCreate/createProduct') Stripe Product
+                                    li
+                                      a.btn.btn-link.no_underline(href='/qsCreate/createCoupon') Stripe Coupon
+                                    li
+                                      a.btn.btn-link.no_underline(href='/qsCreate/createDiscount') Stripe Discount
+                                    li
+                                      a.btn.btn-link.no_underline(href='/qsCreate/createPlan') Stripe Plan
+                              li
+                                a.visible-xs.btn.btn-link(href='/logout') Logout
+
+                  - else
+                      ul.nav.navbar-nav.navbar-right.padding-T
+                        li
+                          - if(!loginPage)
+                            - if(retUrl)
+                               a.text-underline.inline-block(href="#{'/login?returnUrl='+retUrl}", title='Login to CSquire') Log In
+                            - else
+                               a.text-underline.inline-block(href='/login', title='Login to CSquire') Log In 
+                        //li
+                          - if(!registerPage)
+                            a.text-underline.inline-block(href='/register', title='Signup to CSquire') Sign up
+if user
+  .jumbotron.hidden-xs.margin0
+    .container(align="center")
+      .row
+        .col-xs-12
+          +nav

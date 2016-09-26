@@ -1,0 +1,346 @@
+.las.las_dashboard
+  if lockedQuestion.length == 0
+    //- p Locked Question is Empty // there no feedback pending // there no question answered by you
+  else
+    .panel.panel-default.lockedQues
+      .panel-heading.text-uppercase.font-secondary.relative locked question
+        //-div.remaining_time
+          span.font-primary
+            span.glyphicon.glyphicon-time.fa_MarginRight
+            strong 15:00
+          .btn-group
+            button.border-primary.font-primary.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+              | Extend time 
+              span.caret
+            ul.dropdown-menu
+              li
+                a.text-capitalize.font-primary(href='#') By 15 Mins
+              li
+                a.text-capitalize.font-primary(href='#') By 30 Mins
+              li
+                a.text-capitalize.font-primary(href='#') By 45 Mins
+              li
+                a.text-capitalize.font-primary(href='#') By 60 Mins
+      .panel-body
+        .row
+          .col-sm-6.col-xs-12
+            .row
+              .col-sm-4.col-xs-5
+                label.las_heading.font-primary Contact Name
+              .col-sm-8.col-xs-7
+                span.text-capitalize #{lockedQuestion.createdBy.name} #{lockedQuestion.createdBy.lastName}
+          .col-sm-6.col-xs-12
+            .row
+              .col-sm-4.col-xs-5
+                label.las_heading.font-primary Product
+              .col-sm-8.col-xs-7
+                span.text-capitalize
+                  each val,i in lockedQuestion.product
+                    if i+1 == lockedQuestion.product.length
+                      = val.name
+                    else
+                      = val.name + ", "
+        .row
+          .col-sm-6.col-xs-12
+            .row
+              .col-sm-4.col-xs-5
+                label.las_heading.font-primary Industry
+              .col-sm-8.col-xs-7
+                span #{lockedQuestion.industry.name}
+          .col-sm-6.col-xs-12
+            .row
+              .col-sm-4.col-xs-5
+                label.las_heading.font-primary Function
+              .col-sm-8.col-xs-7
+                span #{lockedQuestion.functionalRole.name}
+        .row
+          .col-xs-12.question
+            .row
+              .col-sm-2.col-xs-5
+                label.las_heading.font-primary.pull-left Question
+              .col-sm-10.col-xs-7
+                span.more #{lockedQuestion.question}
+        .row.marginT_30
+          .col-xs-12
+            form(action="/quickSupport/locking" method="post")
+              input(type="hidden",value="unlocked",name="status")
+              input(type="hidden",value="responder",name="unlockingBy")
+              input(type="hidden",value="#{lockedQuestion._id}",name="questionId")
+              input(type="hidden",value="#{responderHistoryId}",name="responderHistoryId")
+              .row
+                .col-sm-12.hidden-xs
+                    button.btn.btn-default.btn-primary.form-control.btn-heading-small.margin0(type="submit") Unlock
+                    if lockedQuestion.responderHistory.requesterJoined === true
+                      a.btn.btn-default.btn-primary.form-control.btn-heading-small(href="/quickSupport/videocall/#{lockedQuestion.sessionRoom}/#{lockedQuestion._id}/#{responderHistoryId}") Join
+              .row.hidden-sm.visible-xs
+                .col-xs-12
+                  button.btn.btn-default.btn-primary.form-control.margin0(type="submit") Unlock
+                .col-xs-12
+                  if lockedQuestion.responderHistory.requesterJoined === true
+                    a.btn.btn-default.btn-primary.form-control.filterMargin.margin0(href="/quickSupport/videocall/#{lockedQuestion.sessionRoom}/#{lockedQuestion._id}/#{responderHistoryId}") Join
+
+  .panel.marginT_30
+    .panel-body.padding0
+          ul#Tab.nav.nav-tabs.radius_none
+            li.active.col-sm-3.col-xs-12.text-center
+              a#allwaiting(href='#my-waiting', data-toggle='tab')
+                | Waiting
+                | (
+                span#waitingCount #{expertWaiting.length}
+                | )
+            li.col-sm-3.col-xs-12.text-center
+              a#allQues(href='#allquestions', data-toggle='tab')
+                | All Question (#{lasData.length})
+            li.col-sm-3.col-xs-12.text-center
+              a#allanswered(href='#my-answered', data-toggle='tab')
+                | Answered
+                | (
+                span#answeredCount
+                | )
+            li.col-sm-3.col-xs-12.text-center
+              a#allpending(href='#my-pending', data-toggle='tab')
+                | Pending Feedback
+                | (
+                span#pendingCount 
+                | )
+          #TabContent.tab-content(style="border:1px solid #ddd")
+            #my-waiting.tab-pane.fade.in.active.margin0
+              .panel
+                if expertWaiting.length == 0
+                  .panel-body
+                    p Your questions are not locked by CSquire advisers till now
+                else  
+                  .panel-body
+                      h4.font-primary Filter by
+                      div.row.las_filters
+                        div.col-sm-8
+                          label.margin0 Can Wait
+                          select.form-control#productSelection(multiple name='product',data-master='products', data-errorholder='Product', required='required',data-placeholder='',style="width: 100%")
+                        div.col-sm-4
+                          label.block Day/ Week/ Month/ Year
+                          input.form-control(type="text")
+                          span.absolute.glyphicon.glyphicon-calendar
+                      div.row.marginT_30.hidden-xs
+                        .col-sm-12
+                          button.btn.btn-default.border-primary.btn-heading-small.margin0 Submit
+                          button.btn-link.fa_Marginleft Clear Filter
+                      div.row.marginT_30.visible-xs.hidden-sm
+                        .col-xs-12
+                          button.btn.btn-default.border-primary.margin0 Submit
+                        .col-xs-12
+                          button.btn-link.fa_Marginleft Clear Filter
+                  div.panel
+                        .panel-body.padding0
+                          table.table.margin0(cellspacing="0" cellpadding="0")
+                            thead
+                              tr
+                                th(style="padding-left:15px;")
+                                  | Question
+                                  i.fa.fa-chevron-down.fa_Marginleft
+                                th
+                                  | Locked By
+                                  i.fa.fa-chevron-down.fa_Marginleft
+                                th
+                             each item in expertWaiting
+                              tr
+                                td(style="width:45%;padding-left:15px")
+                                  span.more #{item.question}
+                                td.text-capitalize.lockedBy(style="width:20%")
+                                  a(href="/people/#{item.responderHistory.userId.uid}") #{item.responderHistory.userId.name} #{item.responderHistory.userId.lastName}
+                                  span.block Can wait for 15 Mins
+                                td(style="width:35%")
+                                  a.btn.btn-default.btn-primary.border-primary.btn-heading-small.margin0(href="/quickSupport/videocall/#{item.sessionRoom}/#{item._id}/#{item.responderHistory._id}") Join
+                                  form.btn-grp(style="display:inline-block" action="/quickSupport/locking" method="post")
+                                    input(type="hidden",value="requester",name="unlockingBy")
+                                    input(type="hidden",value="unlocked",name="status")
+                                    input(type="hidden",value="#{item._id}",name="questionId")
+                                    input(type="hidden",value="#{item.responderHistory._id}",name="responderHistoryId")
+                                    button.btn.btn-default.btn-heading-small(type="submit") Reject
+                                  button.btn.btn-default.btn-heading-small(type="submit") Join ...
+            #allquestions.tab-pane.fade.margin0
+              .panel
+                  .panel-body
+                    form(method='get' novalidate)
+                      h4.font-primary Filter by
+                      div.margn_adjst
+                        input(type="checkbox" name="filterProfile" value="true")
+                        p.inline-block.radioTxt Show Questions based on my profile skills 
+                      div.row.las_filters
+                        div.col-sm-4
+                          label Product
+                          select.form-control#productSelection(multiple name='product',data-master='products', data-errorholder='Product', required='required',data-placeholder='Product Name',style="width: 100%")
+                        div.col-sm-4
+                          label Industry
+                          select#functionalRole.form-control(name='industry',required='required',data-errorholder='Industry',data-placeholder='Industry',style="width: 100%")
+                        div.col-sm-4
+                          label Function
+                          select#functionalRole.form-control(name='functionalRole',required='required',data-errorholder='Functional Role',data-placeholder='Function',style="width: 100%")
+                      div.row.marginT_30.hidden-xs
+                        .col-sm-12
+                          button.form-control.btn.btn-default.border-primary.btn-heading-small.margin0 Clear Filter
+                          button.form-control.btn.btn-default.border-primary.btn-heading-small Submit
+                      div.row.marginT_30.visible-xs.hidden-sm
+                        .col-xs-12
+                          button.form-control.btn.btn-default.border-primary.margin0 Clear Filter
+                        .col-xs-12.filterMargin
+                          button.form-control.btn.btn-default.border-primary Submit
+                  .panel
+                    .panel-body.padding0
+                      div
+                        table.table.margin0(cellspacing="0" cellpadding="0")
+                          thead
+                            tr
+                              th(style="width:10%")
+                              th(style="width:15%")
+                                | Contact Name 
+                                i.fa.fa-chevron-down.fa_Marginleft
+                              th(style="width:55%")
+                                | Question
+                                i.fa.fa-chevron-down.fa_Marginleft
+                              th(style="width:20%")
+                                | Time Submitted
+                                i.fa.fa-chevron-down.fa_Marginleft
+                            if lasData.length == 0
+                              tr(style="background-color:white")
+                               td(colspan=4,style="text-align:center")  Question List is empty
+                            else
+                             each item in lasData
+                              tr(style="background-color:white")
+                                td
+                                  if item.createdBy._id == userID
+                                    
+                                  else
+                                    form(action="/quickSupport/locking" method="post")
+                                      input(type="hidden",value="#{item._id}",name="questionId")
+                                      input(type="hidden",value="#{item.createdBy._id}",name="requesterId")
+                                      button.btn.btn-default.border-primary.btn-heading-small.margin0(type="submit") Answer
+                                td.text-capitalize
+                                  | #{item.createdBy.name} #{item.createdBy.lastName}
+                                td.text-capitalize.relative
+                                  span.more #{item.question}   
+                                td.lasDate
+                                  | #{item.createdDate}
+            #my-answered.tab-pane.fade.margin0
+              .panel
+                .panel-body.noQUESTION.hide
+                  p There are no questions answered by you
+                .panel-body.showQuestion
+                  h4.font-primary Filter by 
+                  div.row.las_filters
+                    div.col-sm-8
+                      label Answer Status
+                      select.form-control(multiple name='',data-master='', data-errorholder='', required='required',data-placeholder='',style="width: 100%")
+                    div.col-sm-4.relative.las_date
+                      label Day/ Week/ Month/ Year
+                      input.form-control(type="text")
+                      span.absolute.glyphicon.glyphicon-calendar
+                  div.row.marginT_30.btn-grp.hidden-xs
+                    .col-sm-12
+                      button.form-control.btn.btn-default.border-primary.btn-heading-small.margin0 Clear Filter
+                      button.form-control.btn.btn-default.border-primary.btn-heading-small Submit
+                  div.row.marginT_30.btn-grp.hidden-sm.visible-xs
+                    .col-xs-12
+                      button.form-control.btn.btn-default.border-primary.margin0 Clear Filter
+                    .col-xs-12.filterMargin
+                      button.form-control.btn.btn-default.border-primary Submit
+              .panel
+                .panel-body.padding0.showQuestion
+                  div
+                    table.table.margin0
+                      thead
+                        tr
+                          th(style="width:20%;padding-left:15px")
+                            | Contact Name 
+                            i.fa.fa-chevron-down.fa_Marginleft
+                          th(style="width:55%")
+                            | Question
+                            i.fa.fa-chevron-down.fa_Marginleft
+                          th(style="width:15%")
+                            | Status
+                            i.fa.fa-chevron-down.fa_Marginleft
+                          th.text-center(style="width:10%")
+                            | Payment
+                            i.fa.fa-chevron-down.fa_Marginleft
+                       each data in answeredTab
+                        if data.status == "completed"
+                          tr
+                            td.text-capitalize.getAnsweredCount
+                              | #{data.questionFullPath[0].createdBy.name} #{data.questionFullPath[0].createdBy.lastName}
+                            td.text-capitalize
+                              span.more #{data.questionFullPath[0].question}
+                            td
+                              span Completed
+                            td.text-right
+                              | $ 10.00
+                        if data.status == "closed"
+                          tr
+                            td.text-capitalize.getAnsweredCount
+                              | #{data.questionFullPath[0].createdBy.name} #{data.questionFullPath[0].createdBy.lastName}
+                            td.text-capitalize
+                              span.more #{data.questionFullPath[0].question}
+                            td
+                              span Closed
+                            td.text-right
+                              | $ 00.00                            
+            #my-pending.tab-pane.fade.margin0
+              .panel
+                .panel-body.noPendingFeed.hide
+                  p There is no feedback pending
+                .panel-body.showPendingFeed
+                  h4.font-primary Filter by 
+                  div.row.las_filters
+                    div.col-sm-8
+                      label Feedback Status
+                      select.form-control(multiple name='',data-master='', data-errorholder='', required='required',data-placeholder='',style="width: 100%")
+                  div.row.marginT_30.btn-grp.hidden-xs
+                    .col-sm-12
+                      button.form-control.btn.btn-default.border-primary.btn-heading-small.margin0 Clear Filter
+                      button.form-control.btn.btn-default.border-primary.btn-heading-small Submit
+                  div.row.marginT_30.btn-grp.visible-xs.hidden-sm
+                    .col-xs-12
+                      button.form-control.btn.btn-default.border-primary.margin0 Clear Filter
+                    .col-xs-12.filterMargin
+                      button.form-control.btn.btn-default.border-primary Submit
+              .panel.showPendingFeed
+                .panel-body.padding0
+                  div
+                    table.table.margin0
+                      thead
+                        tr
+                          th(style="width:30%")
+                            | Question
+                            i.fa.fa-chevron-down.fa_Marginleft
+                          th(style="width:10%")
+                            | Requester Feedback
+                            i.fa.fa-chevron-down.fa_Marginleft
+                          th(style="width:10%")
+                            | Responder Feedback
+                            i.fa.fa-chevron-down.fa_Marginleft
+                       each item in feedbackPedingList
+                        if item.createdBy._id == userID || item.responderHistory.userId._id == userID
+                          tr
+                            td
+                              span.pendindFeedback.more #{item.question}
+                            td.text-capitalize
+                              if item.createdBy._id == userID && item.supportStatus === "pending"
+                                if item.responderHistory.requesterFeedback == undefined
+                                  a(href="/quickSupport/requesterFeedback/#{item._id}/#{item.responderHistory._id}") Pending
+                                else
+                                  | Completed
+                              else 
+                                if item.responderHistory.requesterFeedback == undefined
+                                  | Pending
+                                else
+                                  | Completed
+
+                            td
+                              if item.responderHistory.userId._id == userID && item.responderHistory.status === "pending"
+                                if item.responderHistory.responderFeedback == undefined
+                                  a(href="/quickSupport/requesterFeedback/#{item._id}/#{item.responderHistory._id}") Pending
+                                else
+                                  | Completed
+                              else
+                                if item.responderHistory.responderFeedback == undefined
+                                  | Pending
+                                else
+                                  | Completed

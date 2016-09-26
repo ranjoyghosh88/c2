@@ -1,0 +1,21 @@
+#advanceSearch.modal.fade(tabindex='-1', role='dialog')
+  .modal-dialog(role='document')
+    .modal-content
+      .modal-header
+        button.close(type='button', data-dismiss='modal', aria-label='Close')
+        h4#exampleModalLabel.modal-title Advanced Search
+      .modal-body
+        div
+          //- Nav tabs
+          ul.nav.nav-pills(role='tablist')
+            li.active(role='presentation')
+              a(href='#company', aria-controls='company', role='tab', data-toggle='tab') Companies
+            li(role='presentation')
+              a(href='#profile', aria-controls='profile', role='tab', data-toggle='tab') People
+            li(role='presentation')
+              a(href='#product', aria-controls='product', role='tab', data-toggle='tab') Products
+          //- Tab panes
+          .tab-content
+            #company.tab-pane.active(role='tabpanel') company
+            #profile.tab-pane(role='tabpanel') people 
+            #product.tab-pane(role='tabpanel') product

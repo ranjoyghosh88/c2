@@ -1,0 +1,134 @@
+include ../../mixin/termsAndCondition
+
+div.las_review#las_review(style="display:none")
+  .row
+    .col-xs-12.col-sm-6
+      div.pading_rgt_25
+        h4.font-primary Question Details
+        .row
+          .col-sm-4.col-xs-5
+            label Name
+          .col-sm-8.col-xs-5
+            span.requesterName
+        .row
+          .col-sm-4.col-xs-5
+            label Phone Number
+          .col-sm-8.col-xs-5
+            span.phoneNum
+        .row
+          .col-sm-4.col-xs-5
+            label Email
+          .col-sm-8.col-xs-5
+            span.requesterEmail
+        .row
+          .col-sm-4.col-xs-5
+            label Product
+          .col-sm-8.col-xs-5
+            span.requesterProduct
+        .row
+          .col-sm-4.col-xs-5
+            label Business Process Area
+          .col-sm-8.col-xs-5
+            span.requesterFunction
+        .row
+          .col-sm-4.col-xs-5
+            label Industry
+          .col-sm-8.col-xs-5
+            span.requesterIndustry
+        .row#reviewTag
+          .col-sm-4.col-xs-5
+            label Tags
+          .col-sm-8.col-xs-5
+            span.requesterTags
+        .row
+          .col-sm-4.col-xs-5
+            label Communication Preference
+          .col-sm-8.col-xs-5
+            span.requesterMode
+        .row
+          .col-sm-4.col-xs-5
+            label Question
+          .col-sm-8.col-xs-5
+            span.requesterQuestion.more.block
+        .row
+          p(align="left" style="margin-top:10px")
+            img.block.quickSupportLogo(src="#{cdn('/QuickSupportStacked.png')}" height="115px")
+    .col-xs-12.col-sm-6
+      div.pading_lft_25
+        h4.font-primary.payment Payment Details
+        .row
+          .col-xs-12.text-center
+            div.greyBox.bgnone.margin0
+              if lasData.sku.isDefault === true
+               label.text-tertiary.font_lrg Total Payment of 
+                span #{price}
+              else
+                label.text-tertiary.font_lrg Total Payment of 
+                  span #{price}
+                  span.fa_Marginleft(style="color:red")
+                    strike(style="font-size:15px") #{defaultPrice}
+              p #{lasData.sku.attributes.description}
+        div.greyBox
+          .row
+            .col-sm-4.col-xs-5
+              label Name on Card
+            .col-sm-8.col-xs-5
+              span.requesterCardName
+          .row
+            .col-sm-4.col-xs-5
+              label Credit Card Number
+            .col-sm-8.col-xs-5
+              span.requesterCardNumber
+          .row
+            .col-sm-4.col-xs-5
+              label Card Expiration Date
+            .col-sm-8.col-xs-5
+              span.requesterCardExpDate
+          .row
+            .col-sm-4.col-xs-5
+              label Invoice Email
+            .col-sm-8.col-xs-5
+              span.requesterInvoiceEmail
+        p.margin_lrge#promotionalCode No promotional code used
+        div
+         input.checkTeams(type="checkbox")
+         div.inline-block I agree to 
+          a.text-primary.inline-block(type='button', data-toggle='modal', data-target='.las1_bs-example-modal-sm') Terms & Conditions
+          .modal.fade.las1_bs-example-modal-sm(tabindex='-1', role='dialog', aria-labelledby='mySmallModalLabel')
+           .modal-dialog
+            .modal-content
+             .modal-header.text-inverse.font-secondary.text-uppercase
+              button.close.text-inverse(type='button', data-dismiss='modal', aria-label='Close')
+               span(aria-hidden='true') ×
+              h4#mySmallModalLabel.modal-title.text-uppercase Terms and Condition  
+             .modal-body.terms
+              .panel.panel-default
+               .panel-body.terms_condition
+                +termsNCondition()
+        label.error.alert.alert-danger.termsView.hide Please agree the terms & conditions
+        div.row.marginT_30.hidden-xs
+         div.col-sm-12
+          div.form-control.btn.btn-default.btn-heading.font-primary.margin0.backPostScreen(style="padding-top:9px") Back
+          button.form-control.btn.btn-default.btn-primary.btn-heading.font-primary.submitLas(type='submit' ) Submit
+        div.row.visible-xs.hidden-sm.marginT_30
+         div.col-xs-12
+          div.form-control.btn.btn-default.font-primary.margin0.backPostScreen Back
+         div.col-xs-12.filterMargin
+          button.form-control.btn.btn-default.btn-primary.font-primary.submitLas(type='submit' ) Submit
+  div.marginT_30.important_info.greyBox
+   p
+    label Important Information
+   p.relative
+    img.absolute.fa_MarginRight.arrow(src="#{cdn('/arrow.png')}")
+    label Satisfaction Guarantee -  
+    |  If you are not satisfied with the answer, we will provide a full credit for another support session.
+   p.relative
+    img.absolute.fa_MarginRight.arrow(src="#{cdn('/arrow.png')}")
+    span
+      strong Payment gateway powered by Stripe
+   p.relative
+    img.absolute.fa_MarginRight.arrow(src="#{cdn('/arrow.png')}")
+    span If you are using a Chrome browser, you may need to download the Chrome CSquire extension. You will be prompted before your first video to video Quick Support conference or you may do it now by clicking 
+      a(href="https://chrome.google.com/webstore/search/csquire" target="_blank") https://chrome.google.com/webstore/search/csquire
+      |.
+  +popupGeneric("stripePopup") 

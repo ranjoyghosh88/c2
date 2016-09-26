@@ -1,0 +1,21 @@
+div.marginT_30
+	#footer.text-inverse
+		.container
+			.row
+				#copyright.text-center.col-sm-3.col-md-3.col-xs-12.col-lg-2
+					p &copy; #{new Date().getFullYear()} CSquire Inc.
+				#footer_links.col-sm-7.col-xs-12.col-md-6.col-lg-8.text-center
+					a.text-inverse.hide(href='/aboutcsquire', title='About CSquire') About&nbsp;CSquire
+					a.text-inverse.hide(href='#{blogHref}', target='_blank', getfullyear='', title='Blog') Blog
+					a.text-inverse.hide(href='/termsofservices', title='Terms of Service') Terms&nbsp;of&nbsp;Service
+					a.text-inverse.hide(href='/privacypolicy', getfullyear='', title='Privacy Policy') Privacy&nbsp;Policy
+				#social.text-center.col-sm-3.col-xs-12.col-md-3.col-lg-2.hide
+					a(href='//facebook.com/csquirenetwork', title='Visit us on Facebook' target="_blank")
+						span.fa-stack.fa-lg
+							i.fa.fa-facebook.fa-stack-1x.fa-inverse
+					a(href='//twitter.com/csquirenetwork', title='Follow us on Twitter' target="_blank")
+						span.fa-stack.fa-lg
+							i.fa.fa-twitter.fa-stack-1x.fa-inverse
+					a(href='//linkedin.com/company/csquire', title='Connect on LinkedIn' target="_blank")
+						span.fa-stack.fa-lg
+							i.fa.fa-linkedin.fa-stack-1x.fa-inverse

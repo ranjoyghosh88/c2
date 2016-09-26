@@ -1,0 +1,18 @@
+extends ../layouts/layout_searchbox_2column
+include ../mixin/formerror
+include ../mixin/formsuccess
+include ../mixin/registerFormcontinue
+include ../mixin/overallRatings
+include ../mixin/upgrade
+
+
+
+
+block column_1  
+  include ../widgets/companyprofile
+
+block column_2
+  include ../widgets/companyprofileaside
+  
+block append js
+  script(src=cdn('/profile.js'))

@@ -1,0 +1,40 @@
+include ../mixin/pagination
+mixin searchBox2(data, options)
+	-var key = selectKey || 'all'
+	.search-container.form-inline.search
+		form.form-inline.search.pull-left(id='search-form-left',method='get',action='')
+			.form-group
+				label
+					button.input-group-addon.dropdown-toggle.searchText.no_underline(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+							span.text All
+							i.fa.fa-chevron-down.text-primary
+					ul.dropdown-menu.searchToggle
+						li
+							a(href='#',data-value='all',data-text='All') All
+						li
+							a(href='#',data-value='company',data-text='Companies') Companies
+						li
+							a(href='#',data-value='people',data-text='People') People
+						li
+							a(href='#',data-value='product',data-text='Products') Products
+					input.searchKeyTrigger.form-control.notSelect2.hidden(id='select-key',name="selectKey" onchange="this.form.submit()",type='hidden',value='#{key}')
+					//-if(key=='company')
+						option(value='company',selected) Companies
+					//-else
+						option(value='company') Companies
+					//-if(key=='people')
+						option(value='people',selected) People
+					//-else
+						option(value='people') People
+					//-if(key=='product')
+						option(value='product',selected) Products
+					//-else
+						option(value='product') Products
+				input(type='hidden',name='search',value='#{search || ""}')
+		form.form-inline.search.pull-right(id='search-form-right',method='get',action='/search/#{key}')
+			input(type='hidden',name='selectKey',value='#{key}')
+			.form-group
+				label
+					input.form-control(type='text',value='#{search || ""}',name='search', placeholder='Companies, Software, Consultants and Individuals')
+			button.btn.btn.btn-primary(id='btn-search',type='submit')
+					span.glyphicon.glyphicon-search

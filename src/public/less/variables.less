@@ -1,0 +1,44 @@
+/*
+	NOTE:
+	- If the variables need to be changed per build for specific environment, ref. Gruntfile
+	- By default all the file paths will point to the local file system
+*/
+@cssCDN: '/stylesheets';
+@bootstrapCDN: '/stylesheets/lib/bootstrap/css';
+@fontawesomeCDN: '/stylesheets/lib/font-awesome/css';
+
+/*
+	NOTE: 
+	- The following a some key Bootstrap settings
+	- USUALLY: there is no need to change these items
+	- HOWEVER: if these are changed using Bootstrap Customizer, please remember to make changes here also
+*/
+@screen-sm-min: 480px;
+@screen-md-min: 992px;
+@screen-lg-min: 1200px;
+@screen-sm-max: (@screen-md-min - 1);
+@padding-base-vertical: 6px;
+@padding-base-horizontal: 12px;
+@padding-large-vertical: 10px;
+@padding-large-horizontal: 16px;
+@padding-small-vertical: 5px;
+@padding-small-horizontal: 10px;
+@padding-xs-vertical: 5px;
+@padding-xs-horizontal: 10px;
+
+/* colors/styles provided by the CSquire styleGuide */
+
+@color-primary:#329ddc;
+@color-secondary:#2FA83E;
+@color-tertiary:#00ADB1;
+@theme-gray:#ebeff0;
+@secondary-image-diameter:100px;
+@tertiary-image-diameter:60px;
+
+
+/*
+	NOTE:
+	- You can also import Bootstrap variables here via its less file import
+*/
+
+/* Nothing else in this file */

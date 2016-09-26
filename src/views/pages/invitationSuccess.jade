@@ -1,0 +1,24 @@
+extends ../layouts/layout_searchbox_2column
+include ../mixin/formerror
+include ../mixin/formsuccess
+include ../mixin/pastProducts
+include ../mixin/registerFormcontinue
+include ../mixin/overallRatings
+include ../mixin/upgrade
+
+
+
+
+
+block column_1 
+  #content.container
+      row
+        .col-xs-12(align="center")
+            h2 Thank you for inviting your contact to join the CSquire Network. Your email has been sent !
+
+
+block append js
+  script(src='//cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js')
+  script(src=cdn('/profile.js'))
+  script
+    | setTimeout(function(){ window.location.replace("/dashboard");}, 2000);

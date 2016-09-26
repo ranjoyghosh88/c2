@@ -1,0 +1,17 @@
+extends ../layouts/layout_searchbox_2column
+
+block column_1  
+  include ../widgets/rfp
+
+block column_2
+  include ../widgets/rfpaside
+
+block append stylesheet
+   link(rel='stylesheet', href='//cdn.datatables.net/1.10.10/css/dataTables.bootstrap.min.css')
+block append js
+   script(src='//cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js')
+   script(src='//cdn.datatables.net/1.10.10/js/dataTables.bootstrap.min.js')
+   script(src='//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js')
+   script(src='/javascripts/lib/bootstrap/bootstrap-datepicker/js/bootstrap-datepicker.min.js')
+   script(src=cdn('/rfp-backbone-demo/rfp-common.js'))
+   script(src=cdn('/rfp-backbone-demo/dashboard.js'))

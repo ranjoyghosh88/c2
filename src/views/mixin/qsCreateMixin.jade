@@ -1,0 +1,315 @@
+mixin createCouponModel()
+	#createCouponPopup.modal.fade(role='dialog', backdrop: 'static',
+    keyboard: false)
+		.modal-dialog
+			.modal-content
+				.modal-header
+					button.close.text-inverse(type='button', data-dismiss='modal') &times;    
+					h4.modal-title.text-inverse.text-uppercase.font-secondary create coupon
+				.modal-body
+					form.form-horizontal.signupForm#coupon-create-form
+						.row
+							.col-sm-3.col-xs-12.text-left.tableDisplay
+								label.widthadjust.middleAlign Coupon ID
+							.col-sm-9.col-xs-12
+								input.form-control(name='createCoupon',id='createCouponId',placeholder="Enter Coupon ID" onkeyup="ValidateField(this)")
+								label.error.alert.alert-danger.marginLabel(style="display:none") Please enter Coupon ID
+								label.error.alert.alert-danger.marginLabel(style="display:none") Special character not allowed
+								label.error.alert.alert-danger.marginLabel(style="display:none") Coupon Already exists
+						.row.filterMargin
+							.col-sm-3.col-xs-12.text-left.tableDisplay
+								label.widthadjust.middleAlign Value
+							.col-sm-3.col-xs-4
+								select.form-control.pull-right(name='offMode',id='offMode',data-placeholder='$', onChange='showMsgBox()')
+									option(value='$' selected) $
+									option(value='%') %
+							.col-sm-6.col-xs-8
+								input.form-control(placeholder="Enter Value",name="value",id="value",onkeyup="removeAlert(this)")
+								label.error.alert.alert-danger.marginLabel(style="display:none") Please enter Value
+								label.error.alert.alert-danger.marginLabel(style="display:none") This will be applicable on total value
+								label.error.alert.alert-danger.marginLabel(style="display:none") Must be between 1 and 100
+						.row.filterMargin
+							.col-sm-3.col-xs-12.text-left.tableDisplay
+								label.widthadjust.middleAlign Redeem By
+							.col-sm-9.col-xs-12#redeemByDatePick.relative
+								input#redeemBy.form-control.clsDatePicker(placeholder="Select redemeption date",type='text', name='redeemBy', readonly='readonly')
+								span.absolute.glyphicon.glyphicon-calendar
+						.row.filterMargin
+							.col-sm-3.col-xs-12.text-left.tableDisplay
+								label.widthadjust.middleAlign Max Redemptions
+							.col-sm-9.col-xs-12
+								input.form-control(placeholder="Count of redemption",name="maxRedemption",onkeyup="ValidateFieldNum(this)")
+								input(type='hidden' name='duration', value = "once")
+				.modal-footer
+					button.btn.btn-default.btn-primary.btn-heading-small(type='button', id = "addStripeCouponCreate") Create
+					button.btn.btn-default.border-primary.btn-heading-small(type='reset', id = "addStripeCouponReset") Clear All
+mixin qsMappingModel()
+	#mappingPopup.modal.fade(role='dialog')
+		.modal-dialog
+			.modal-content
+				.modal-header
+					button.close.text-inverse(type='button', data-dismiss='modal') &times;    
+					h4.modal-title.setHeaderMessage.text-inverse.text-uppercase.font-secondary
+				.modal-body
+					p.messageGeneric  
+				.modal-footer
+					button.btn.btn-default.btn-primary.btn-heading-small(type='button', data-dismiss='modal') OK
+mixin createProductModel()
+	#createProductPopup.modal.fade(role='dialog', backdrop: 'static',
+    keyboard: false)
+		.modal-dialog
+			.modal-content
+				.modal-header
+					button.close.text-inverse(type='button', data-dismiss='modal') &times;    
+					h4.modal-title.text-inverse.text-uppercase.font-secondary Create new product
+				.modal-body
+					form.form-horizontal#product-create-form
+						.row
+							.col-sm-3.col-xs-12.text-left.tableDisplay
+								label.widthadjust.middleAlign CSquire Service
+							.col-sm-9.col-xs-12
+								select.form-control.pull-right(name='csquireService',id='csquireService', data-placeholder='Select CSquire Service',data-errorholder='' onchange='populateAttr(this)')
+									if csquireServices && csquireServices.length
+										option(value='') Select Csquire Service
+										each item in csquireServices
+											option(value=item._id)= item.name
+								label.error.alert.alert-danger.marginLabel(style="display:none") Please Select CSquire Service
+						.row.filterMargin
+							.col-sm-3.col-xs-12.text-left.tableDisplay
+								label.widthadjust.middleAlign Product Name
+							.col-sm-9.col-xs-12
+								input.form-control(name='productName',id='productName',placeholder="Enter product name",type='text' onkeyup="ValidateProductField(this)")
+								label.error.alert.alert-danger.marginLabel(style="display:none") Please enter Product Name
+								label.error.alert.alert-danger.marginLabel(style="display:none") Special character not allowed
+								label.error.alert.alert-danger.marginLabel(style="display:none") Product Already exists
+						.row.filterMargin
+							.col-sm-3.col-xs-12.text-left.tableDisplay
+								label.widthadjust.middleAlign Attributes
+							.col-sm-9.col-xs-12
+								input.form-control(id="attrValue",placeholder="To, From",type='text', name='attrValue', readonly='readonly')
+						.row.filterMargin
+							.col-sm-3.col-xs-12.text-left
+								label.widthadjust(style="margin-top:10px") Description
+							.col-sm-9.col-xs-12
+								textarea.textarea_description.form-control(name='productDesc',id='productDesc',placeholder="Enter description of product" onkeyup="removeAlert(this)")
+								label.error.alert.alert-danger.marginLabel(style="display:none") Please enter description
+				.modal-footer
+					button.btn.btn-default.btn-primary.btn-heading-small(type='button', id = "addStripeProductCreate") Create
+					button.btn.btn-default.border-primary.btn-heading-small(type='button', id = "addStripeProductReset") Clear All
+mixin updateProductModel()
+	#productUpdatePopup.modal.fade(role='dialog', backdrop: 'static',
+    keyboard: false)
+		.modal-dialog
+			.modal-content
+				.modal-header
+					button.close.text-inverse(type='button', data-dismiss='modal') &times;    
+					h4.modal-title.text-inverse.text-uppercase.font-secondary Update product
+				.modal-body
+					form.form-horizontal#product-update-form
+						.row.filterMargin
+							.col-sm-3.col-xs-12.text-left.tableDisplay
+								label.widthadjust#productNameLabel.middleAlign
+							.col-sm-9.col-xs-12#productNameInput
+						.row.filterMargin
+							.col-sm-3.col-xs-12.text-left.tableDisplay
+								label.widthadjust#productAttrLabel.middleAlign
+							.col-sm-9.col-xs-12#productAttrInput
+						.row.filterMargin
+							.col-sm-3.col-xs-12.text-left.tableDisplay
+								label.widthadjust#productDescLabel.middleAlign
+							.col-sm-9.col-xs-12#productDescInput
+								label.error.alert.alert-danger.marginLabel(style="display:none") Please enter description
+				.modal-footer
+					button.btn.btn-default.btn-primary.btn-heading-small(type='button', id = "editStripeProductUpdate") Save
+					button.btn.btn-default.border-primary.btn-heading-small(type='button', id = "editStripeProductReset") Clear All
+mixin createSKUModel()
+	#createSKUPopup.modal.fade(role='dialog', backdrop: 'static',
+    keyboard: false)
+		.modal-dialog
+			.modal-content
+				.modal-header
+					button.close.text-inverse(type='button', data-dismiss='modal') &times;    
+					h4.modal-title.text-inverse.text-uppercase.font-secondary add sku
+				.modal-body
+					form.form-horizontal.signupForm#sku-create-form
+						.row
+							.col-sm-3.col-xs-12.text-left.tableDisplay
+								label.widthadjust.middleAlign#productNameLabel
+							.col-sm-9.col-xs-12#productNameSelect
+						.row.filterMargin
+							.col-sm-3.col-xs-12.text-left.tableDisplay
+								label.widthadjust.middleAlign#SKUNameLabel
+							.col-sm-9.col-xs-12#SKUNameInput
+						.row.filterMargin
+							.col-sm-3.col-xs-12.text-left.tableDisplay
+								label.widthadjust.middleAlign#SKUPriceLabel
+							.col-sm-9.col-xs-12#SKUPriceInput
+						span.row#attrOfProduct
+							h4.bordertop.font-primary.marginT_30#attributesLabel
+							.row
+								.col-sm-3.col-xs-12.text-left.tableDisplay
+									label.widthadjust.middleAlign#attributesLabelOne
+								.col-sm-9.col-xs-12#attributesInputOne
+							.row.filterMargin
+								.col-sm-3.col-xs-12.text-left.tableDisplay
+									label.widthadjust.middleAlign#attributesLabelTwo
+								.col-sm-9.col-xs-12#attributesInputTwo
+							.row.filterMargin
+								.col-sm-3.col-xs-12.text-left.tableDisplay
+									label.widthadjust.middleAlign#attributesLabelThree
+								.col-sm-9.col-xs-12#attributesInputThree
+							.row.filterMargin
+								.col-sm-3.col-xs-12.text-left.tableDisplay
+									label.widthadjust#attributesLabelFour(style="margin-top:10px")
+								.col-sm-9.col-xs-12#attributesInputFour
+				.modal-footer
+					button.btn.btn-default.btn-primary.btn-heading-small(type='button', id = "addStripeSKUCreate") Add
+					button.btn.btn-default.border-primary.btn-heading-small(type='button', id = "addStripeSKUReset") Clear All
+mixin updateSkuModel()
+	#skuUpdatePopup.modal.fade(role='dialog', backdrop: 'static',
+    keyboard: false)
+		.modal-dialog
+			.modal-content
+				.modal-header
+					button.close.text-inverse(type='button', data-dismiss='modal') &times;    
+					h4.modal-title.text-inverse.text-uppercase.font-secondary Update SKU
+				.modal-body
+					form.form-horizontal#sku-update-form
+						.row.filterMargin
+							.col-sm-3.col-xs-12.text-left.tableDisplay
+								label.widthadjust.middleAlign#SKUNameLabel
+							.col-sm-9.col-xs-12#SKUNameInput
+						.row.filterMargin
+							.col-sm-3.col-xs-12.text-left.tableDisplay
+								label.widthadjust.middleAlign#SKUPriceLabel
+							.col-sm-9.col-xs-12#SKUPriceInput
+				.modal-footer
+					button.btn.btn-default.btn-primary.btn-heading-small(type='button', id = "editStripeSkuUpdate") Save
+					button.btn.btn-default.border-primary.btn-heading-small(type='button', id = "editStripeSkuReset") Clear All
+mixin createDiscountModel()
+	#createDiscountPopup.modal.fade(role='dialog', backdrop: 'static',
+    keyboard: false)
+		.modal-dialog
+			.modal-content
+				.modal-header
+					button.close.text-inverse(type='button', data-dismiss='modal') &times;    
+					h4.modal-title.text-inverse.text-uppercase.font-secondary create discount
+				.modal-body
+					form.form-horizontal.signupForm#discount-create-form
+						.row
+							.col-sm-3.col-xs-12.text-left.tableDisplay
+								label.widthadjust.middleAlign Discount ID
+							.col-sm-9.col-xs-12
+								input.form-control(name='createCoupon',id='createCouponId',placeholder="Enter Discount ID" onkeyup="ValidateField(this)")
+								label.error.alert.alert-danger.marginLabel(style="display:none") Please enter Discount ID
+								label.error.alert.alert-danger.marginLabel(style="display:none") Special character not allowed
+								label.error.alert.alert-danger.marginLabel(style="display:none") Discount Already exists
+						.row.filterMargin
+							.col-sm-3.col-xs-12.text-left.tableDisplay
+								label.widthadjust.middleAlign Value
+							.col-sm-3.col-xs-4
+								select.form-control.pull-right(name='offMode',id='offMode',data-placeholder='$', onChange='showMsgBox()')
+									option(value='$') $
+									option(value='%') %
+							.col-sm-6.col-xs-8
+								input.form-control(placeholder="Enter Value",name="value",id="value",onkeyup="removeAlert(this)")
+								label.error.alert.alert-danger.marginLabel(style="display:none") Please enter Value
+								label.error.alert.alert-danger.marginLabel(style="display:none") This will be applicable on total value
+								label.error.alert.alert-danger.marginLabel(style="display:none") Must be between 1 and 100
+						.row.filterMargin
+							.col-sm-3.col-xs-12.text-left.tableDisplay
+								label.widthadjust.middleAlign Redeem By
+							.col-sm-9.col-xs-12#redeemByDatePick.relative
+								input#redeemBy.form-control.clsDatePicker(placeholder="Select redemeption date",type='text', name='redeemBy', readonly='readonly')
+								span.absolute.glyphicon.glyphicon-calendar
+						.row.filterMargin
+							.col-sm-3.col-xs-12.text-left.tableDisplay
+								label.widthadjust.middleAlign Max Redemptions
+							.col-sm-9.col-xs-12
+								input.form-control(placeholder="Count of redemption",name="maxRedemption",onkeyup="ValidateFieldNum(this)")
+								input(type='hidden' name='duration', value = "once")
+				.modal-footer
+					button.btn.btn-default.btn-primary.btn-heading-small(type='button', id = "addStripeDiscountCreate") Create
+					button.btn.btn-default.border-primary.btn-heading-small(type='button', id = "addStripeDiscountReset") Clear All
+mixin createPlanModel()
+	#createPlanPopup.modal.fade(role='dialog', backdrop: 'static',
+    keyboard: false)
+		.modal-dialog
+			.modal-content
+				.modal-header
+					button.close.text-inverse(type='button', data-dismiss='modal') &times;    
+					h4.modal-title.text-inverse.text-uppercase.font-secondary create subscription plan
+				.modal-body
+					form.form-horizontal.signupForm#plan-create-form
+						.row
+							.col-sm-3.col-xs-12.text-left.tableDisplay
+								label.widthadjust.middleAlign Name 
+							.col-sm-9.col-xs-12
+								input.form-control(name='createPlanName',id='createPlanName',placeholder="Enter Subscription Plan Name",onkeyup="ValidateFieldPlan(this)")
+								label.error.alert.alert-danger.marginLabel(style="display:none") Please enter Plan Name
+								label.error.alert.alert-danger.marginLabel(style="display:none") Special character not allowed
+								label.error.alert.alert-danger.marginLabel(style="display:none") Plan Already exists
+						.row.filterMargin
+							.col-sm-3.col-xs-12.text-left.tableDisplay
+								label.widthadjust.middleAlign Amount
+							.col-sm-9.col-xs-12
+								input.form-control(placeholder="Enter Value",name="valuePrice",id="valuePrice",onkeyup="removeAlert(this)")
+								label.error.alert.alert-danger.marginLabel(style="display:none") Please enter Value
+						.row.filterMargin
+							.col-sm-3.col-xs-12.text-left.tableDisplay
+								label.widthadjust.middleAlign Interval
+							.col-sm-9.col-xs-12.relative
+								select.form-control.pull-right(name='interval',id='interval',data-placeholder='Select Interval', onChange='showCustomBox()')
+									option(value='day') Daily
+									option(value='month') Monthly
+									option(value='year') Yearly
+									option(value='week') Weekly
+									option(value='3-month') Every 3 Months
+									option(value='6-month') Every 6 Months
+									option(value='custom') Custom
+							.col-sm-9.col-xs-12#customInterval.hide.col-sm-offset-3
+								input.form-control.filterMargin(placeholder="Enter Value",name="intervalVal",id="intervalVal",onkeyup="removeAlert(this)")
+								label.error.alert.alert-danger.marginLabel(style="display:none") Please enter Value
+								label.error.alert.alert-danger.marginLabel(style="display:none") Maximum value is 12
+								label.error.alert.alert-danger.marginLabel(style="display:none") Maximum value is 52
+								label.error.alert.alert-danger.marginLabel(style="display:none") Maximum value is 365
+								select.form-control.pull-right.filterMargin(name='intervalDuration',id='intervalDuration', onChange='showCustomMsg()')
+									option(value='month') months
+									option(value='week') weeks
+									option(value='day' selected) days
+						.row.filterMargin
+							.col-sm-3.col-xs-12.text-left.tableDisplay
+								label.widthadjust.middleAlign Trial period <br> (In Days)
+							.col-sm-9.col-xs-12
+								input.form-control(placeholder="Enter Days",name="trialPeriod",id="trialPeriod")
+								label.error.alert.alert-danger.marginLabel(style="display:none") The maximum number of trial period days is 730 (2 years)
+						.row.filterMargin
+							.col-sm-3.col-xs-12.text-left.tableDisplay
+								label.widthadjust.middleAlign Description
+							.col-sm-9.col-xs-12
+								input.form-control(placeholder="Enter Description",name="description",id="description",size="22",maxlength="22",onkeypress="showDescMsg()")
+								label.error.alert.alert-danger.marginLabel(style="display:none") The statement descriptor is limited to 22 characters
+				.modal-footer
+					button.btn.btn-default.btn-primary.btn-heading-small(type='button', id = "addStripePlanCreate") Create
+					button.btn.btn-default.border-primary.btn-heading-small(type='button', id = "addStripePlanReset") Clear All
+mixin updatePlanModel()
+	#planUpdatePopup.modal.fade(role='dialog', backdrop: 'static',
+    keyboard: false)
+		.modal-dialog
+			.modal-content
+				.modal-header
+					button.close.text-inverse(type='button', data-dismiss='modal') &times;    
+					h4.modal-title.text-inverse.text-uppercase.font-secondary Update Plan
+				.modal-body
+					form.form-horizontal#plan-update-form
+						.row.filterMargin
+							.col-sm-3.col-xs-12.text-left.tableDisplay
+								label.widthadjust.middleAlign#PlanNameLabel
+							.col-sm-9.col-xs-12#PlanNameInput
+						.row.filterMargin
+							.col-sm-3.col-xs-12.text-left.tableDisplay
+								label.widthadjust.middleAlign#planDesclabel
+							.col-sm-9.col-xs-12#planDescInput
+				.modal-footer
+					button.btn.btn-default.btn-primary.btn-heading-small(type='button', id = "editStripePlanUpdate") Save
+					button.btn.btn-default.border-primary.btn-heading-small(type='button', id = "editStripePlanReset") Clear All

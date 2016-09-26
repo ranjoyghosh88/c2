@@ -1,0 +1,12 @@
+extends ../layouts/layout 
+include ../mixin/headpanel
+include ../mixin/clientSay
+
+block content 
+    .container
+      row
+        .col-xs-12(align="center")
+          h2 Help is on the way! We just sent you an email.
+          h3 Please click the link to reset your password.
+          img(src="#{cdn('/Mail.png')}")
+   

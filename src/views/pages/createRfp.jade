@@ -1,0 +1,1178 @@
+extends ../layouts/layout
+include ../mixin/search
+include ../mixin/formerror
+include ../mixin/formsuccess
+include ../mixin/clientSay
+block rfpTemplates
+  style.
+    #content{
+       min-height:400px;
+    }
+  script.
+      var defaultCompany= !{JSON.stringify(data)}
+  div.
+    <script type="text/html" id="formTemplate">
+        <div class="form-group form-head">
+            <div class="col-sm-12 form-content">
+            </div>
+        </div>
+    </script>
+    <script type="text/html" id="back-continue">
+        <div class="form-group">
+            <div class="col-md-2">
+                <button type="button" class="btn back btn-primary form-control">Back </button>
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn continue btn-primary form-control">Continue </button>
+            </div>
+        </div>
+    </script>
+    <script type="text/html" id="rfp-input-template">
+        <div class="rfp-select">
+            <label class="block"><%= title%></label>
+            <% for(var iIndex=0;iIndex< inputs.length;iIndex++) { 
+              var data = inputs[iIndex];
+            %>
+            <div class="inline-block">
+                <% if(data.disabled){ %>
+                    <input type="<%= type%>" name="<%= name%>" value="<%= data.value%>" disabled/>
+                <% }else{ %>
+                    <input type="<%= type%>" name="<%= name%>" value="<%= data.value%>" class="margin0" />
+                <% } %>
+                <span><%= data.text%> </span>
+            </div>  
+            <%}%>
+        </div>
+    </script>
+    <script type="text/html" id="title-text">
+        <div class="title-text">
+            <label><%= title%></label></br>
+            <input type="text" class='form-control' name="<%= name%>" placeholder="Please Enter Title" value="<%= value || ''%>" />
+        </div>
+    </script>
+    <script type="text/html" id="add-company">
+        <div>
+            <a href='#'  class='btn btn-link' data-toggle="<%= toggle%>" data-target="<%= target%>">Add company</a>
+        </div>
+    </script>
+    <script type="text/html" id="inquire-product-tmpl">
+        <div class="radio-arrange">
+            <label class="block">Do you know which product you would like to inquire about?</label>
+            <div class="inline-block">
+                <input type="radio" name="hasProduct" value="Yes"  checked="checked"/>
+                <span>Yes</span>
+            </div>
+            <div class="inline-block">
+                <input type="radio" name="hasProduct" value="No" disabled/>
+                <span>No</span>
+            </div>
+            <div>
+                <select class="form-control" name="select-product" data-master="products" data-placeholder='Select Product' style="width: 100%" multiple="multiple"></select>
+            </div>
+        </div>
+        <div>
+            <label class="block">There are multiple companies that can help you with these products , please select the ones you are interested in having Respond</label>
+            <select class="form-control" name="select-intrested-company" data-master="companies" data-placeholder='Select Company' style="width: 100%" multiple="multiple"></select>
+        </div>
+        <div class="radio-arrange">
+            <label class="block">1a. Would you like a needs analysis to help determine the best potential options?</label>
+            <div class="inline-block">
+                <input type="radio" name="analysis-help" value="Yes"  checked="checked"/>
+                <label>Yes</label>
+            </div>
+            <div class="inline-block"> 
+                <input type="radio" name="analysis-help" value="No" />
+                <label>No</label>
+            </div>
+        </div>
+        <div>
+            <label class="block">1b. What type of product type (ie ERP) or Business Process Areas (Accounting are you trying find a solution for?</label>
+            <select class="form-control" name="type-of-prod" data-master="developmentSoftware" data-placeholder='product type or Business Process Areas ' style="width: 100%" multiple="multiple"></select>
+        </div>
+    </script>
+    <script type="text/html" id="rfp-product-q-1">
+        <div>
+            <label class="block" style='margin-top:20px'><%= title%></label>
+            <select class="form-control" name="<%= name%>" data-placeholder='Select <%=placeholder %>' style="width: 100%">
+                <option></option>
+                <% for(var iIndex=0;iIndex< options.length;iIndex++) { 
+                    var opt = options[iIndex];
+                    if(typeof(opt)!=='object'){
+                       opt._id = opt;
+                       opt.name = opt
+                      }
+                %>
+                <option value='<%= opt._id%>'><%= opt.name%></option>
+                <%}%>
+            </select>
+        </div>
+    </script>
+    <script type="text/html" id="select-typeahead" >
+        <div class="select-company">
+            <label class="block margin0"><%= title%></label>
+            <% if(multiple){ %>
+                <select class="form-control" multiple name="<%= name%>" data-master="<%= dataMaster%>" data-placeholder='<%= dataPlaceholder%>' style="width: 100%"></select>
+            <% }else{ %>
+                <select class="form-control" name="<%= name%>" data-master="<%= dataMaster%>" data-placeholder='<%= dataPlaceholder%>' style="width: 100%"></select>
+            <% } %>
+        </div>
+    </script>
+
+    <script type="text/html" id="popup-tmpl" >
+        <!-- Modal -->
+        <div class="modal fade" id="<%= id%>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+              </div>
+              <div class="modal-body">
+
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+    </script>
+
+    <script type="text/html" id="edit-que-popup-tmpl" >
+            <div class="modal-header text-inverse">
+                <button type="button" class="close text-inverse" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Edit Question</h4>
+            </div>
+            <div class="modal-body">
+                <form class='form-horizontal'>
+                    <div class='form-group'>
+                        <input type='text' name='edited-question' class='form-control' value='<%=que.title %>'/>
+                    </div>
+                    <div class='form-group'>
+                        <label class="col-sm-4"  style='padding-left:0'>Question Type</label>
+                        <select name='change-que-type' class="col-sm-8">
+                            <% _.each(queTypes,function(item,indx){ %>
+                                <option value='<%=indx %>'><%=item %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+                    <div class='form-group answers-container'>
+                    </div>
+                    <!--<div class='form-group'>
+                        <label>Do you want to add an optional commentbox for this question?</label>
+                        <input type='radio' name='add-commentbox' value='yes'/> Yes
+                        <input type='radio' name='add-commentbox' value='no'/> No
+                    </div>-->
+                    <div class='form-group'>
+                        <label class="col-sm-4"  style='padding-left:0'>Subgroup</label>
+                        <input type='text' name='edit-subgroup' value='<%=que.subGroup %>' class="col-sm-8"/>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id='save-edited'>Save changes</button>
+            </div>
+    </script>
+    <script type='text/html' id='default-answers-tmpl'>
+    <label class='col-sm-4' style='padding-left:0'>Options</label>
+    <div class=' col-sm-8' style='padding:0'>
+            <select name='multi-answers' multiple style='width:100%;' data-placeholder='Please specify options'>
+                           
+                           <% _.each( answerEnum, function( opt , index){ %>
+                                <option value='<%=opt %>' selected><%=opt %></option>
+                            <% }); %>
+                        </select>
+    </div>
+    </script>
+
+    <script type="text/html" id="reciepent-list-tmpl" >
+        <% _.each( reciepents.companies, function( listItem , index){ %>
+            <div class=' col-md-10 col-sm-12' style='padding-left:0;'>
+            <div class="panel panel-default rfpRecipientList_panel">
+                <div class="panel-body">
+                    <div class='rfpRecipientList'>
+                <div class="row featured-row">
+                            <div class="col-xs-12">
+                                <img src="/images/favicon_inverse_new.png" class="absolute featured">
+                            </div>
+                        </div>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="list_cmpny_logo text-center">
+                            <img src='<%= listItem.logo || "/images/CompanyDummyLogo.png" %>' width='100%' class="Logo_Company"/>
+                        </div>
+                    </div>
+                    <div class="col-sm-8">
+                        <div class="col-sm-12">
+                            <label class="margin0 text-capitalize"><%= listItem.name %></label>
+                        </div>
+                        <div class="col-sm-12">
+                            <span class="margin0 text-capitalize"><%= listItem.type.name=="Regular Company"?'':listItem.type.name %></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-1">
+                        <a title='Remove' data-unselect='<%= index %>' data-type='inquireCompanies' class='btn-link unselect bold glyphicon glyphicon-remove'>
+                        </a>
+                    </div>
+                </div>
+                <!--<div class="row">
+                    <div class="col-sm-5 col-sm-offset-4">
+                        <a href="#"> Tags</a>
+                    </div>
+                </div>-->
+            </div>
+                </div>
+            </div>
+            </div>
+        <% }); %>
+    </script>
+    <script id='product-header-tmpl' type="text/html" >
+        <h3 class='block bold font-md text-primary' style='margin-top:0;'>Please provide some additional information about 
+        <% if(name){ %>
+            <span><%=name %></span>
+        <% } %>
+        </label>
+    </script>
+        
+    <script id='title-placeHolder-tmpl' type="text/html">
+        <% if(title){ %>
+            <label class="block text-uppercase bold font-md black" style="font-weight:normal"><%=title %></label>
+        <% } %>
+        
+    </script>
+    <script type="text/html" id="add-questions-tmpl" >
+        <div>
+
+          <!-- Nav tabs -->
+          <ul class="nav nav-pills nav-tabs" role="tablist">
+            <% _.each( questionGroups, function( questionItem , index){ %>
+                <% var count=0; %>
+                     <% _.each( questionItem.questions, function( question , i){ %>
+                            <% if( (questionItem.isStdQuestion && question.isStandard) || (!question.isStandard) ){
+                                count++;
+                               } 
+                            %>
+                    <% }); %>
+                <li role="presentation" class="<%=index==0?'active':'' %> col-sm-3 margin0 text-center">
+                    <a href="<%='#question-'+index %>" aria-controls="<%='#question-'+index %>" role="tab" data-toggle="tab"><%=questionItem.title+' ('+count+')' %></a>
+                </li>
+          
+            <% }); %>
+        </ul>
+        <div class="tab-content margin0">
+          <% _.each( questionGroups, function( questionItem , index){ %>
+            <div role="tabpanel" data-index="<%=index %>" class="<%=index==0?'tab-pane active':'tab-pane' %>" id="<%='question-'+index %>">
+                <div class='add-std-que-container radio-arrange'>
+                    <label class="">Would you like to utilize our standard questions for an ERP RFP?</label>
+                    <div class="inline-block">
+                        <input type="radio" data-index="<%=index %>" 
+                        <% if(questionItem.isStdQuestion) {%>
+                                checked=checked
+                        <%}%>
+
+                          class='add-std-que' name="<%='add-std-func-que-'+index %>" value="Yes"/>
+                        <span>Yes</span>
+                    </div>
+                    <div class="inline-block"> 
+                        <input type="radio" data-index="<%=index %>" 
+                        <% if(!questionItem.isStdQuestion) {%>
+                                checked=checked
+                        <%}%>
+                        class='add-std-que' name="<%='add-std-func-que-'+index %>" value="No" />
+                        <span>No</span>
+                    </div>
+                </div>
+                <table class='question-list table table-bordered'>
+                    <% var count=0; %>
+                     <% _.each( questionItem.questions, function( question , i){ %>
+                            <% if( (questionItem.isStdQuestion && question.isStandard) || (!question.isStandard) ){
+                                count++;
+                               } 
+                            %>
+                    <% }); %>
+                    <% if(count>0){ %>
+                        <thead>
+                                        <th colspan='3'>
+                                            <!--<label class=' black'>Total Questions <span class='question-count'><%=count %></span></label>-->
+                                        </th>
+                                        <th class='text-center'>
+                                            <label class=' black'>Critical Value</label>
+                                        </th>
+                                        <th style='min-width:100px'  class='text-center'>
+                                            <label class=' black'>Scored</label>
+                                        </th>
+                                        <th style='min-width:100px'  class='text-center'>
+                                            <label class=' black'>Weight</label>
+                                        </th>
+                        </thead>
+                    <% } %>
+                    <tbody>
+                        <% var count=0; %>
+                        <% _.each( questionItem.questions, function( question , i){ %>
+                            <% if( (questionItem.isStdQuestion && question.isStandard) || (!question.isStandard) ){ %>
+                                <tr class='std-que' data-index='<%=i %>'>
+                                    <td>
+                                        <label class=''>
+                                            <%=(++count) %>
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <label class="block black" name="<%='Q'+i %>"><%=question.title %></label>
+                                        </div>
+                                        
+                                        <% if(question.subGroup){ %>
+                                            <div>
+                                                <label class='font-sm'>subgroup</label>
+                                                <label class='font-sm'><%=question.subGroup %></label>
+                                            </div>
+                                        <% } %>
+                                        <div>
+                                            <label class='font-sm'><%=questionTypes[question.type] %></label>
+                                        </div>
+                                    </td>
+                                    <td  class='text-center hover-primary' style='min-width: 60px;padding: 25px 0;'>
+                                            <button title='Edit Question' class='btn btn-link fa fa-pencil-square-o edit-que black ' data-index='<%=i %>' style='padding:0;'></button>
+                                            <button title='Delete Question' class='btn btn-link fa fa-trash-o delete-que black ' data-index='<%=i %>' style='padding:0;'></button>
+                                    </td>
+                                        <% if(question.critical){ %>
+                                            <td class='text-center' style='min-width:200px'>
+                                               
+                                                <select data-placeholder='Please select critical value' class='critical-select' style='width:95%; border-radius:0;'>
+                                                   <% _.each( question.answerEnum, function( opt , index){ 
+                                                    if(_.contains(question.criticalValue, opt)){
+                                                    %>
+                                                        <option value='<%=opt %>' selected><%=opt %></option>
+                                                    <% }else{ %>
+                                                         <option value='<%=opt %>' ><%=opt %></option>
+                                                    <% } %>
+                                                    <% }); %>
+                                                </select>
+                                            </td>
+                                            <td class='text-center'>
+                                                <input type='checkbox' class='score-select' />
+                                            </td>
+                                            <td class='text-center'>
+                                                <input type='hidden' disabled class='weight' value='<%=question.weight %>'/>
+                                            </td>
+                                        <% }else{ %>
+                                                <% if(question.type=='0'){ %>
+                                                    <td class='text-center' style='min-width:200px'>
+                                                       
+                                                        <select  data-placeholder='Please select critical value' class='critical-select' disabled style='width:95%; border-radius:0;'>
+                                                           <option></option>
+                                                           <% _.each( question.answerEnum, function( opt , index){ 
+                                                                if(_.contains(question.criticalValue, opt)){
+                                                                %>
+                                                                    <option value='<%=opt %>'><%=opt %></option>
+                                                                <% }else{ %>
+                                                                     <option value='<%=opt %>' ><%=opt %></option>
+                                                                <% } %>
+                                                            <% }); %>
+                                                        </select>
+                                                    </td>
+                                                <% }else{ %>
+                                                    <td class='text-center' style='min-width:200px'>
+                                                       
+                                                        <select  data-placeholder='Please select critical value' class='critical-select' style='width:95%; border-radius:0;'>
+                                                           <option></option>
+                                                           <% _.each( question.answerEnum, function( opt , index){ 
+                                                                if(_.contains(question.criticalValue, opt)){
+                                                                %>
+                                                                    <option value='<%=opt %>'><%=opt %></option>
+                                                                <% }else{ %>
+                                                                     <option value='<%=opt %>' ><%=opt %></option>
+                                                                <% } %>
+                                                            <% }); %>
+                                                        </select>
+                                                    </td>
+                                                <%} %>
+                                            <td class='text-center'>
+                                                <input type='checkbox' class='score-select' checked="checked"/>
+                                            </td>
+                                            <td class='text-center'>
+                                                <input type='hidden' class='weight' value='<%=question.weight %>'/>
+                                            </td>
+                                        <%} %>
+                                    
+                                </tr>
+                            <% } %>
+                        <% }); %>
+                    <tbody>
+                </table>
+            <form class='addNewQueContainer'></form>
+            <div class='row border-top'>
+                <div class='col-xs-12'>
+                    <button class='btn btn-primary add-que text-uppercase font-secondary marginT_30'>Add Question <i class="fa fa-plus"></i></button>
+                </div>
+            </div>
+            </div>
+          <% }); %>
+        </div>
+    </script>
+    <script id='question-list-tmpl' type='text/html'>
+    <% var count=0; %>
+     <% _.each(ques[parseInt(ind)].questions, function( question , i){ %>
+            <% if( (ques[parseInt(ind)].isStdQuestion && question.isStandard) || (!question.isStandard) ){
+                count++;
+               } 
+            %>
+    <% }); %>
+    <% if(count>0){ %>
+        <thead>
+                        <th colspan='3'>
+                            <!--<label class='black'>Total Questions <span class='question-count'><%=count %></span></label>-->
+                        </th>
+                        <th  class='text-center'>
+                            <label class='black'>Critical Value</label>
+                        </th>
+                        <th style='min-width:100px'  class='text-center'>
+                            <label class='black'>Scored</label>
+                        </th>
+                        <th style='min-width:100px'  class='text-center'>
+                            <label class=' black'>Weight</label>
+                        </th>
+        </thead>
+    <% } %>
+        <tbody>
+        <% var count=0; %>
+        <% _.each(ques[parseInt(ind)].questions, function( question , i){ %>
+            <% if( (ques[parseInt(ind)].isStdQuestion && question.isStandard) || (!question.isStandard) ){ %>
+                <tr class='std-que' data-index='<%=i %>'>
+                    <td>
+                        <label class=''>
+                            <%=(++count) %>
+                        </label>
+                    </td>
+                    <td>
+                        <div>
+                            <label class="block black" name="<%='Q'+i %>"><%=question.title %></label>
+                        </div>
+                        <% if(question.subGroup){ %>
+                            <div>
+                                <label  class='font-sm'>subgroup</label>
+                                <label  class='font-sm'><%=question.subGroup %></label>
+                            </div>
+                        <% } %>
+                        <div>
+                            <label  class='font-sm'><%=questionTypes[question.type] %></label>
+                        </div>
+                    </td>
+                    <td  class='text-center hover-primary' style='min-width: 60px;padding: 25px 0;'>
+                        <button title='Edit Question' class='btn btn-link edit-que fa fa-pencil-square-o black' data-index='<%=i %>' style='padding:0;margin:0;'></button>
+                        <button title='Delete Question' class='btn btn-link fa fa-trash-o delete-que black' data-index='<%=i %>' style='padding:0;margin:0;'></button>
+                    </td>
+                        <% if(question.critical){ %>
+                            <td  class='text-center' style='min-width:200px'>
+                                <select data-placeholder='Please select critical value' class='critical-select'   style='width:95%; border-radius:0;'>
+                                   
+                                   <% _.each( question.answerEnum, function( opt , index){ 
+                                       if(_.contains(question.criticalValue, opt)){
+                                        %>
+                                            <option value='<%=opt %>' selected><%=opt %></option>
+                                        <% }else{ %>
+                                             <option value='<%=opt %>' ><%=opt %></option>
+                                        <% } %>
+                                    <% }); %>
+                                </select>
+                            </td>
+                            <td  class='text-center'>
+                                <input type='checkbox' class='score-select' />
+                            </td>
+                            <td  class='text-center'>
+                                <input type='hidden' disabled class='weight' value='<%=question.weight %>'/>
+                            </td>
+                        <% }else{ %>
+                                <% if(question.type=='0'){ %>
+                                    <td  class='text-center' style='min-width:200px'>
+                                        
+                                        <select  data-placeholder='Please select critical value' class='critical-select' disabled  style='width:95%; border-radius:0;'>
+                                           <option></option>
+                                           <% _.each( question.answerEnum, function( opt , index){ 
+                                                if(_.contains(question.criticalValue, opt)){
+                                                %>
+                                                    <option value='<%=opt %>' ><%=opt %></option>
+                                                <% }else{ %>
+                                                     <option value='<%=opt %>' ><%=opt %></option>
+                                                <% } %>
+                                            <% }); %>
+                                        </select>
+                                    </td>
+                                <% }else{ %>
+                                    <td  class='text-center' style='min-width:200px'>
+                                        
+                                        <select  data-placeholder='Please select critical value' class='critical-select'   style='width:95%; border-radius:0;'>
+                                           <option></option>
+                                           <% _.each( question.answerEnum, function( opt , index){ 
+                                                if(_.contains(question.criticalValue, opt)){
+                                                %>
+                                                    <option value='<%=opt %>'><%=opt %></option>
+                                                <% }else{ %>
+                                                     <option value='<%=opt %>'><%=opt %></option>
+                                                <% } %>
+                                            <% }); %>
+                                        </select>
+                                    </td>
+                                <%} %>
+                            <td  class='text-center'>
+                                <input type='checkbox' class='score-select' checked="checked"/>
+                            </td>
+                            <td  class='text-center'>
+                                <input type='hidden' class='weight' value='<%=question.weight %>'/>
+                            </td>
+                        <%} %>
+                    
+                </tr>
+            <% } %>
+        <% }); %>
+        </tbody>
+    </script>
+    <script type='text/html' id='add-new-que-tmpl'>
+        <div class='row border-bottom'>
+            <div class='col-xs-12'>
+                <label>New Question</label><br>
+            </div>
+            <div class='col-sm-10 col-xs-12'>
+                <input type='text' class='form-control' name='newQuestion' placeholder="New Question?"/>
+            </div>
+            <div class='col-sm-2  col-xs-12 text-center'>
+                <input type='hidden' class='form-control add-weight' value='1'/>
+            </div>
+            <div class='col-xs-12'>
+                <button class='saveQue btn btn-default marginT_30 border-primary'>Save</button>
+            </div>
+        </div>
+    </script>
+    <script  type='text/html' id='summary-tmpl'>
+        <div class="row">
+                    <div class="col-sm-12 col-xs-10 col-xs-offset-1 col-sm-offset-0">
+                        <form method="post" action="#" class="form-horizontal signupForm" novalidate="novalidate">
+                            <div class="form-group form-head">
+                                <div class="row">
+                                    <h4 class='col-xs-12 marginT_30'  style='width:auto;font-weight:normal;padding:0;margin-bottom:0;font-family:Open Sans, sans-serif;'>
+                                        <label class='col-xs-12' style='font-size:16px'>Company Information</label>
+                                    </h4>
+                                </div>
+                                <div class="panel-body" style='padding: 15px 0;'>
+                                      <div class="row">
+                                        <!--<% if(rfpProfile.title){ %>
+                                          <div class="question black">Title</div>
+                                          <div class="answer black"><%=rfpProfile.title %></div>
+                                        <% } %>-->
+                                        <% if(rfpProfile.companyId){ %>
+                                            <div class='col-sm-6'>
+                                                  <div class="question black">What Company is this RFP for?</div>
+                                                  <div class="answer black"><%=rfpProfile.companyId.name %></div>
+                                            </div>
+                                        <% } %>
+                                        <% if(rfpProfile.timeFrame){ %>
+                                          <div class='col-sm-6'>
+                                              <div class="question black">What is the desired timeframe to purchase?</div>
+                                              <div class="answer black"><%=rfpProfile.timeFrame %></div>
+                                          </div>
+                                        <% } %>
+                                        <% if(rfpProfile.budget){ %>
+                                            <div class='col-sm-6'>
+                                              <div class="question black">What is the current budget for this purchase?</div>
+                                              <div class="answer black"><%=rfpProfile.budget %></div>
+                                            </div>
+                                        <% } %>
+                                        <% if(rfpProfile.solutionsInPlaceIds){ %>
+                                           <div class='col-sm-6'>
+                                                <div class="question black">What solutions are currently in place?</div>
+                                                <% for(var indx2=0;indx2<rfpProfile.solutionsInPlaceIds.length;indx2++){ %>
+                                                    <div class="answer black"><%=rfpProfile.solutionsInPlaceIds[indx2].name %></div>
+                                                <% } %>
+                                            </div>
+                                            <% } %>
+                                        <% if(rfpProfile.whyRFP){ %>
+                                            <div class='col-sm-6'>
+                                              <div class="question black">What brings you to the RFP process?</div>
+                                              <div class="answer black"><%=rfpProfile.whyRFP %></div>
+                                            </div>
+                                        <% } %>
+                                    </div>
+                                  </div>
+                                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                 
+                                  <div class="panel panel-default">
+                                    <a class="panel-heading" role="tab" id="headingOne" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseOne" style='display:block;'>
+                                      <div class="panel-title" style='width:auto;'>
+                                        <span>
+                                                RFP Recipients
+                                        </span>
+                                        <span class="indicator pull-right collapsed"><span class="fa fa-angle-double-down black text-primary"></span></span>
+                                      </div>
+                                    </a>
+                                    <div id="collapseTwo" class="panel-body panel-collapse collapse col-sm-12" role="tabpanel" aria-labelledby="headingOne">
+                                      <div class="">
+
+                                            <% _.each(reciepents,function(item,index){ %>
+                                                <div class="panel panel-default rfpRecipientList_panel">
+                                                <div class="panel-body" style='border-top:none !important;'>
+                                                <div class="rfp-build-questions">
+                                                    <div class="row featured-row">
+                                                        <div class="col-xs-12">
+                                                            <img src="/images/favicon_inverse_new.png" class="absolute featured" >
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">                         
+                                                        <div class="col-sm-3 list_cmpny_logo text-center">
+                                                            <img src="<%=item.logo|| '/images/CompanyDummyLogo.png' %>" style='width:100px;max-height:100px;'>
+                                                        </div>                          
+                                                        <div class="col-sm-8">
+                                                            <h4 class="text-capitalize"><%=item.name %></h4>
+                                                            <% if(item.type){ %>
+                                                                <span><%=item.type.name=="Regular Company"?'':item.type.name %></span>
+                                                            <% } %>
+                                                        </div>                          
+                                                    </div>
+                                                </div>
+                                                </div>
+                                                </div>
+                                            <% }); %>
+                                      </div>
+                                    </div>
+                                  </div>
+                                    <% _.each(questionGroups,function(que,ind){ %>
+                                            <div class="panel panel-default">
+                                                    <a class="panel-heading collapsed" role="tab"  data-toggle="collapse" data-parent="#accordion" href="<%='#collapse'+ind %>" aria-expanded="false" aria-controls="<%='collapse'+ind %>" id="<%='heading'+ind %>" style='display:block;'>
+                                                      <div class="panel-title"  style='width:auto;'>
+                                                        <span>
+                                                                <%=que.title %>
+                                                        </span>
+                                                        <span class="indicator pull-right collapsed" ><span class="fa fa-angle-double-down black text-primary"></span></span>
+                                                      </div>
+                                                    </a>
+                                                <div id="<%='collapse'+ind %>" class="panel-body panel-collapse collapse col-sm-12" role="tabpanel" aria-labelledby="<%='heading'+ind %>">
+                                                  <div class="">
+                                                        <table class='table table-bordered'>
+                                                            <tr>
+                                                                <td colspan='2'>
+                                                                    <p>
+                                                                        Total Questions
+                                                                        <span class="badge"><%=que.questions.length %></span>
+                                                                    </p>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <span>Critical (Value)</span>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <span>Scored</span>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <span>Weight</span>
+                                                                </td>
+                                                            </tr>
+                                                            <% _.each(que.questions,function(queItem,indx){ %>
+                                                                <% if( (que.isStdQuestion&&queItem.isStandard) || (!queItem.isStandard) ){ %>
+                                                                    <tr>
+                                                                        <td>
+                                                                            <label><%=indx+1 %></label>
+                                                                        </td>
+                                                                        <td>
+                                                                            <p><%=queItem.title %></p>
+                                                                            <% if(queItem.subGroup){ %>
+                                                                                <p class="questions_small">Subgroup – <label class="margin0"><%=queItem.subGroup %></label></p>
+                                                                            <% } %>
+                                                                            
+                                                                            <p class="questions_small"><%=questionTypes[queItem.type] %></p>
+                                                                        </td>
+                                                                        <% if(queItem.critical){ %>
+                                                                            <td class="text-center">
+                                                                                <input type="checkbox" checked="checked" disabled/>
+                                                                            </td>
+                                                                            <td class="text-center">
+                                                                                <input type="checkbox"  disabled/>
+                                                                            </td>
+                                                                        <% }else{ %>
+                                                                            <td class="text-center">
+                                                                                <input type="checkbox"  disabled/>
+                                                                            </td>
+                                                                            <td class="text-center">
+                                                                                <input type="checkbox" checked="checked" disabled/>
+                                                                            </td>
+                                                                        <% } %>
+                                                                        <td class="text-center">
+                                                                           <input type="hidden" value="<%=queItem.weight %>" disabled class="weight"/>
+                                                                        </td>
+                                                                    </tr>
+                                                                <% } %>
+                                                            <% }); %>
+                                                        </table>
+                                                  </div>
+                                                </div>
+                                            </div>
+                                    <% }); %>
+                                </div>                         
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-sm-12 text-center">
+                                        <a href="/rfp-dashboard" class="btn btn-primary save-draft btn-heading">Save RFP</a>
+                                        <a href="#" class="btn btn-primary complete-rfp btn-heading">Publish RFP</a>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-8 text-center">
+                                        <a href="#" class="back inline-block filterMargin">Go to previous step</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+    </script>
+    <script type='text/html' id='cover-letter-tmpl'>
+        <div class="row">
+                    <div class=" col-sm-12 col-xs-12 col-xs-10 col-xs-offset-1 col-sm-offset-0">
+                        <form method="post" action="#" class="form-horizontal signupForm" novalidate="novalidate">
+                            <div class="form-group form-head" style='margin-bottom:0;'>
+                                <strong><span class="block text-left" style='margin-bottom:0;'>Cover Letter</span></strong>
+                            </div>
+                            <div class="form-group form-head">
+                                <div class="cover-letter panel panel-default" style='border: 0;border-bottom: 1px solid #ddd;box-shadow: none;border-radius: 0;'>
+                                    <div class="row">
+                                        
+                                        <div class="col-sm-2" style='padding-left:0;'>
+                                            <div class="list_cmpny_logo text-center"  style='margin-left:0;margin-right:20px;'>
+                                                <img class='rfpPic' src="<%=cover.image || '#{cdn("/CompanyDummyLogo.png")}' %>"/>
+                                            </div>
+                                            <div class="text-center" style='margin-right: 20px;'>
+                                               <button name="rfpPic" id="TrgrClk" class="btn btn-link">Upload Image</button>
+                                               <input type="file" name="file" id="file" style='position: absolute;top: -1000px;'>
+                                            </div>
+                                        </div>
+                                    
+                                        
+                                        <div class='col-sm-10' style='padding:0;'>
+                                            <textarea name='desc'  placeholder="Description of what you are looking for / about the project" style="width:100%" class="txtArea txtArea_notes form-control"><%=cover.description %></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <strong><span class="block" style="margin:30px 0 0 0">Milestones</span></strong>
+                                <div class="Milestones">
+                                    <div class="row">
+                                        <div class="col-sm-6 col-xs-12">
+                                            <label class="block filterMargin">Add Milestone Title:</label>
+                                            <textarea  name='milestoneTitle' style="width:100%" placeholder="Description of what you are looking for / about the project" class="form-control"><%=milestones[0].title %></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <label class="block filterMargin">Comments on Milestone:</label>
+                                            <textarea class="txtArea_notes form-control" name='milestoneComments' style="width:100%" placeholder="Description of specific components of milestone"><%=milestones[0].comment %></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-4 col-xs-12">
+                                            <label class="block filterMargin">Corresponding Date</label>
+                                            <input type="text" placeholder='DD/MM/YYYY' name='correspondDate' class="form-control" >
+                                            <label class="block" style='font-size:11px;'>When are you planning on being live?</label>
+                                        </div>
+                                        <div class="col-sm-4 col-xs-12">
+                                            <label class="block filterMargin">RFP Response Deadline:</label>
+                                            <input name='responseDate' placeholder='DD/MM/YYYY' type="text" class="form-control"/>
+                                        </div>
+                                         <div class="col-sm-4 col-xs-12">
+                                            <label class="block filterMargin">Will you consider late responses</label>
+                                            <div class="inline-block">
+                                                <input type="radio" name='lateResponses' value="true" checked="checked" >
+                                                <label>Yes </label>
+                                            </div>
+                                            <div class="inline-block">
+                                                <input type="radio" name='lateResponses' value="false">
+                                                <label>No </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>                                        
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-8 text-center">
+                                        <a href="#" class="btn btn-primary btn-heading continue">Continue </a>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-8 text-center">
+                                        <a href="#" class="back inline-block filterMargin">Go to previous step</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+    </script>
+    <script type="text/html" id='profile-tmpl'>
+        <% var isEmpty=false;
+            function calc(){
+                var vals = _.values(rfpProfile);
+                for(var i=0;i<vals.length;i++){
+                    var val = vals[i];
+                    if(val && val.length>0){
+                        return true;
+                    }
+                }
+            }
+            isEmpty= calc();
+        %>
+            <% if(isEmpty){ %>
+                <h3 class="text-left" style="border-bottom: 1px solid #ddd; text-align: left;font-weight: bold !important;color: #555; padding-bottom: 10px;margin-bottom: 10px;text-transform:uppercase">RFP Profile</h3>
+                <% if(rfpProfile.title){ %>
+                  <label style='margin: 5px 0;text-transform: capitalize;'><%=rfpProfile.title %></label>
+                <% } %>
+                <% if(rfpProfile.companyId){ %>
+                  <div style='margin: 5px 0;text-transform: capitalize;'>For <label><%=rfpProfile.companyId.name %><label></div>
+                <% } %>
+                <% if(rfpProfile.timeFrame){ %>
+                  <div style='margin: 5px 0;text-transform: capitalize;'><%=rfpProfile.timeFrame %></div>
+                <% } %>
+                <% if(rfpProfile.budget){ %>
+                  <div style='margin: 5px 0;text-transform: capitalize;'><%=rfpProfile.budget %> purchase</div>
+                <% } %>
+                <% if(rfpProfile.solutionsInPlaceIds){ 
+                    for(var indx=0;indx<rfpProfile.solutionsInPlaceIds.length;indx++){
+                %>
+                  <div style='margin: 5px 0;text-transform: capitalize;'><%=rfpProfile.solutionsInPlaceIds[indx].name %></div>
+                <% } 
+                  }
+                %>
+                <% if(rfpProfile.whyRFP){ %>
+                  <div style='margin: 5px 0;text-transform: capitalize;'><%=rfpProfile.whyRFP %></div>
+                <% } %>
+                <% if(rfpProfile.productList && rfpProfile.productList.length>0){ %>
+                  <label style='margin: 5px 0;text-transform: capitalize;'>Product to consider</label>
+                    <% _.each(rfpProfile.productList,function(prod,ind){%>
+
+                        <div><%=prod.name %></div>
+                    <% });  %>
+                <% } %>
+                <% if(rfpProfile.companyList && rfpProfile.companyList.length>0){ %>
+                  <label style='margin: 5px 0;text-transform: capitalize;'>Companies to consider</label>
+                    <% _.each(rfpProfile.companyList,function(comp,ind){%>
+
+                        <div><%=comp.name %></div>
+                    <% });  %>
+                <% } %>
+            <% } %>
+
+    </script>
+    <script type="text/html" id="page-1">
+        <div>
+        <div class="container-fluid headpanel">
+            <h3 class="text-uppercase">
+                <label class="font-md black text-uppercase" style="font-weight:normal">build your request for proposal</label>
+            </h3>
+        </div>
+        <div class="header-counter filterMargin container" id="rfpSteps">
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 text-center">
+                    <h3 class='bold font-md text-primary' style='margin-top:0;'>Please let us know what kind of proposal you wish to receive</h3>
+                    <label class="block"></label>                  
+                </div>
+            </div>
+        </div>
+            <div class="container error-container"></div>
+            <div class="container">
+                <div class="row">
+                <div class='col-sm-2 filterMargin'>
+                    <div id='rfp-profile'></div>
+                </div>
+                    <div class=" col-sm-5 marginT_30 col-xs-12 col-sm-offset-1">
+                        <form method="post" action="#" class="form-horizontal signupForm" novalidate="novalidate">
+                            
+                            <div class="form-group form-head">
+                                <div id="rfp-select"></div>
+                                <div id="rfp-title"></div>
+                                <div id="rfp-company-select"></div>
+                                <!--<div id="rfp-add-company"></div>
+                                <div id="rfp-popup-tmpl"></div>-->
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-3 col-sm-8 pull-left hidden">
+                                        <a href="#" class="btn btn-primary form-control back">Back </a>
+                                    </div>
+                                    <div class="col-md-12 col-sm-8 text-center">
+                                        <a href="#" class="btn btn-primary continue btn-heading">Continue </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+    <script type="text/html" id="page-2">
+        <div>
+        <div class="container-fluid headpanel">
+            <h3 class="text-uppercase"><span id='rfp-title-placeHolder'></span> </h3>
+        </div>
+        <div class="header-counter filterMargin container" id="rfpSteps">
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 text-center">
+                    <h2 class='bold font-md text-primary' id="rfp-product-header"></h2>
+                    <label class="block"></label>                  
+                </div>
+            </div>
+        </div>
+            <div class="container error-container"></div>
+            <div class="container">
+                <div class="row">
+                <div class='col-sm-2 filterMargin'>
+                    <div id='rfp-profile'></div>
+                </div>
+                    <div class=" col-sm-5 marginT_30 col-xs-12 col-sm-offset-1">
+                        <form method="post" action="#" class="form-horizontal signupForm" novalidate="novalidate">
+                            <div class="form-group form-head">
+                                <div id="rfp-product-q-1"></div>
+                                <div id="rfp-product-q-2"></div>
+                                <div id="rfp-product-q-3"></div>
+                                <div id="rfp-product-q-4"></div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-8 text-center">
+                                        <a href="#" class="btn btn-primary btn-heading continue">Continue </a>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-8 text-center">
+                                        <a href="#" class="back inline-block filterMargin">Go to previous step</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+    <script type="text/html" id="page-3">
+        <div>
+        <div class="container-fluid headpanel">
+            <h3 class="text-uppercase"><div id='rfp-title-placeHolder'></div> </h3>
+        </div>
+        <div class="header-counter filterMargin container" id="rfpSteps">
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 text-center">
+                    <h3 class='bold font-md text-primary' style='margin-top:0;'>Who would you like to send the RFP to?</h3>
+                    <label class="block"></label>                  
+                </div>
+            </div>
+        </div>
+            <div class="container error-container"></div>
+            <div class="container">
+            <div class="row">
+                <div class='col-sm-2 filterMargin'>
+                    <div id='rfp-profile'></div>
+                </div>
+                    <div class=" col-sm-5 marginT_30 col-xs-12 col-sm-offset-1">
+                <form method="post" action="#" class="form-horizontal signupForm" novalidate="novalidate">
+                    <div class="form-group form-head">
+                        <div id="rfp-inquire-product">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-8 text-center">
+                                        <a href="#" class="btn btn-primary btn-heading continue">Continue </a>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-8 text-center">
+                                        <a href="#" class="back inline-block filterMargin">Go to previous step</a>
+                                    </div>
+                                </div>
+                        </div>
+                </form>
+                </div>
+                </div>
+            </div>
+        </div>
+    </script>
+    <script type="text/html" id="page-4">
+        <div>
+        <div class="container-fluid headpanel">
+            <h3 class="text-uppercase"><div id='rfp-title-placeHolder'></div></h3>
+        </div>
+        <div class="header-counter filterMargin container" id="rfpSteps">
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 text-center">
+                    <h3 class='bold font-md text-primary' style='margin-top:0;'>Here is who you have selected to Receive your RFP Request</h3>
+                    <label class="block"></label>                  
+                </div>
+            </div>
+        </div>
+            <div class="container error-container"></div>
+            <div class="container">
+            <div class="row">
+                    <div class='col-md-2 col-sm-3 filterMargin'>
+                        <div id='rfp-profile'></div>
+                    </div>
+                    <div class=" col-sm-8 marginT_30 col-xs-12 col-sm-offset-1">
+                        <form method="post" action="#" class="form-horizontal signupForm" novalidate="novalidate">
+                            <div class="form-group form-head">
+                                <div id="rfp-reciepent-list">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                <div class="col-sm-12 marginT_30">
+                    <div class="row">
+                        <div class="col-md-12 col-sm-8 text-center">
+                            <a href="#" class="btn btn-primary btn-heading continue">Continue </a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 col-sm-8 text-center">
+                            <a href="#" class="back inline-block filterMargin">Go to previous step</a>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/html" id="page-5">
+        <div>
+        <div class="container-fluid headpanel">
+            <h3 class="text-uppercase"><span id='rfp-title-placeHolder'></span> </h3>
+        </div>
+        <div class="header-counter filterMargin container" id="rfpSteps">
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 text-center">
+                    <h3 class='bold font-md text-primary' style='margin-top:0;'>Now lets build your RFP questions</h3>
+                    <label class="block"></label>                  
+                </div>
+            </div>
+        </div>
+            <div class="container error-container"></div>
+            <div class="container">
+            <div class="row">
+                    <div class="marginT_30 col-xs-12">
+                <form method="post" action="#" class="form-horizontal signupForm" novalidate="novalidate">
+                    <div class="form-group form-head">
+                        <div id="rfp-add-questions">
+                        </div>
+                        <div class="modal fade" id="edit-question-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                            <div class="modal-dialog" role="document">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-8 text-center">
+                                        <a href="#" class="btn btn-primary btn-heading continue">Continue </a>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-8 text-center">
+                                        <a href="#" class="back inline-block filterMargin">Go to previous step</a>
+                                    </div>
+                                </div>
+                        </div>
+                </form>
+                </div>
+                </div>
+            </div>
+        </div>
+    </script>
+    <script type="text/html" id="page-6">
+        <div>
+        <div class="container-fluid headpanel">
+            <h3 class="text-uppercase"><span id='rfp-title-placeHolder'></span></h3>
+        </div>
+        <div class="header-counter filterMargin container" id="rfpSteps">
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 text-center">
+                    <h3 class='bold font-md text-primary' style='margin-top:0;'>Now lets build Cover letter and Milestones</h3>
+                    <label class="block"></label>                  
+                </div>
+            </div>
+        </div>
+            <div class="container error-container"></div>
+            <div class="container">
+                <div id='rfp-cover-letter'></div>
+            </div>
+        </div>
+    </script>
+    <script type="text/html" id="page-7">
+        <div>
+        <div class="container-fluid headpanel">
+            <h3 class="text-uppercases"><span id='rfp-title-placeHolder'></span> </h3>
+        </div>
+        <div class="header-counter filterMargin container" id="rfpSteps">
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 text-center">
+                    <h3 class='bold font-md text-primary' style='margin-top:0;'>Review and Submit Your Proposal</h3>
+                    <label class="block"></label>                  
+                </div>
+            </div>
+        </div>
+
+            <div class="container error-container"></div>
+            <div class="container">
+                <div id='rfp-summary'></div>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/html" id="wizard-page-no-tmpl">
+                <div class="col-xs-9 col-xs-offset-2 SignUpSteps hidden-xs text-center">
+                <span></span>
+                </div>
+    </script>
+    <script type="text/html" id="rfp-wizard-tmpl">
+        <div class="rfpPage">
+        <div class="rfp-wizard">
+            
+            <div class="page">
+            </div>
+            <div class="navigation">
+            </div>
+        </div>
+        </div>
+    </script>
+
+block content
+  div.
+    <div id="rfp-wizard-count" class="container">
+    </div>
+    <div id="rfp-wizard" class="container">
+    </div>
+
+
+block js
+    script(src='//cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js')
+    script(src='//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js')
+    script(src='//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.2.3/backbone-min.js')
+    script(src='//cdnjs.cloudflare.com/ajax/libs/async/1.4.2/async.min.js')
+    script(src=cdn('/rfp-backbone-demo/definition.js'))
+    script(src=cdn('/rfp-backbone-demo/rfp-models.js'))
+    script(src=cdn('/rfp-backbone-demo/rfp-views.js'))
+    script(src=cdn('/rfp-backbone-demo/rfp-create.js'))
+    script(src=cdn('/searchFilters.js'))
+    script.
+     var rfpObj = {_id:'#{_id}'};

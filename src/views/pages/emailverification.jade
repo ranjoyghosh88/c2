@@ -1,0 +1,18 @@
+extends ../layouts/layout 
+include ../mixin/headpanel
+include ../mixin/clientSay
+
+block content 
+    .container
+      row
+        .col-xs-12(align="center")
+          if(errorHandler)
+            h2 Your account has been already verified / disabled . 
+            h3 Please either try logging in with your credentials or contact CSquire #[a(href="mailto:admin@csquire.com") Admin.]           
+          else
+              if(enabledStatus=='active')
+                +setFormHead({head:'Congratulations, We have successfully verified your account.',text:"Please #[a(href='/login') login in to continue.]"})
+                img(src="#{cdn('/Mail.png')}")
+              else
+                h2 Congratulations, We have successfully verified your account.
+                h3 Please #[a(href='/login') login] to continue.

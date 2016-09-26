@@ -1,0 +1,29 @@
+﻿extends ../layouts/layout_searchbox
+block vars
+  - function formatTextCapitalize(x) {
+  -   return x.replace(/\b\w/g , function(m){ return m.toUpperCase(); } );
+  -}
+
+  -var title = query.seeAll?'CSquire | '+formatTextCapitalize(query.seeAll):'CSquire | Search'
+  -var headerTemp = header || query.seeAll;
+block container
+  if !uid
+    if headerTemp
+      h3.seeAllHeader.col-xs-12.text-uppercase #{headerTemp}
+  else if uid
+    if(headerAll)
+      h3.seeAllHeader.col-xs-12.text-uppercase #{headerAll} like #{uid}
+    else if headerTemp
+      h3.seeAllHeader.col-xs-12.text-uppercase #{uid}'s #{headerTemp}
+  .row#serchResultHeader
+       
+     .col-md-12.col-sm-12
+       .panel.panel-default
+         .panel-body
+           include ../widgets/searchHeader
+    .row
+     aside.col-md-9.col-xs-12.pull-right
+      include ../widgets/searchItems
+     .col-md-3.col-xs-12.pull-left
+      include ../widgets/searchFilters
+         

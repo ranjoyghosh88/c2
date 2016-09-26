@@ -1,0 +1,53 @@
+mixin controls()
+ div.extendPermisionMesg.hide
+  if iamResponder === false   
+    p
+      span.mesgExtend.text-capitalize
+      | &nbsp;requested for extending the call. You will be charged #{price} for 15 minutes. Do you wish to extend the call ?
+  else
+    p
+      span.mesgExtend.text-capitalize
+      | &nbsp;requested for extending the call. Do you wish to extend the call ?    
+  p
+    button.btn.btn-default.rejectExtend.btn-heading-small(type="button" style="margin-right:5px;" name=(iamResponder === true ? '#{questionData.responderHistory.userId.name}' : '#{questionData.createdBy.name}')) No
+    button.btn.btn-default.btn-primary.acceptExtend.btn-heading-small(type="button" style="margin-left:5px;" name=(iamResponder === true ? '#{questionData.responderHistory.userId.name}' : '#{questionData.createdBy.name}')) Yes
+
+ div.requesterMessage.hide
+    p
+    | You will be charged #{price} for 15 minutes. Do you wish to extend the call ?    
+    p
+      button.btn.btn-default.rejectExtendResponder.btn-heading-small(type="button" style="margin-right:5px;") No
+      button.btn.btn-default.btn-primary.btn-heading-small.extendData(name=(iamResponder === true ? '#{questionData.responderHistory.userId.name}' : '#{questionData.createdBy.name}'),val="900",type='button',data-toggle='dropdown', aria-haspopup='true', aria-expanded='false') Yes
+ 
+ div.commonMesg.hide(style="position: absolute;width: 100%;background: black;border: 2px solid #329ddc;bottom: 44px;left: 0px;border-left: 0px;z-index: 99;color: white;border-right: 0px;")
+  p(style="margin:0px;font-size: 15px;padding: 10px;")
+
+
+
+ ul.nav.nav-tabs.absolute.controls_bar.hide
+        li.text-center.col-xs-3
+           label.block#timer
+            .clock
+            .actualTime(style="display:none")
+            input(type="hidden" id="skuValue" skuValue='#{extendSku}')
+            input(type="hidden" id="responderCollection" responderCollection='#{questionData.responderHistory._id}')
+        li.text-center.col-xs-3
+          .btn-Group
+              button.border-primary.font-primary.btn.btn-default.btn-primary.dropdown-toggle.btn-block.extendData(name=(iamResponder === true ? '#{questionData.responderHistory.userId.name}' : '#{questionData.createdBy.name}'),val="900",type='button',data-toggle='dropdown', aria-haspopup='true', aria-expanded='false' getResponder="#{iamResponder}")
+                i.fa.fa-clock-o.fa_MarginRight
+                | Extend 15 Mins
+        li.text-center.col-xs-3
+          a.btn.btn-default.btn-default.btn-primary.btnScreen.executeScreenShare.text-inverse(href="javascript:void(null)") 
+            i.fa.fa-share-square-o.fa_MarginRight
+            | Screen Share
+          a.btn.btn-default.btn-default.text-inverse.btn-block.btn-primary.btn_exitSharing.hidden() Exit Sharing
+        li.text-center.col-xs-3
+          button.btn.btn-default.btn-danger.endCall.text-inverse.hidden.btn-block(data-id="#{questionData.responderHistory._id}" data-ques-id="#{questionData._id}" responder="#{iamResponder}" href="/quickSupport/requesterFeedback/#{questionData._id}/#{questionData.responderHistory._id}")
+            i.fa.fa-phone.fa_MarginRight
+            | End Call
+          form.btn-grp.unlockQuestion.block(action="/quickSupport/unlocking" method="post")
+            input(type="hidden",value=(iamResponder === true ? 'responder' : 'requester'),name="unlockingBy")
+            input(type="hidden",value="unlocked",name="status")
+            input(type="hidden",value="#{questionData._id}",name="questionId")
+            input(type="hidden",value="#{questionData.responderHistory._id}",name="responderHistoryId")
+            button.btn.btn-default.btn-danger.text-inverse.btn-block(type="submit") End Call

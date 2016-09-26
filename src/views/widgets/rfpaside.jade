@@ -1,0 +1,34 @@
+.panel
+	a.button-heading.block.text-uppercase.follow(href='/rfp/create')
+		| Start New RFP
+		i.fa.fa-pencil-square-o.pull-right
+.panel
+	a#manage-response.button-heading.block.text-uppercase.follow.disabled(disabled=disabled title="Select Response received RFP to manage")
+		| Manage Responses
+		i.fa.fa-plus.pull-right
+.panel
+	a.button-heading.block.text-uppercase.follow
+		| Share With Connections
+		i.fa.fa-plus.pull-right
+.panel
+	a.button-heading.block.text-uppercase.follow
+		| Delete Selected
+		i.fa.fa-trash.pull-right
+.panel.panel-default.rfp_activity
+	.panel-heading.text-uppercase.text-center Recent Activity
+	table.table
+		tr
+			td
+			td.text-primary 3
+			td
+			td people asked you to contribute to their RFPs
+		tr
+			td
+			td.text-primary 0
+			td
+			td people contribute to your RFPs
+		tr
+			td
+			td.text-primary 2
+			td
+			td RFPs you have created in last 2 weeks 

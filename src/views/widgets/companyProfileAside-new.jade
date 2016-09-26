@@ -1,0 +1,108 @@
+- function formatTextCapitalize(x) {
+-   return x.replace(/\b\w/g , function(m){ return m.toUpperCase(); } );
+-}
+
+include ../widgets/createProductPopUp
+//-h4= JSON.stringify(profileData)
+//-h4= isClaimed
+if isCompanySettingAccess || (isSuperUser && manageProfile==profileData.uid)
+  .panel
+      a.button-heading.text-uppercase.block(href='/company/CompanySettings/#{profileData._id}')
+         span Company Settings
+         <i class="fa fa-cog pull-right text-inverse"></i>
+if isSuperUser && manageProfile!=profileData.uid
+  .panel
+    a.button-heading.text-uppercase.follow.block.fav(href="#{'/company/'+profileData.uid+'?manageProfile=true'}")
+      span Manage Profile
+//-if profileData.type._id == 2 || profileData.type._id == 3
+  .panel
+    a.button-heading.text-uppercase.block.disabled
+       span Write a testimonial 
+       <i class="fa fa-plus pull-right text-inverse"></i>
+  .panel
+    a.button-heading.text-uppercase.block.disabled
+       span Rate
+       <i class="fa fa-plus pull-right text-inverse"></i>
+if user && !isMangingCompProd
+  if(isCon)
+   form.panel(action='/profile-con/people/company/people/people/#{profileData.uid}/#{profileData._id}/false',method='post')
+     a.button-heading.text-uppercase.follow.block#remove-connection
+       span Remove from Connection 
+       <i class="fa fa-minus pull-right text-inverse"></i>
+       //img(src="#{cdn('/connection_aside.png')}")
+  else
+   form.panel(action='',method='post')
+     a.button-heading.follow#add-connection.text-uppercase.block(data-connectto="company" data-id='#{profileData._id}')
+       span Add Connection
+       //<i class="fa fa-plus pull-right text-inverse"></i>
+       img(src="#{cdn('/connection_aside.png')}")
+input#_id(type="hidden",value= profileData._id)
+if isAdmin || isSuperUser
+  //- if profileData.type._id == 3
+    .panel
+      a.button-heading.text-uppercase#follow.block(data-toggle="modal" data-target="#createProductForm") ADD PRODUCT <i class="fa fa-plus pull-right"></i>
+  if(key)
+    input#profile-type(type="hidden",value= key)
+if (!isAdmin && !isMangingCompProd) || (isSuperUser && !isMangingCompProd)
+  .panel
+    if user
+      if !isFollower
+        a.button-heading#follow.followHim.text-uppercase.block(uid='#{profileData.uid}',myUid='#{myUid}',_id='#{profileData._id}') Follow <i class="fa fa-star-o pull-right"></i>
+        a.button-heading#follow.unfollowHim.hidden.text-uppercase.block(uid='#{profileData.uid}',myUid='#{myUid}',_id='#{profileData._id}') Unfollow <i class="fa fa-star pull-right" style="color:yellow"></i>
+      else
+        a.button-heading#follow.followHim.hidden.text-uppercase.block(uid='#{profileData.uid}',myUid='#{myUid}',_id='#{profileData._id}') Follow <i class="fa fa-star-o pull-right"></i>
+        a.button-heading#follow.unfollowHim.text-uppercase.block(uid='#{profileData.uid}',myUid='#{myUid}',_id='#{profileData._id}') Unfollow <i class="fa fa-star pull-right" style="color:yellow"></i>
+    else
+      a.button-heading.text-uppercase#follow.block(href='/register') Follow <i class="fa fa-star-o pull-right text-inverse"></i>
+
+  .panel
+    if user
+      a.button-heading.disabled.text-uppercase#follow.block CONTACT US <i class="fa fa-envelope-o pull-right text-inverse"></i>
+if user && !isMangingCompProd && manageProfile!=profileData.uid
+  .panel
+    if(isClaimed)
+        a.button-heading.disabled.text-uppercase#claimed.block CLAIM PENDING <i class="fa fa-exchange pull-right text-inverse"></i>
+    else if(userIsOwner)
+        a.button-heading.disabled.text-uppercase#claimed.block CLAIMED <i class="fa fa-exchange pull-right text-inverse"></i>
+    else
+        a.button-heading.text-uppercase#claim.block(claimId='#{profileData._id}',claimType='company',status='pending') CLAIM THIS PAGE <i class="fa fa-exchange pull-right text-inverse"></i>
+  if(key)
+  input#profile-type(type="hidden",value= key) 
+  if !isMangingCompProd
+    .panel
+      if(isFav)
+        a.button-heading.text-uppercase.follow.fav.block#add-favourite(data-fav='company' data-id='#{profileData._id}')
+          span Remove from Favorite 
+          <i class="fa fa-minus pull-right text-inverse"></i>
+      else if(user)
+        a.button-heading.text-uppercase.follow.block#add-favourite(data-fav='company' data-id='#{profileData._id}')
+          span Add to Favorite
+          <i class="fa fa-plus pull-right text-inverse"></i>
+      else
+        a.button-heading.text-uppercase.follow.block(href='/register')
+          span Add to Favorite
+          <i class="fa fa-plus pull-right text-inverse"></i>
+
+if profileData.type._id == 2 || profileData.type._id == 3
+  .panel.panel-default
+      .panel-heading.text-uppercase.text-center leading alternatives
+      .panel-body
+        if similarComp.length
+          +similarCompany(similarComp)
+        else
+          span There are no leading alternatives
+
+else
+  .panel.panel-default
+      .panel-heading.text-uppercase.text-center similar companies
+      .panel-body.text-center
+        if resltCompany && resltCompany.length
+          each item in resltCompany
+            if item.logo && user
+              a.clientImg.secondary(href='#{"/company/"+item.uid}',title='#{formatTextCapitalize(item.name)}',style='#{"background-image:url("+item.logo+") !important"}')
+            else
+              a.clientImg.secondary(href='#{"/company/"+item.uid}',title='#{formatTextCapitalize(item.name)}',style='#{"background-image:url("+cdn("/CompanyDummyLogo.jpg")+") !important"}')
+          div.col-xs-12
+            a.btn.btn-link(href='#{"/search/similarCompanies/company?connectionFrom=company&uid="+profileData.uid}') See All <i class="fa fa-angle-double-right"></i>
+        else
+          span There are no similar companies

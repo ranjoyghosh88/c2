@@ -1,0 +1,94 @@
+extends ../../layouts/layout_LAS
+include ../../mixin/quickSupportMixin
+
+block header
+    -if(responderHistoryData.company){
+    -companyName = "(behalf of " + responderHistoryData.company.name+")"
+    -}else{
+    -companyName = '';
+    -}
+    -var name = responderHistoryData.userId.name + ' ' + responderHistoryData.userId.lastName + ' ' + companyName
+    +headerQuickSupport({head:'THANK YOU FOR CONTACTING ' + ' '+ name})
+
+block column_1
+   h4.font-primary Call Summary
+   div.row.callSummaryFeedback
+     div.col-xs-12
+      div.greyBox.margin0
+        .row
+          .col-xs-12
+            label Question :
+            p.more #{questionData.question}
+        .row
+          .col-xs-6
+            label Total Call Duration
+            p
+              span.time.text-tertiary
+                strong#durationData #{responderHistoryData.requesterDuration} 
+              //- |minutes
+          .col-xs-6
+            label Amount Charged
+            p Post Question
+              span.time.text-tertiary(style="font-size:18px")
+                strong &nbsp #{price}
+            if Extendprice
+              p Extend Call
+                span.time.text-tertiary(style="margin-left:18px;font-size:18px")
+                  strong &nbsp #{Extendprice}
+            p Tax
+              span.time.text-tertiary(style="margin-left:75px;font-size:18px")
+                strong &nbsp -           
+            if questionData.coupon
+              p Coupon Code
+                span.time.text-tertiary(style="font-size:18px")
+                  strong &nbsp #{questionData.coupon}
+            p Total
+              span.time.text-tertiary(style="margin-left:70px;font-size:18px")
+                strong #{toatlPrice}    
+   h4.font-primary.marginT_30 Please give us your feedback for this call
+   div.row
+     div.col-xs-12
+      div.greyBox.margin0
+        label Has 
+         span.text-capitalize #{name} 
+         | provided a satisfactory answer to your question ?
+        form(action="/quickSupport/QuickSupportfeedback" method="post")
+          div.row
+            div.col-xs-1
+              div.inline-block
+                input(type="hidden" name="requesterFeedback" value="true")
+                input(type="hidden" name="responderHistoryId" value="#{responderHistoryData._id}")
+                input(type="radio" checked name="isAnswered" class="checkFeedback" value="true")
+                span.fa_Marginleft Yes
+            div.col-xs-1
+              div.inline-block
+                input(type="radio" name="isAnswered" class="checkFeedback" value="false")
+                span.fa_Marginleft No
+          div.filterMargin
+            label.error.alert.alert-danger.hide.feedbackDataCheck Please select the feedback
+          div.filterMargin
+            p.feedBackComment.hide Looks like you are not satisfied by the Answer provided.We are commited to your satisfaction, we will provide a full credit for another support session.
+          div.feedBackComment.hide
+            label Additional Comment
+            textarea.txtArea_notes.form-control(name="message")
+            div.filterMargin
+              label How do you want to proceed ?
+              div.radio
+                label
+                  input(type="radio" checked name="postquestion" value="true")
+                  | Do you want to repost the same question?
+              div.radio
+                label
+                  input(type="radio" name="postquestion" value="false")
+                  | Do you want to refund? 
+
+          button.btn.btn-default.btn-primary.form-control.btn-heading.margin0.filterMargin#feedbackSubmitData(style="margin-right: 15px !important;" type="submit") Submit
+          //- a.btn.btn-default.btn-primary.form-control.btn-heading.margin0.filterMargin(href="/quickSupport/dashboard") Later
+   //- div.row
+   //-  div.col-xs-12
+   //-    h4.hide.checkdayComment.text-tertiary.filterMargin.font-primary Thank you and have a great day!
+
+block append js
+ script(src=cdn('/liveApplication.js'))
+ script
+      | $('#durationData').text(formatTime("#{responderHistoryData.responderDuration}",true))

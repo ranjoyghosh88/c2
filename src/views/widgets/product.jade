@@ -1,0 +1,255 @@
+- function formatNumber(x) {
+-   return x?x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","):'';
+-}
+.row#product
+  .col-sm-12.col-md-12
+    .panel.panel-default
+        .panel-body
+          if (editSection=='basic' && profileData.company.length>0)||(editSection=='basic' && manageProfile==profileData.uid && isSuperUser)
+            form.media(method='post',action='#{"/product/edit/"+profileData.uid}' enctype='multipart/form-data')
+              .row
+                .col-sm-12
+                  .btn_close
+                    a.cancle.pull-right(href='#{"/product/"+profileData.uid}',title='cancel')
+                      span.fa.fa-times
+              .row
+                .col-sm-4.col-lg-3             
+                  .media-left
+                    input(type='hidden',value='#{profileData._id}',name='id')
+                    a(href='#')     
+                      if profileData.productWebsite
+                        a(href='#{"//"+profileData.productWebsite}', target='_blank')             
+                          if profileData.logo
+                            img.media-object.profilePic(src=profileData.logo)
+                          else
+                            img.media-object.profilePic(src="#{cdn('/ProductDummyLogo.jpg')}")
+                      else
+                        a
+                          if profileData.logo
+                            img.media-object.profilePic(src=profileData.logo)
+                          else
+                            img.media-object.profilePic(src="#{cdn('/ProductDummyLogo.jpg')}")
+                      button.btn.btn-link(name='profilePic',id='TrgrClk') Change Picture
+                      input(type='file',name='file',id='file')
+                .col-sm-8.col-lg-9
+                  .media-body
+                    .form
+                      .form-group.col-xs-12
+                        .col-sm-10.col-xs-12
+                          input.form-control(type='text',required='required',data-errorholder='Product Name', placeholder='Product Name',name='name',value='#{profileData.name}')
+                      .form-group.col-xs-12
+                        .col-sm-10.col-xs-12
+                          input.form-control(type='text',data-errorholder='User Count', placeholder='User Count',name='userCount',value='#{profileData.userCount}')
+                      .form-group.col-xs-12
+                        .col-sm-10.col-xs-12
+                          input.form-control.text-capitalize(type='text',required='required',data-errorholder='Latest Version', placeholder='Latest Version',name='versionNumber',value='#{profileData.versionNumber}')
+                      .form-group.col-xs-12
+                        .col-xs-12
+                          h3.media-heading.margin0 Overall Rating:
+                            +rating(3,{})
+                      .form-group.col-xs-12
+                        .col-xs-12
+                          h3.media-heading.margin0 Contributors:
+                      .form-group.col-sm-5.col-xs-12
+                        .col-xs-12
+                          button.btn.btn-primary.form-control(type='submit') Submit
+                      .form-group.col-sm-5.col-xs-12     
+                        .col-xs-12
+                          a.btn.btn-default.form-control(href='#{"/product/"+profileData.uid+"?editSection=basic"}') Reset
+          else
+            .media
+              .row
+                .col-sm-12
+                  if (isAdmin  && profileData.company.length>0 ) ||(isSuperUser && manageProfile==profileData.uid)
+                      form.pull-right.edit(method='get',action='#{"/product/"+profileData.uid}')
+                        input(type='hidden',name='editSection',value='basic')
+                        button.btn.btn-link.edit(title='Edit')
+                          span.fa.fa-pencil
+              .row
+                .col-lg-3.col-sm-4
+                  .media-left
+                    a(href='#')     
+                      if profileData.productWebsite             
+                        if profileData.logo
+                          a(href='#{"//"+profileData.productWebsite}', target='_blank')
+                            img.media-object(src=profileData.logo)
+                        else
+                          a(href='#{"//"+profileData.productWebsite}', target='_blank')
+                            img.media-object(src="#{cdn('/ProductDummyLogo.jpg')}")
+                      else          
+                        if profileData.logo
+                          img.media-object(src=profileData.logo)
+                        else
+                          img.media-object(src="#{cdn('/ProductDummyLogo.jpg')}")
+                .col-lg-9.col-sm-8
+                  .media-body
+                      h1.media-heading.fullName #{profileData.name}
+                      if profileData.company && profileData.company[0]
+                        h3.media-heading
+                          a(href='#{"/company/"+profileData.company[0].uid}') #{profileData.company[0].name} 
+                      .form-group
+                        h3.media-heading Overall Rating:
+                          +rating(3,{})
+                        h3.text-capitalize.media-heading Users: #{formatNumber(profileData.userCount)}
+                        h3.text-capitalize.media-heading Contributors:
+                        h3.text-capitalize.media-heading Latest version: #{profileData.versionNumber}
+                                
+
+if (editSection=='detail' && profileData.company.length>0) ||(editSection=='detail' && manageProfile==profileData.uid && isSuperUser)
+  .panel.panel-default.companyDescription
+    .panel-heading.text-center About #{profileData.name}
+      a.cancle.pull-right(href='#{"/product/"+profileData.uid}',title='cancle')
+        span.fa.fa-times
+    form.panel-body(method='post',action='#{"/product/edit/"+profileData.uid}' enctype='multipart/form-data')
+      .row
+        input(type='hidden',value='#{profileData._id}',name='id')
+        .col-xs-12 
+          textarea.form-control(name='description',placeholder='Please provide detailed description about the product. eg. <Product> provides the leading user management and authentication service for development teams...',style='max-width:100%') #{profileData.description}
+       .row
+          .form-group.col-md-4.col-sm-6 
+            h4.descData Intended For
+            input(type="hidden" name="intendedFor" value="0")
+            select#intendedScales.sortSelectOnNum.form-control.select2(name='intendedFor', multiple, data-placeholder='Intended Scales',style="width: 100%")
+              +PreselectBox(masterCollections.intendedController,profileData.intendedFor)
+          .form-group.col-md-3.col-sm-6 
+            h4.text-capitalize.descData website
+            if profileData.productWebsite
+              input.form-control(type='text',name='productWebsite',value="#{profileData.productWebsite}")
+            else
+              input.form-control(type='text',name='productWebsite')
+          .form-group.col-md-5.col-sm-6 
+            h4.text-capitalize.descData Good For
+            input(type="hidden" name="goodFor" value="0")
+            select.form-control(name='goodFor', data-master='enterpriseSoftware', data-placeholder='Good for', multiple,data-errorholder='Good for',style='width:100%')
+              +setSelected(masterCollections.enterpriseSoftware,profileData.goodFor)
+        .row
+          .form-group.col-md-3.col-sm-5.col-md-offset-6.col-sm-offset-2
+            button.btn.btn-primary.form-control(type='submit') Submit  
+          .form-group.col-md-3.col-sm-5
+            a.btn.btn-default.form-control(href='#{"/product/"+profileData.uid+"?editSection=detail"}') Reset
+else
+  .panel.panel-default.companyDescription
+      .panel-heading.text-center About #{profileData.name}
+        if (isAdmin  && profileData.company.length>0 ) ||(isSuperUser && manageProfile==profileData.uid)
+          form.pull-right.edit(method='get',action='#{"/product/"+profileData.uid}')
+            input(type='hidden',name='editSection',value='detail')
+            button.btn.btn-link.edit(title='Edit')
+              span.fa.fa-pencil
+      .panel-body
+         if profileData.description
+          pre #{profileData.description}
+         .row
+            div.col-md-4.col-sm-6 
+              h4.descData Intended For
+              if profileData.intendedFor
+                -for(i=0;i<profileData.intendedFor.length;i++)
+                  span.tag #{profileData.intendedFor[i].name}
+            div.col-md-3.col-sm-6 
+              h4.descData.smallDescData Website
+              if profileData.productWebsite
+                a(target="_blank" href="#{'//'+profileData.productWebsite}")= profileData.productWebsite
+              else
+                p Not Available
+            div.col-md-5.col-sm-6 
+              h4.descData Good For
+              if profileData.goodFor
+                -for(i=0;i<profileData.goodFor.length;i++)
+                  span.tag #{profileData.goodFor[i].name}
+
+
+
+.panel.panel-default.panel-description
+  .panel-heading.text-uppercase.text-center Testimonials
+    if isAdmin && isPremium  && profileData.company.length>0
+      form.pull-right.edit.disabled
+        input(type='hidden',name='editSection',value='testimonials')
+        button.btn.btn-link.edit.disabled(title='Edit',disabled)
+          span.fa.fa-pencil
+  //-.panel-body
+    span.btn.btn-link Coming soon...
+  .panel-body.text-center
+    if isPremium
+      .quoted-text
+          div.fa.fa-quote-left.pull-left
+          i Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+      div.clientImg.secondary
+      .clientInfo.inline-block
+        i Deisy Graham
+        i President and CEO at ABC
+    else if user
+      +toPremium('Sign up for premium membership to view testimonials')
+    else
+      a.btn.btn-link.whiteSpaceInherit(href='/register') Sign up to CSquire
+    
+
+
+
+
+.panel.panel-default.panel-description
+    .panel-heading.text-uppercase.text-center Product resources
+        if isAdmin && profileData.company.length>0
+          //-form.pull-right.edit(method='get',action='#{"/product/"+profileData.uid}')
+            input(type='hidden',name='editSection',value='resources')
+            button.btn.btn-link.edit(title='Edit')
+              span.fa.fa-pencil
+              span &nbsp;&nbsp;edit
+      //-.panel-body
+        span.btn.btn-link Coming soon...
+    .panel-body.text-center
+         .row
+           div.col-xs-12
+             p.col-sm-8 Lorem ipsum dolor sit amet, consectetur adipiscing elit
+             a.col-sm-4(href='#') 
+                |  read more
+           div.col-xs-12
+             p.col-sm-8 Lorem ipsum dolor sit amet, consectetur adipiscing elit
+             a.col-sm-4(href='#') 
+                |  read more
+           div.col-xs-12
+             p.col-sm-8 Lorem ipsum dolor sit amet, consectetur adipiscing elit
+             a.col-sm-4(href='#') 
+                |  read more
+           div.col-xs-12
+             p.col-sm-8 Lorem ipsum dolor sit amet, consectetur adipiscing elit
+             a.col-sm-4(href='#') 
+                |  read more
+         
+
+
+
+
+.panel.panel-default.panel-description
+  .panel-heading.text-uppercase.text-center Ratings
+  .panel-body.text-center
+    if isPremium
+      h4.progress-label.text-left Scope of Services
+      .progress          
+        .progress-bar.progress-bar-info(role='progressbar', aria-valuenow='40', aria-valuemin='0', aria-valuemax='100', style='width: 40%')
+            span.sr-only 40% Complete (success)
+
+      h4.progress-label.text-left Value
+      .progress
+        .progress-bar.progress-bar-info(role='progressbar', aria-valuenow='20', aria-valuemin='0', aria-valuemax='100', style='width: 20%')
+            span.sr-only 20% Complete
+      
+      h4.progress-label.text-left Quality of Services
+      .progress
+        .progress-bar.progress-bar-info(role='progressbar', aria-valuenow='60', aria-valuemin='0', aria-valuemax='100', style='width: 60%')
+            span.sr-only 60% Complete (warning)
+      
+      h4.progress-label.text-left Customer Focus
+      .progress
+        .progress-bar.progress-bar-info(role='progressbar', aria-valuenow='80', aria-valuemin='0', aria-valuemax='100', style='width: 80%')
+            span.sr-only 80% Complete (danger) 
+      h4.progress-label.text-left Meeting timelines
+      .progress
+        .progress-bar.progress-bar-info(role='progressbar', aria-valuenow='30', aria-valuemin='0', aria-valuemax='100', style='width: 30%')
+            span.sr-only 30% Complete (danger) 
+      h4.progress-label.text-left Meeting budget
+      .progress
+        .progress-bar.progress-bar-info(role='progressbar', aria-valuenow='60', aria-valuemin='0', aria-valuemax='100', style='width: 60%')
+            span.sr-only 60% Complete (danger) 
+    else if user
+      +toPremium('Sign up for premium membership to view ratings')
+    else
+      a.btn.btn-link.whiteSpaceInherit(href='/register') Sign up to CSquire

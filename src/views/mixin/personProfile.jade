@@ -1,0 +1,96 @@
+mixin personProfile(profiles,tab)
+	-var iscon = false;
+	-var isfav = false;
+	- tab = tab || null
+	for profile in profiles
+		- iscon=false;
+		- isfav=false;
+		if profile.refId && profile.refId.connections && profile.refId.connections.profiles
+			for prof in profile.refId.connections.profiles
+				-if (prof.refId == loggedUser){
+					- iscon=true;
+					- break;
+				- }
+			for prof in profile.refId.favouritedBy
+				- if(loggedUser == prof){
+					- isfav=true;
+					- break;
+				- }
+			.row.featured-row.hidden
+				div.col-xs-12
+					img.absolute.featured(src="#{cdn('/favicon_inverse.png')}")
+			div.row.items.marginT_30.padding_b_30
+				div.col-xs-12
+					.row
+						.col-sm-3.col-xs-12.text-center
+							input#_id(type="hidden",value= profile.refId._id)
+							a.personImage(href="/people/#{profile.refId.uid}")
+								img.image-width(src=src=profile.refId.pictureUrl?"#{profile.refId.pictureUrl}":"#{cdn('/profile.jpg')}")
+						.col-sm-6.col-lg-7.col-xs-12
+							h3.margin0
+								a.anchorHeading.font-primary(href="/people/#{profile.refId.uid}") #{profile.refId.name} #{profile.refId.lastName},
+							label.block.text-capitalize #{profile.refId.jobTitle.name}
+							label.block.text-capitalize #{profile.refId.company[0].name}
+							label.block.text-capitalize(style='font-weight: 500;') Connected As #{profile.relation}
+						.col-sm-3.col-lg-2.col-xs-12.text-center
+							.connection_box
+								.row
+									if loggedUser != profile.refId._id
+										.col-sm-4.col-xs-6
+											if isfav
+												a.text-uppercase.block.fav.add-favourite(title="Remove from favorites" data-fav='people' data-id='#{profile.refId._id}')
+													label.glyphicon.glyphicon-star.block.text-center
+											else
+												a.text-uppercase.block.add-favourite(title="Add to favorites" data-fav='people' data-id='#{profile.refId._id}')
+													label.glyphicon.glyphicon-star-empty.block.text-center
+										.col-sm-6.col-xs-6
+											if iscon
+												form.panel(action='/profile-con/people/people/people/people/#{profile.refId.uid}/#{profile.refId._id}/false?redirct=1&tab=#{tab}',method='post')
+													a.text-uppercase.block.remove-connection(title="Remove from connection")
+														img.connection-small(src="#{cdn('/connections.png')}")
+											else
+												form.panel(action='',method='post')
+													a.text-uppercase.block.add-connection(data-connectto="people" data-con="1" title="Add to connection" data-id='#{profile.refId._id}')
+														img.connection-small(src="#{cdn('/connections_active.png')}")
+
+
+mixin employees(profiles)
+	-var isfav = false;
+	for emp in profiles
+			- iscon=emp.isCon,isfav=false;
+			- emp = emp.refId;
+			.row.featured-row.hidden
+				div.col-xs-12
+					img.absolute.featured(src="#{cdn('/favicon_inverse.png')}")
+			div.row.items.marginT_30.padding_b_30
+				div.col-xs-12
+					.row
+						.col-sm-3.col-xs-12
+							input#_id(type="hidden",value= emp._id)
+							a.personImage(href="/people/#{emp.uid}")
+								img.image-width(src=src=emp.pictureUrl?"#{emp.pictureUrl}":"#{cdn('/profile.jpg')}")
+						.col-sm-6.col-md-7.col-xs-12
+							h3.margin0
+								a.anchorHeading.font-primary(href="/people/#{emp.uid}") #{emp.name} #{emp.lastName},
+							label.block #{emp.jobTitle.name}
+							label.block #{emp.company[0].uid}
+						.col-sm-3.col-md-2.col-xs-12.text-center
+							.connection_box
+								.row
+									if loggedUser != emp._id
+										.col-sm-4.col-xs-6
+											if isfav
+												a.text-uppercase.block.fav.add-favourite(title="Remove from favorites" data-fav='people' data-id='#{emp._id}')
+													label.glyphicon.glyphicon-star.block.text-center
+											else
+												a.text-uppercase.block.add-favourite(title="Add to favorites" data-fav='people' data-id='#{emp._id}')
+													label.glyphicon.glyphicon-star-empty.block.text-center
+										.col-sm-6.col-xs-6
+											if iscon
+												form.panel(action='/profile-con/people/people/people/people/#{emp.uid}/#{emp._id}/false',method='post')
+													a.text-uppercase#remove-connection(title="Remove from connection")
+														img.connection-small(src="#{cdn('/connections.png')}")
+											else
+												form.panel(action='',method='post')
+													a.text-uppercase#add-connection(title="Add to connection" data-connectto="people" data-con='1' data-id='#{emp._id}')
+														img.connection-small(src="#{cdn('/connections_active.png')}")  

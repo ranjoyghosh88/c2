@@ -1,0 +1,14 @@
+extends ../../layouts/layout
+include ../../mixin/headpanel
+include ../../mixin/qsCreateMixin
+
+block content
+	+headpanels('SUBSCRIPTION PLAN')
+	include ../../widgets/createPlan
+
+block append js
+	script(src='//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js')
+	script(src='//cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js')
+	script(src='//cdn.datatables.net/1.10.10/js/dataTables.bootstrap.min.js')
+	script(src=cdn('/dashboard.js'))
+	script(src=cdn('/qsCreate.js'))

@@ -1,0 +1,51 @@
+doctype html
+html
+  head
+    block vars
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    title #{title || 'CSquire'}
+    link(rel='shortcut icon', href=cdn('/favicon.ico'), type='image/x-icon')
+    link(rel='stylesheet', href='//fonts.googleapis.com/css?family=Josefin+Sans:700|Open+Sans:400,300,700')
+    link(rel='stylesheet', href=cdn('/bootstrap.min.css', {key: 'bootstrapCDNcss'}))
+    link(rel='stylesheet', href='//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css')
+    link(href=cdn('/screen.min.css'), rel='stylesheet', media='screen')
+    link(href=cdn('/print.min.css'), rel='stylesheet', media='print')
+    link(href=cdn('/select2.min.css', {key: 'select2CDNcss'}), rel='stylesheet')
+    link(rel='chrome-webstore-item' href='https://chrome.google.com/webstore/detail/#{chromeId}')
+    block stylesheet
+  
+  body.home-container
+    //Google Tag Manager
+    | <noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-WSXV89"
+    | height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    | <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    | new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    | j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    | '//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    | })(window,document,'script','dataLayer','GTM-WSXV89');</script>
+    // End Google Tag Manager
+    include ../widgets/header
+    include ../mixin/search
+    include ../mixin/breadCrumb
+    include ../widgets/advancedSearch
+    block header
+    .container
+      .row.profileContainer
+        .col-sm-12
+          .las
+            block content
+      .row
+          .col-md-12.col-xs-12.col-sm-12
+              block column_1
+
+    include ../widgets/footer
+    block js    
+     script(src=cdn('/jquery-2.1.1.min.js', {key: 'jqueryCDNjs'}))
+     script(src=cdn('/bootstrap.min.js', {key: 'bootstrapCDNjs'}))
+     script(src=cdn('/select2.min.js', {key: 'select2CDNjs'}))
+     script(src='//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js')
+     script(src='//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.12.0/jquery.validate.js')
+     script(src=cdn('/lib/jquery/jqplaceholder.js'))
+     script(src=cdn('/header.js'))

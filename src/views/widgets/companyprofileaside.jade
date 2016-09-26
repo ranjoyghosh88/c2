@@ -1,0 +1,115 @@
+- function formatTextCapitalize(x) {
+-   return x.replace(/\b\w/g , function(m){ return m.toUpperCase(); } );
+-}
+
+include ../widgets/createProductPopUp
+if isSuperUser && manageProfile!=profileData.uid
+  .panel
+    a.button-heading.text-uppercase.follow.block.fav(href="#{'/company/'+profileData.uid+'?manageProfile=true'}")
+      span Manage Profile
+if user && !isMangingCompProd
+  if(isCon)
+   form.panel(action='/profile-con/people/company/people/people/#{profileData.uid}/#{profileData._id}/false',method='post')
+     a.button-heading.text-uppercase.follow.block#remove-connection
+       span Remove from Connection 
+       <i class="fa fa-minus pull-right text-inverse"></i>
+       //img(src="#{cdn('/connection_aside.png')}")
+  else
+   form.panel(action='',method='post')
+     a.button-heading.follow#add-connection.text-uppercase.block(data-connectto="company" data-id='#{profileData._id}')
+       span Add Connection
+       //<i class="fa fa-plus pull-right text-inverse"></i>
+       img(src="#{cdn('/connection_aside.png')}")
+input#_id(type="hidden",value= profileData._id)
+if isAdmin || isSuperUser
+  //if profileData.type._id == 3
+    .panel
+      a.button-heading.text-uppercase#follow.block(data-toggle="modal" data-target="#createProductForm") ADD PRODUCT <i class="fa fa-plus pull-right"></i>
+  if(key)
+    input#profile-type(type="hidden",value= key)
+if (!isAdmin && !isMangingCompProd) || (isSuperUser && !isMangingCompProd)
+  .panel
+    if user
+      if !isFollower
+        a.button-heading#follow.followHim.text-uppercase.block(uid='#{profileData.uid}',myUid='#{myUid}',_id='#{profileData._id}') Follow <i class="fa fa-star-o pull-right"></i>
+        a.button-heading#follow.unfollowHim.hidden.text-uppercase.block(uid='#{profileData.uid}',myUid='#{myUid}',_id='#{profileData._id}') Unfollow <i class="fa fa-star pull-right" style="color:yellow"></i>
+      else
+        a.button-heading#follow.followHim.hidden.text-uppercase.block(uid='#{profileData.uid}',myUid='#{myUid}',_id='#{profileData._id}') Follow <i class="fa fa-star-o pull-right"></i>
+        a.button-heading#follow.unfollowHim.text-uppercase.block(uid='#{profileData.uid}',myUid='#{myUid}',_id='#{profileData._id}') Unfollow <i class="fa fa-star pull-right" style="color:yellow"></i>
+    else
+      a.button-heading.text-uppercase#follow.block(href='/register') Follow <i class="fa fa-star-o pull-right text-inverse"></i>
+
+  .panel
+    if user
+      a.button-heading.disabled.text-uppercase#follow.block CONTACT US <i class="fa fa-envelope-o pull-right text-inverse"></i>
+if user && !isMangingCompProd && manageProfile!=profileData.uid
+  .panel
+      a.button-heading.disabled.text-uppercase#follow.block CLAIM THIS PAGE <i class="fa fa-exchange pull-right text-inverse"></i>
+
+
+
+  if(key)
+  input#profile-type(type="hidden",value= key)
+  
+  
+  if !isMangingCompProd
+    .panel
+      if(isFav)
+        a.button-heading.text-uppercase.follow.fav.block#add-favourite 
+          span Remove from Favourite 
+          <i class="fa fa-minus pull-right text-inverse"></i>
+      else if(user)
+        a.button-heading.text-uppercase.follow.block#add-favourite 
+          span Add to Favorite
+          <i class="fa fa-plus pull-right text-inverse"></i>
+      else
+        a.button-heading.text-uppercase.follow.block(href='/register')
+          span Add to Favorite
+          <i class="fa fa-plus pull-right text-inverse"></i>
+
+
+if user
+  -var managementExists;
+  each item in profileData.employees
+    -if(item.topManagement && item.accountStatus=="ENABLED")
+      -managementExists= true;
+      -break;
+  if managementExists
+    .panel.panel-default
+      .panel-heading.text-uppercase.text-center top management
+      .panel-body.text-center
+        each item in profileData.employees
+          if item.accountStatus=="ENABLED"
+            if item.topManagement && item.pictureUrl
+              a.clientImg.secondary(href='#{"/people/"+item.uid}',title='#{item.name+" "+item.lastName}',style='#{"background-image:url("+item.pictureUrl+") !important"}')
+            else if item.topManagement && !item.pictureUrl
+              a.clientImg.secondary(href='#{"/people/"+item.uid}',title='#{item.name+" "+item.lastName}',style='#{"background-image:url("+cdn("/profile.jpg")+") !important"}')
+
+        div.col-xs-12
+          a.btn.btn-link(href='#') see all <i class="fa fa-angle-double-right"></i>
+if user
+  .panel.panel-default
+    .panel-heading.text-uppercase.text-center people you know
+    .panel-body.text-center
+      div.clientImg.secondary
+      div.clientImg.secondary
+      div.clientImg.secondary
+      div.col-xs-12
+        a.btn.btn-link(href='#') see all <i class="fa fa-angle-double-right"></i>
+      //span.btn.btn-link Coming soon...
+
+if user
+  .panel.panel-default
+    .panel-heading.text-uppercase.text-center Followers
+    .panel-body.text-center
+      - var followers= profileData.followers?profileData.followers.profiles:{};
+      if followers.length>0
+        each item in followers
+          if item.pictureUrl
+            a.clientImg.secondary(href='#{"/people/"+item.uid}',title='#{item.name+" "+item.lastName}',style='#{"background-image:url("+item.pictureUrl+") !important"}')
+          else
+            a.clientImg.secondary(href='#{"/people/"+item.uid}',title='#{item.name+" "+item.lastName}',style='#{"background-image:url("+cdn("/profile.jpg")+") !important"}')            
+        div.col-xs-12
+          a.btn.btn-link(href='#{"/search/followers/people?connectionFrom=company&type=company&uid="+profileData.uid}') see all <i class="fa fa-angle-double-right"></i>
+      else
+        span There are no followers

@@ -1,0 +1,21 @@
+/*
+	NOTE:
+	- this file should contain only the mixins needed
+*/
+.imgReplace(@url, @width, @height){
+	background: url('@{url}') no-repeat center center;
+	width: @width; 
+	height: @height;
+	display: inline-block;
+	span{display: none;}
+}
+.setBackground(@url, @options){
+	background-image: url('@{url}');
+	@options();
+}
+
+.setfont( @options){
+	@options();
+}
+
+/* nothing else in this file */

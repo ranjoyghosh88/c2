@@ -1,0 +1,113 @@
+div#stripeMapping
+ div.panel.panel-default
+    div.panel-body.padding0
+      div.padding15
+        h4.font-primary Add CSquire Referral Mapping
+        form.form-horizontal.signupForm#referral-mapping-form.filterMargin
+          .row.rowMargin
+            .col-sm-4
+              label.width20 Coupon Name
+              select#stripeCouponId.form-control.add-mapping(name='stripeCouponId',data-placeholder='Select Coupon Name',data-errorholder='serviceName' style='width:70%')
+                if isMappingEdit
+                  +preSelectStripeCoupon(stripeCouponList,referralMappingData.stripeCouponId)
+                else
+                  if stripeCouponList && stripeCouponList.length
+                    +selectStripeCoupon(stripeCouponList,'stripeCoupontId')
+              label.error.alert.alert-danger.marginLabel(style="display:none") Please enter Coupon Name
+            .col-sm-4.mobileTopMargin
+              input(type='hidden' name='csquireService', value = 5)
+              label.width20 Product Name
+              select#stripeProductRefId.form-control.add-mapping(name='stripeProductId',data-id='stripeProductId',data-placeholder='Select Product Name',data-errorholder='serviceName' style='width:70%',onchange='getSKUSOfProductId(this)')
+                if isMappingEdit
+                  +preSelectStripeProduct(stripeProductList,referralMappingData.stripeProductId)
+                else
+                  +selectStripeProduct(stripeProductList,'stripeProductId')
+              label.error.alert.alert-danger.marginLabel(style="display:none") Please enter Product Name
+            .col-sm-4.mobileTopMargin
+              label.width20 SKU ID
+              select#stripeSkuId.form-control.add-mapping(name='referralSkuId',data-placeholder='Select SKU ID',data-errorholder='serviceName' style='width:70%')
+                if isMappingEdit
+                  +preSelectStripeSku(skusListOfProductId,referralMappingData.referralSkuId)
+              label.error.alert.alert-danger.marginLabel(style="display:none") Please enter SKU ID
+          .row
+            .col-xs-12
+              label.filterMargin Add Person
+          .row
+            .col-xs-12.radioContainer
+              div.inline-block.default-div
+                if isMappingEdit
+                  input(type='hidden' name='mappingId', value = "#{referralMappingData._id}")
+                  if referralMappingData.isDefaultForCsquireService
+                    input(type="hidden"  name="isDefaultForCsquireService" value = 'true')
+                    input(type="checkbox" id="editDefaultService" name="defaultService" class="check" checked)
+                  else
+                    input(type="checkbox" id="editDefaultService" name="defaultService" class="check")
+                else
+                  input(type="checkbox" id="defaultService" name="defaultService" class="check")
+                span Default
+              div.inline-block.company-person-div
+                if isMappingEdit  && referralMappingData.csquirePersonalProfiles.length > 0
+                  input(type="checkbox" id="editPersonalProfileCheck" class = "personalProfileCheck check" checked="checked")
+                else
+                  input(type="checkbox" id="personalProfileCheck" class = "personalProfileCheck check")
+                span Person
+              label.error.alert.alert-danger(style="display:none") Please select person or default
+          .row.rowMargin
+            .col-xs-12.col-sm-6
+              span#person-span.filterMargin(style="display:none")
+                label.widthadjust Person
+                select.form-control(name='csquirePersonalProfiles', id = "csquirePersonalProfiles" data-master="personalProfile" data-placeholder='Enter person name', multiple,data-errorholder='serviceName' style='width:70%')
+                  if isMappingEdit == true && referralMappingData.csquirePersonalProfiles.length > 0
+                    +PreselectBoxQuick(data, referralMappingData.csquirePersonalProfiles)
+                label.error.alert.alert-danger(style="display:none;margin-left:90px!important") Please select at least one person
+          .row.filterMargin
+            .col-xs-12
+              if isMappingEdit
+                button.btn.btn-primary.btn-default.btn-heading.margin0(type="button" id = "editQsReferralMapping") Save
+              else
+                button.btn.btn-primary.btn-default.btn-heading.margin0(type="button" id = "addQsReferralMapping") Add
+              a(href="/qsMapping/referralMapping" class = "form-control btn btn-default border-primary btn-heading") Clear all
+      div.bordertop.filterMargin
+      div.padding15
+        h4.font-primary Referral Mappings
+        div.table-small-responsive
+          table.table.table-bordered.referralMappingTable(cellspacing="0" cellpadding="0")
+            thead
+              tr
+                th Coupon Id
+                th Referral SKU Id
+                th Person
+                th default
+                th 
+                th
+            tbody
+              if referralMappingList && referralMappingList.length 
+                each referralMapping in referralMappingList
+                  tr
+                    td
+                      a(class='skuCouponDetails' couponId = "#{referralMapping.stripeCouponId}" refSkuId="#{referralMapping.referralSkuId}")
+                        | #{referralMapping.stripeCouponId}
+                    td
+                      a(class='skuCouponDetails'  couponId = "#{referralMapping.stripeCouponId}" refSkuId="#{referralMapping.referralSkuId}")
+                        | #{referralMapping.referralSkuId}
+                    td
+                      if referralMapping.csquirePersonalProfiles.length > 0
+                        - var personList=[];
+                        each val,i in referralMapping.csquirePersonalProfiles
+                            -personList.push(" " + val.name)
+                        | #{personList.join(', ')}
+                      else  
+                        | -
+                    td #{referralMapping.isDefaultForCsquireService}
+                    td.text-center
+                      a(href="/qsMapping/referralMapping?isEdited=true&referralMapping=#{referralMapping._id}" title="Edit")
+                        span(class="glyphicon glyphicon-edit connection-small" aria-hidden="true")
+                      td.text-center
+                        if !referralMapping.isDefaultForCsquireService
+                          a(href="/qsMapping/deleteReferralMapping/#{referralMapping._id}" data-confirm="Are you sure you want to delete?" title="Delete")
+                            span.glyphicon.glyphicon-trash
+              else
+                tr
+                  td(colspan="6") No product mapping present
++qsMappingModel()
++couponSkuDetailsModel()

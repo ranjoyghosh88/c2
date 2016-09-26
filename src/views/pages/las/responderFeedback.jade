@@ -1,0 +1,71 @@
+extends ../../layouts/layout_LAS
+include ../../mixin/quickSupportMixin
+
+
+
+block header
+    -var name = questionData.createdBy.name + ' ' + questionData.createdBy.lastName
+    +headerQuickSupport({head:'THANK YOU FOR CONTACTING ' + ' '+ name})
+
+block column_1
+   h4.font-primary Call Summary
+   div.row.callSummaryFeedback
+     div.col-xs-12
+       div.greyBox.margin0
+        .row
+          .col-xs-12
+            label Question :
+            p.more #{questionData.question}
+        .row
+          .col-xs-6
+            label Total Duration
+            p
+              span.time.text-tertiary
+                strong#durationData #{responderHistoryData.responderDuration} 
+              //- |minutes
+          //- .col-xs-6
+          //-   label Total Amount Charged
+          //-   p
+          //-     span.time.text-tertiary
+          //-       strong $ 45.00
+   h4.font-primary.marginT_30 Please give us your feedback for this call
+   div.row
+       div.col-xs-12
+        div.greyBox.margin0
+          form(action="/quickSupport/QuickSupportfeedback" method="post")
+              label 
+               //- span.text-capitalize #{name} 
+               | Do you believe the expectations of the call were reasonable?
+              div.row
+                div.col-xs-1
+                  div.inline-block
+                    input(type="hidden" name="responderFeedback" value="true")
+                    input(type="hidden" name="responderHistoryId" value="#{responderHistoryData._id}")
+                    input(type="radio" checked name="isAnswered" class="checkFeedback" value="true")
+                    span.fa_Marginleft Yes
+                div.col-xs-1
+                  div.inline-block
+                    input(type="radio" name="isAnswered" class="checkFeedback" value="false")
+                    span.fa_Marginleft No
+              div.filterMargin
+                label.error.alert.alert-danger.hide.feedbackDataCheck Please select the feedback
+              div.filterMargin
+                p.feedBackComment.hide We are sorry can you provide some additional information on why?
+              div.feedBackComment.hide
+                label Additional Comment
+                textarea.txtArea_notes.form-control(name="message")
+
+              button.btn.btn-default.btn-primary.form-control.btn-heading.margin0.filterMargin(style="margin-right: 15px !important;" type="submit") Submit
+              //- a.btn.btn-default.btn-primary.form-control.btn-heading.margin0.filterMargin(href="/quickSupport/dashboard") Later
+   //- div.row
+   //-  div.col-xs-12
+   //-    h4.hide.checkdayComment.text-tertiary.filterMargin.font-primary Thank you and have a great day!
+
+
+
+
+
+block append js
+ script(src=cdn('/liveApplication.js'))
+ script
+      | $('#durationData').text(formatTime("#{responderHistoryData.responderDuration}",true))

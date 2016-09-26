@@ -1,0 +1,24 @@
+mixin nav(data, options)
+  ul.nav.navbar-nav.navbar.navigation.min-height-none
+      li( class=(activePage === 'dashboard' ? 'active' : ''))
+        a.dashboard_title.text-inverse(href='/dashboard') Dashboard
+      li( class=(activePage === '' ? '' : ''))
+        a.text-inverse(href='#') Quick Support
+      li( class=(activePage === '' ? '' : ''))
+        a.text-inverse(href='#') Manage
+      li(class=(activePage === '' ? '' : ''))
+        a.text-inverse(href='#',) Logs
+      li( class=(activePage === '' ? '' : ''))
+        a.text-inverse.dropdown-toggle(href='#',data-toggle="dropdown", aria-haspopup="true", aria-expanded="false" ) Settings
+        ul.dropdown-menu
+          li
+            a(href='/qsMapping') Stripe Mapping
+          li
+            a(href='/qsCreate/createProduct') Stripe Product
+          li
+            a(href='/qsCreate/createCoupon') Stripe Coupon
+          li
+            a(href='/qsCreate/createDiscount') Stripe Discounts
+          li
+            a(href='/qsCreate/createPlan') Stripe Plan
+  .clear-fix

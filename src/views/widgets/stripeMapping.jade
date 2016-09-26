@@ -1,0 +1,83 @@
+div#stripeMapping
+  +headpanels('Stripe Mapping')
+
+  div.container
+    .row
+       h4 Service to Stripe mapping
+    div.greyBox
+      .row
+        .col-sm-4
+          label Service Name
+          select.form-control(name='serviceName',data-placeholder='Select service name', multiple,data-errorholder='serviceName' style='width:60%' )
+        .col-sm-4
+          label Product ID
+          select.form-control(name='serviceName',data-placeholder='Select product ID', multiple,data-errorholder='serviceName' style='width:60%')
+        .col-sm-4
+          label SKU ID
+          select.form-control(name='serviceName',data-placeholder='Select SKU ID', multiple,data-errorholder='serviceName' style='width:60%')
+      .row
+        .col-xs-12
+          label.marginTop Whom you want to add?
+      .row
+        .col-xs-12.radioContainer
+          input(type="radio" id="" name="type" value="1")
+          span Default
+          input(type="radio" id="" name="type" value="2" checked="checked")
+          span Company
+          input(type="radio" id="" name="type" value="3") 
+          span Person
+      .row
+        .col-xs-12
+          label Company
+          select.form-control(name='serviceName',data-placeholder='search & select Company', multiple,data-errorholder='serviceName' style='width:30%')
+      .row.buttonContainer
+        .col-xs-12
+          button.btn(type='submit') Add mapping
+          a Clear all
+    .panel.panel-default
+      .panel-heading
+        h4.text-uppercase All Mapings
+      .panel-body
+        .row
+          .col-xs-12
+            label Filter by
+        .row
+          .col-sm-4
+            label Service Name
+            select.form-control(name='serviceName',data-placeholder='Select service name', multiple,data-errorholder='serviceName' style='width:100%' )
+          .col-sm-4
+            label Product ID
+            select.form-control(name='serviceName',data-placeholder='Select product ID', multiple,data-errorholder='serviceName' style='width:100%')
+          .col-sm-4
+            label SKU ID
+            select.form-control(name='serviceName',data-placeholder='Select SKU ID', multiple,data-errorholder='serviceName' style='width:100%')
+        .row.buttonContainer
+          .col-xs-12
+            button.btn.btn-default(type='submit') Submit
+            a Clear Filter
+      table.table.table-bordered
+          thead
+            tr
+              th Service name
+                i.fa.fa-chevron-down.fa_Marginleft
+              th Product Id
+                i.fa.fa-chevron-down.fa_Marginleft
+              th SKU Id
+                i.fa.fa-chevron-down.fa_Marginleft
+              th Person
+                i.fa.fa-chevron-down.fa_Marginleft
+              th Company
+                i.fa.fa-chevron-down.fa_Marginleft
+              th Default
+                i.fa.fa-chevron-down.fa_Marginleft
+              th 
+          tbody
+            tr
+              td QS - Post Question
+              td prod_7i3p3T7Br..
+              td sku_7i3rXAhAf..
+              td -
+              td -
+              td Default
+              td.text-center 
+                img.connection-small(src="#{cdn('/delete_active.png')}" style="width:40%")

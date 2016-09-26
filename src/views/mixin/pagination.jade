@@ -1,0 +1,50 @@
+mixin pgnation(pagination,base)
+        - pagination = pagination || {startPage:1,totalPages:0,curPage:1,length:5}
+        - start    = pagination.startPage    || 1
+        - numPages = pagination.totalPages || 0
+        - curr     = pagination.curPage     || 1
+        - defaultPgCount= pagination.defaultPgCount || 5
+        - base     = base     || '/' 
+        -if(!pagination.totalPages)
+            - return;
+        nav.row
+          ul.pagination.pull-right
+           - if(curr==1)
+                li.disabled
+                  a(href='#', aria-label='Previous')
+                    span(aria-hidden='true') «
+                li.disabled
+                  a(href='#', aria-label='Previous')
+                    span(aria-hidden='true') ‹
+            -else
+                li
+                  a(href='#{base}&start=#{0}', aria-label='Previous')
+                    span(aria-hidden='true') «
+                li
+                  a(href='#{base}&start=#{(curr-1)*pagination.length-pagination.length}', aria-label='Previous')
+                    span(aria-hidden='true') ‹
+            - var pgend=start+defaultPgCount-1>=numPages?numPages:start+defaultPgCount-1
+            - for(var i=start;i<=pgend;i++) {
+                -var pageStartIndex = pagination.length*i-pagination.length
+                - if(i==curr)
+                    li.active
+                        a(href='#{base}&start=#{pageStartIndex}') #{i}
+                - else
+                    li
+                        a(href='#{base}&start=#{pageStartIndex}') #{i}
+            - }
+               if(numPages==0 || numPages<=curr)
+                li.disabled
+                    a(href='#', aria-label='next')
+                     span(aria-hidden='true') ›
+                li.disabled
+                    a(href='#', aria-label='next')
+                     span(aria-hidden='true') »
+               else
+                 li
+                  a(href='#{base}&start=#{(curr-1)*pagination.length+pagination.length}', aria-label='next')
+                    span(aria-hidden='true') ›
+                 li
+                  a(href='#{base}&start=#{(numPages-1)*pagination.length}', aria-label='next')
+                    span(aria-hidden='true') »
+//-#{(curr-1)*5+5}

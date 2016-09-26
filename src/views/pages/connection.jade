@@ -1,0 +1,80 @@
+extends ../layouts/layout_searchbox_2column
+include ../mixin/formerror
+include ../mixin/formsuccess
+include ../mixin/registerFormcontinue
+include ../mixin/overallRatings
+include ../mixin/upgrade
+
+block column_1    
+  form.form.row#relation-form(action='/profile-con/:type/:connectedAs/:uid/:isSet?comp=curCompany',method='post')
+    .col-xs-12.col-lg-
+      if header
+        h3.text-primary.text-uppercase how do you know #{connectionTo.name} #{connectionTo.lastName}? 
+      else
+        h3.text-primary.text-uppercase how do you know #{connectionTo.name} #{connectionTo.lastName}? 
+      <hr>     
+      each item, key in relType
+        //h5 #{JSON.stringify(item)} -- #{key}
+        if item.length == 1
+          -item=item[0]
+          div.relation-data.validateConnection
+            //-h4 #{JSON.stringify(item)}
+            input(type='checkbox',data-input='connect',class='connectsingle',name='connect',value=item._id)
+            input(type='hidden',name='connectionFromType',value=item.connectionFrom)
+            input(type='hidden',name='connectionToType',value=item.connectionTo)
+            input(type='hidden',name='uid',value=connectionTo.uid)
+            input(type='hidden',name='_id',value=connectionTo._id)
+            input(type='hidden',name='conFromId',value=conFromId)
+            input(type='hidden',name='conFromName',value=conFromName)
+            input(type='hidden',name='returnUrl',value='#{returnUrl}')
+            label.radioTxt #{item.connectedAs}
+            br
+        else
+             //-h4 #{key.replace(/\s/g, '')}
+             //-h4 #{JSON.stringify(item)}
+             div(class="#{'validateConnection relation-data_'+key.replace(/\s/g, '')}")
+               input(type='checkbox',data-input='connect',name='connects',value="#{key.replace(/\s/g, '')}")
+               label.radioTxt #{key}
+               br
+               div.row.companyConnection
+                div.col-sm-3.col-md-2.col-xs-12
+                  label(style="padding-top: 10px;") Connected As
+                div.col-sm-9.col-md-10.col-xs-12
+                  select#example-getting-started(multiple='multiple',name='connect',style='width:100%;')
+                    +connectionsSelect(item,'abcd') 
+               .clearfix     
+    .col-sm-12.text-right.filterMargin.hidden-xs
+      if connectionTo.email
+        input#setRelation.btn.btn-primary.btn-heading(type='submit', value='Send Connection Request' style='width:190px!important;')
+        a.btn.btn-default.btn-heading(href="/profile") Cancel
+      else if returnUrl
+        input#setRelation.btn.btn-primary.btn-heading(type='submit', value='Send Connection Request' style='width:190px!important;')
+        a.btn.btn-default.btn-heading(href="#{returnUrl}") Cancel
+      else
+        input#setRelation.btn.btn-primary.btn-heading(type='submit', value='Connect')
+        a.btn.btn-default.btn-heading(href="/profile") Cancel      
+      &nbsp;
+    div.hidden-sm.visible-xs
+      if connectionTo.email
+        .col-xs-12.filterMargin
+          input#setRelation.btn.btn-primary.form-control(type='submit', value='Send Connection Request')
+        .col-xs-12.filterMargin
+          a.btn.btn-default.form-control(href="/profile") Cancel
+      else if returnUrl
+        input#setRelation.btn.btn-primary.btn-heading(type='submit', value='Send Connection Request' style='width:190px!important;')
+        a.btn.btn-default.btn-heading(href="#{returnUrl}") Cancel
+      else
+        .col-xs-12.filterMargin
+          input#setRelation.btn.btn-primary.form-control(type='submit', value='Connect')
+        .col-xs-12.filterMargin
+          a.btn.btn-default.form-control(href="/profile") Cancel
+        
+block column_2
+  
+
+block append js
+  script(src='//cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js')
+  script(src=cdn('/profile.js'))
+  script.
+    _t.push({user_id:'#{userId}');
+    _t.push({start:'#{title}'});

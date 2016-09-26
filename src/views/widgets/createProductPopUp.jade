@@ -1,0 +1,24 @@
+#createProductForm.modal.fade(tabindex='-1', role='dialog')
+  .modal-dialog(role='document')
+    .modal-content
+      .modal-header.text-inverse.font-secondary.text-uppercase
+        button.close(type='button', data-dismiss='modal', aria-label='Close')
+        h4#exampleModalLabel.modal-title Create Product
+      .modal-body
+        form(method="post" action="/product/createProduct" )
+          input(type='hidden',name='companyName',value='#{profileData.name}')
+          .form-group
+            label.control-label() Product Name
+            input.form-control(type='text', name='name', required='required',data-errorholder='Product Name')
+          .form-group
+            label.control-label() Latest Version
+            input.form-control(type='text', name='versionNumber', required='required',data-errorholder='Version Number')
+          .form-group
+            label.control-label(name='userCount') Users
+            input.form-control(type='number', name='userCount', data-errorholder='User Count')
+          .form-group
+            label.control-label(name='description') About Product
+            textarea.form-control(name='description', type='text', required='required',data-errorholder='Description')
+          .modal-footer
+            button.btn.btn-default(type='button', data-dismiss='modal') Close
+            input.btn.btn-primary(type='submit',value='Submit')

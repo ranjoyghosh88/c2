@@ -1,0 +1,81 @@
+p To ensure we direct your question to the right members of our Quick Support network, please help us with the information below
+.form-group
+    .col-xs-12
+      input.form-control.getName(type='text', readonly, data-errorholder='Name',  name='name', placeholder='Name',value="#{userData.userName}")
+.form-group.phone_number
+    .col-xs-12
+      if edit == true
+        input(type='hidden' name='questionId', value = "#{questionData[0]._id}")
+        input.form-control#phoneNum(type='text',name='phoneNumber', placeholder='Phone Number',value="#{questionData[0].phoneNumber}")
+      else
+        input.form-control#phoneNum(type='text',name='phoneNumber', placeholder='Phone Number',value="#{userData.phoneNumber}")
+      label.error.alert.alert-danger(style='font-size:14px;display:none') Please enter phone number
+      label Will only be used by CSquire to text you when Network member is available to provide answer to your question
+.form-group
+  .col-xs-12
+    if edit == true
+      input.form-control#emailForResponse(type='text',data-errorholder='Email to receive receipt',  name='emailForResponse', placeholder='Email to receive receipt',value="#{questionData[0].emailForResponse}")
+    else
+      input.form-control#emailForResponse(type='text',data-errorholder='Email to receive receipt',  name='emailForResponse', placeholder='Email to receive receipt',value="#{userData.mailId}")
+    label.error.alert.alert-danger(style="display:none") Please enter email
+.form-group.relative
+    .col-xs-12.add-product
+      select.addTo.form-control#productSelection(multiple name='product',data-master='products',data-tags="true",data-errorholder='Product',data-limit=2,data-placeholder='Product Name',style="width: 100%")
+        if edit == true
+          +PreselectBoxQuick(data, questionData[0].product)
+      label.error.alert.alert-danger(style="display:none") Please select product name
+.form-group
+  .col-xs-12
+      select#industry.form-control(name='industry',data-errorholder='Industry',data-placeholder='Industry',style="width: 100%")
+        if edit == true          
+          +PreselectBoxQuick(lasData.industry,[questionData[0].industry])
+        else
+          +selectBoxRole(lasData.industry,"Industry")
+.form-group
+    .col-xs-12
+      select#businessProcessArea.form-control(multiple name='businessProcessArea',data-master='businessProcessArea', data-tags="true",data-errorholder='Business Process Area', data-placeholder='Business Process Area',style="width: 100%")
+        if edit == true
+          +PreselectBoxQuick(lasData.businessProcessArea,questionData[0].businessProcessArea)
+      label.error.alert.alert-danger(style="display:none") Please select business process area
+.form-group#postQuestionCommunication
+    .col-xs-12
+      select.form-control#communicationMode(name="supportCommunicationMode",data-placeholder="Communication Preference")
+        if edit == true
+          +PreselectBoxQuick(lasData.commnucationMode,[questionData[0].supportCommunicationMode])
+        else
+          +selectBoxRole(lasData.commnucationMode,"commnucationMode")
+      label.error.alert.alert-danger(style="display:none") Please select communication mode
+.form-group#postQuestionTags
+    .col-xs-12
+      select#questionTag.form-control(name='tags',data-tags="true", data-master='getTags',data-placeholder='Tag',  multiple='multiple',style='width:100%')
+        if edit == true
+          +PreselectBox(lasData.tags,questionData[0].tags)
+.form-group.question
+    .col-xs-12
+      if edit == true
+        textarea.form-control#questionText(type='text', name='question',data-errorholder='Question', placeholder='Question ?',style="height:115px")
+          | #{questionData[0].question}
+      else
+        textarea.form-control#questionText(type='text', name='question', data-errorholder='Question', placeholder='Question ?',style="height:115px")
+      label.error.alert.alert-danger(style="display:none") Please enter question
+      a.text-primary.inline-block.no_underline.font_small(type='button', data-toggle='modal', data-target='.las_bs-example-modal-sm') Show Sample Question
+      .modal.fade.las_bs-example-modal-sm(tabindex='-1', role='dialog', aria-labelledby='mySmallModalLabel')
+        .modal-dialog
+          .modal-content
+            .modal-header.text-inverse.font-secondary.text-uppercase
+              button.close.text-inverse(type='button', data-dismiss='modal', aria-label='Close')
+                span(aria-hidden='true') ×
+              h4#mySmallModalLabel.modal-title Sample Question
+            .modal-body.las_sample_question
+              .panel.panel-default
+                .panel-body.padding0
+                  p In setting up personalized automation in Marketo to optimize my website we've used custom segments.How do i use these customized segments in automating an email campaign?
+                  p When reporting in Adaptive Insights why are some dimensions not returning any results when used in a cube sheet?
+                  p In Xero I have a bill doesn't show up in order to pay it? How can I find it?
+                  p I have stripe and QuickBooks connected.When transactions are being processed in Stripe only half of the details are showing up in QuickBooks?What would cause this?
+                  p In running my payroll out of Gusto there is an error message that is not letting me continue on?                                                                                                                                                                                                 
+if edit == true
+  div.row.marginT_30
+    div.col-sm-12
+      button.form-control.btn.btn-default.btn-primary.btn-heading.font-primary.editQuestion.margin0#editQuestion(type='submit' ) Submit
+      a(href="/quickSupport/dashboard/asked").form-control.btn.btn-default.btn-heading.font-primary Cancel

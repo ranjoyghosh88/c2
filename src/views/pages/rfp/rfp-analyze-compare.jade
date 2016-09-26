@@ -1,0 +1,171 @@
+extends ../../layouts/layout_backbone
+include ../../mixin/search
+
+block content
+	div.
+		<style>
+			#rfp-respond-table,.rfp_company_details .dataTable{
+			 width:100%!important; 
+			}
+			.quoted-text{
+				margin-bottom:20px;
+			}
+			.seemoreQtext{
+				margin-bottom:5px;
+				bottom:-10px !important;
+			}
+			.padding_10{
+				padding:10px;
+			}
+			.text-left{
+			text-align:left;
+			}
+		</style>
+		<script type="text/html" id='rfp-single-sel-que'>
+			<% _.each(question.answerEnum, function(val) { %>  
+			<div class="inline-block text-left">
+				<input type="radio" name='answer-enum-single-<%= index%>' disabled <%= (answer && answer.enumAns.indexOf(val)!=-1?'checked':'' )%> >
+					<label><%= val %></label>
+			</div>
+			<% }); %>
+			<% if(!answer) {%>
+				<div>No Response</div>
+			<%}%>
+		</script>
+		<script type="text/html" id='rfp-multi-sel-que'>
+		<% _.each(question.answerEnum, function(val) { %>  
+			<div class="inline-block text-left">
+				<input type="radio" name='answer-enum-single-<%= index%>' disabled <%= (answer && answer.enumAns.indexOf(val)!=-1?'checked':'' )%> >
+					<label><%= val %></label>
+			</div>
+			<% }); %>
+			<% if(!answer) {%>
+				<div>No Response</div>
+			<%}%>
+		</script>
+		<script type="text/html" id='rfp-free-que'>
+		<% _.each(question.answerEnum, function(val,index) { %>  
+			<% }); %>
+			<% if(!answer || !(answer.text && answer.text.length)) {%>
+				<div>No Response</div>
+			<%} else {%>
+				<div class="quoted-text expand-collapse text-left" data-less="false">
+					<%= answer.text%>
+					<button class="btn btn-link seemoreQtext block hide" style="bottom:-14px;left:45%;">more</button>
+				</div>
+			<%}%>
+		</script>
+		<script type="text/html" id='rfp-listans-que'>
+		</script>
+		<script  type="text/html" id='rfp-compare-table'>
+			<div class="outer relative">
+				<div class='hide' style='padding: 20px 0px; border-top: 1px solid #ccc;display:table;width:100%;'>
+					<h4 style='float:left; width:17%;margin: 10px 0 0 15px;'>Filter by Company</h4>
+					<select style='width:60%; border-radius:5px;margin:0;float:left;border: 1px solid #ccc;padding: 10px; margin:0 20px 0 0;'></select>
+					<a href='#' style='margin: 10px 30px;display: block;font-weight: bold;float: right;'><i class="fa fa-exchange" style='transform: rotate(90deg);padding: 0 5px;'></i>Sort by Company</a>
+				</div>
+				<div class="inner">
+					<table cellpadding="0" cellspacing="0" class="table marginT_30">
+						<tbody>
+								<tr>
+									<% _.each(responses, function(res,index) { %>  
+										<td align="center" class="company_logo td_height" style="min-height: 100px;height:100px;overflow-y: auto;">
+											<div class='padding_10'>
+												<img src='<%= res.cover.logo || res.rfpReceipent.logo || "/images/CompanyDummyLogo.png" %>' widtd='100px' class="Logo_Company"></img>
+												<div><%= res.rfpReceipent.name %> </div>
+											<div>
+										</td>
+									<% }); %>
+									<td align="center" colspan="2" class="absolute" style="min-height: 100px;height:100px;overflow-y: auto;">Questions</td>
+									<td align="center" class="scored td_height" style="min-height: 100px;height:100px;overflow-y: auto;">Scored</td>	
+								</tr>
+								<% _.each(questions, function(question,index) { %>  
+								<tr>
+									<% _.each(question.answers, function(answer,index) { %>  
+										<td align="center" class="company_logo td_height1 relative">
+											<div class='padding_10'>
+												<%= renderAnswer({question:question,answer:answer, index:index })%>
+											</div>
+										</td>
+									<% }); %>
+									<td class="serial_no td_height1" >
+										<div class='padding_10'>
+											<%= index+1%>
+										</div>
+									</td>
+									<td class="questions td_height1" >
+										<div class='padding_10'>
+											<div class="quoted-text expand-collapse" data-less="false">
+												<%= question.title%>
+												<button class="btn btn-link seemoreQtext block hide" style="bottom:-14px;left:45%;">more</button>
+											</div>
+										</div>
+									</td>
+
+									<td align="center" class="td_height1 scored_checkbox">
+										<div class='padding_10'>
+											<input type="checkbox" disabled <%= question.scored?'checked':''%> ></input>
+										</div>
+									</td>									
+								</tr>
+								<% }); %>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</script>
+		<script type="text/html" id='rfp-compare-tab-view'>
+			<ul class="nav nav-tabs">
+				<% _.each(questionGroups, function(qGroup,index) { %>  
+					<li role="<%=qGroup._id%>" class="text-center col-sm-3 <%= index==0?'active':''%>">
+						<a href="#<%=qGroup._id%>" aria-controls="<%=qGroup._id%>" role="tab" data-toggle="tab" aria-expanded="true">
+							<%=qGroup.title+' ('+qGroup.questions.length+')'%>
+						</a>
+					</li>
+				<% }); %>
+			</ul>
+			<div class="tab-content">
+				<% _.each(questionGroups, function(qGroup,index) { %>  
+				<div id="<%= qGroup._id%>" role="tabpanel" class="tab-pane margin0 media <%= index==0?'active':''%>">
+					<div class="panel panel-description panel-default">
+						<div class="panel-body">
+							<div class="rfp_company_details">
+							</div>
+						</div>
+					</div>
+				</div>
+				<% }); %>
+			</div>
+		</script>
+	.container-fluid.headpanel
+			h2.text-uppercase
+				p.font-md.black #{rfp.title}
+	.container.header-counter.filterMargin.
+			<div class="row"><div class="pull-left"></div><div class="col-xs-12 text-center pull-right SignUpSteps hidden-xs"> <span><span class="outerCircle" style="margin-right:0;width:50px;height:50px;"><span class="circle active" style="position:relative;font-size:23px;width:35px;height:35px;margin-top:8px;">1<span class="blueDash" style="position: absolute; left: 35px; margin-top: 11px; width: 95px;"></span></span></span><span class="dash" style="left: 0;margin-top: -10px; position:relative;width:75px"></span><span class="outerCircle" style="margin-right:0;width:50px;height:50px;"><span class="circle active" style="position:relative;font-size:23px;width:35px;height:35px;margin-top:8px;">2<span class="blueDash" style="position: absolute; left: 35px; margin-top: 11px; width: 95px;"></span></span></span><span class="dash" style="left: 0;margin-top: -10px; position:relative;width:75px"></span><span class="outerCircle" style="margin-right:0;width:50px;height:50px;"><span class="circle active" style="position:relative;font-size:23px;width:35px;height:35px;margin-top:8px;">3</span></span></span></div></div>
+	.container
+			.row
+					.col-xs-12.text-center
+							h3.bold.font-md.text-primary.margin_T0 Now lets analyze and score your RFP responses
+							label.block
+	.container
+		div#rfpDetails
+			each item in compareIds
+				<input type="hidden" class='compareIds' value='#{item}'>
+			.row
+				#rfp-compare-tabs.col-sm-12
+			.form-group
+				.row.marginT_30
+					.col-md-2.col-sm-3.col-md-offset-4.col-sm-offset-3
+						a.btn.btn-primary.form-control.disabled(href="#") Save Draft
+					.col-md-2.col-sm-3
+						a.btn.btn-primary.form-control.disabled(href="#") Create Final Report
+				.row
+					.col-md-12.col-sm-8.text-center
+						a.back.inline-block.filterMargin(href='/rfp-analyze-summary/#{_id}') Go to previous step
+block append js
+	script(src=cdn('/rfp-backbone-demo/rfp-common.js'))
+	script(src=cdn('/rfp-backbone-demo/rfp-analyze-compare.js'))
+	script.
+		var rfpId = '#{_id}';
+		
+

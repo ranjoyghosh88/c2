@@ -1,0 +1,129 @@
+mixin signSteps(data)
+  if(!steps)
+   - if(data.step=='step1')
+      .col-sm-12.SignUpSteps.hidden-xs.text-center
+          span
+            span.outerCircle
+              span.circle.stepOne.active 1
+                span.blueDash.stepOne
+            span.dash.stepOne
+            span.outerCircle
+              span.circle.stepTwo 2 
+                span.blueDash.stepOne
+            span.dash.stepTwo
+            span.outerCircle
+              span.circle.stepthree 3
+                span.blueDash.stepOne
+            span.dash.stepThree.hidden
+            span.outerCircle.hidden
+              span.circle.stepThree 4  
+                span.blueDash.stepOne
+   - if(data.step=='step2')
+      .col-sm-12.SignUpSteps.hidden-xs.text-center
+          span
+            span.outerCircle
+              span.circle.stepOne.active 1
+                span.blueDash.stepOne(style='width:60px')
+            span.dash.stepOne
+            span.outerCircle
+              span.circle.stepTwo.active 2 
+                span.blueDash.stepTwo(style='left: 150px;')
+            span.dash.stepTwo
+            span.outerCircle
+              span.circle.stepthree 3
+                span.blueDash.stepOne
+            span.dash.stepThree.hidden
+            span.outerCircle.hidden
+              span.circle.stepThree 4  
+                span.blueDash.stepOne
+   - if(data.step=='step3')
+      .col-sm-12.SignUpSteps.hidden-xs.text-center
+          span
+            span.outerCircle
+              span.circle.stepOne.active 1
+                span.blueDash.stepOne(style='width:60px')
+            span.dash.stepOne
+            span.outerCircle
+              span.circle.stepTwo.active 2 
+                span.blueDash.stepOne(style='width:60px; left: 150px;')
+            span.dash.stepTwo
+            span.outerCircle
+              span.circle.stepthree.active 3
+                span.blueDash.stepTwo
+            span.dash.stepThree.hidden
+            span.outerCircle.hidden
+              span.circle.stepThree 4  
+                span.blueDash.stepOne
+  if(steps)
+   - if(data.step=='step1')
+      .col-sm-12.SignUpSteps.hidden-xs.text-center
+          span
+            span.outerCircle
+              span.circle.stepOne.active 1
+                span.blueDash.stepOne
+            span.dash.stepOne
+            span.outerCircle
+              span.circle.stepTwo 2 
+                span.blueDash.stepOne
+            span.dash.stepTwo
+            span.outerCircle
+              span.circle.stepthree 3
+                span.blueDash.stepOne
+            span.dash.stepThree
+            span.outerCircle
+              span.circle.stepThree 4  
+                span.blueDash.stepOne
+    - if(data.step=='step2')
+      .col-sm-12.SignUpSteps.hidden-xs.text-center
+          span
+            span.outerCircle
+              span.circle.stepOne.active 1
+                span.blueDash.stepOne(style='width:60px')
+            span.dash.stepOne
+            span.outerCircle
+              span.circle.stepTwo.active 2 
+                span.blueDash.stepOne(style='left: 150px;')
+            span.dash.stepTwo
+            span.outerCircle
+              span.circle.stepthree 3
+                span.blueDash.stepTwo
+            span.dash.stepThree
+            span.outerCircle
+              span.circle.stepThree 4  
+                span.blueDash.stepOne
+    - if(data.step=='step3')
+      .col-sm-12.SignUpSteps.hidden-xs.text-center
+          span
+            span.outerCircle
+              span.circle.stepOne.active 1
+                span.blueDash.stepOne(style='width:60px')
+            span.dash.stepOne
+            span.outerCircle
+              span.circle.stepTwo.active 2 
+                span.blueDash.stepOne(style='left: 150px;width:60px')
+            span.dash.stepTwo
+            span.outerCircle
+              span.circle.stepthree.active 3
+                span.blueDash.stepTwo(style='left: 250px;width:30px')
+            span.dash.stepThree
+            span.outerCircle
+              span.circle.stepThree 4  
+                span.blueDash.stepOne
+    - if(data.step=='step4')
+      .col-sm-12.SignUpSteps.hidden-xs.text-center
+          span
+            span.outerCircle
+              span.circle.stepOne.active 1
+                span.blueDash.stepOne(style='width:60px')
+            span.dash.stepOne
+            span.outerCircle
+              span.circle.stepTwo.active 2 
+                span.blueDash.stepOne(style='left: 150px;width:60px')
+            span.dash.stepTwo
+            span.outerCircle
+              span.circle.stepthree.active 3
+                span.blueDash.stepTwo(style='left: 250px;width:60px')
+            span.dash.stepThree
+            span.outerCircle
+              span.circle.stepThree 4  
+                span.blueDash.stepOne

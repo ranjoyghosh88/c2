@@ -1,0 +1,94 @@
+.las.las_dashboard
+  include ./quickSupportLock
+
+  .panel.marginT_30
+    .panel-body.padding0
+          include ./quickSupportTab
+          #TabContent.tab-content(style="border:1px solid #ddd")
+            if answeredTab.length == 0 && !filterFlag
+              .panel
+                .panel-body
+                  p There are no questions answered by you
+            else
+              #my-answered.tab-pane.fade.in.active.margin0
+                .panel
+                  .panel-body
+                    h4.font-primary Filter by 
+                    div.row.las_filters
+                      .col-xs-12
+                        form(method='get' novalidate)
+                          .row
+                            div.col-sm-4.filterMargin
+                              label.mobileTopMargin Status
+                              select.form-control(name='status',data-errorholder='', required='required',data-placeholder='',style="width: 100%" id = 'statusFilter')
+                                option(value="0") Please Select Status
+                                option(value="1") Completed
+                                option(value="2") Closed
+                            div.col-sm-8.relative.las_date
+                              #rangeDatepicker.input-daterange
+                                div.row
+                                  div.col-sm-6.filterMargin
+                                    label.mobileTopMargin Start Date
+                                    input.form-control.text-left(type='text',autocomplete='off', name='startDate', id = 'startDate', placeholder='Start Date')
+                                  div.col-sm-6.filterMargin
+                                    label.mobileTopMargin End Date
+                                    input.form-control.text-left(type='text',autocomplete='off' name='endDate', id = 'endDate' placeholder='End Date')
+                            //- div#reportRange.pull-right(style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%")
+                            //-   i.glyphicon.glyphicon-calendar.fa.fa-calendar 
+                            //-   | &nbsp;
+                            //-   span
+                            //-   b.caret
+                            //- span.absolute.glyphicon.glyphicon-calendar
+                          .row
+                            .col-sm-6
+                              div.marginT_30.btn-grp.hidden-xs
+                                button.form-control.btn.btn-default.btn-heading-small.btn-primary.margin0 Submit
+                                a(href="/quickSupport/dashboard/answered").form-control.btn.btn-default.border-primary.btn-heading-small Clear Filter
+                            .col-sm-6.text-right
+                              span.block.marginT_30 Total Payment : 
+                                label.text-tertiary $#{totalPayment}.00
+                          div.row.marginT_30.btn-grp.hidden-sm.visible-xs
+                              .col-xs-12
+                                button.form-control.btn.btn-default.btn-primary Submit
+                              .col-xs-12.filterMargin
+                                a(href="/quickSupport/dashboard/answered").form-control.btn.btn-default.border-primary Clear Filter
+                .panel
+                  .panel-body.padding0
+                    div
+                      table.table.margin0.answerTable
+                        thead
+                          tr
+                            th(style="width:20%;padding-left:15px")
+                              | Contact Name 
+                              i.fa.fa-chevron-down.fa_Marginleft
+                            th(style="width:55%")
+                              | Question
+                              i.fa.fa-chevron-down.fa_Marginleft
+                            th(style="width:15%")
+                              | Status
+                              i.fa.fa-chevron-down.fa_Marginleft
+                            th.text-center(style="width:10%")
+                              | Payment
+                              i.fa.fa-chevron-down.fa_Marginleft
+                        tbody
+                         each data in answeredTab
+                          if data.status == "completed"
+                            tr
+                              td.getAnsweredCount
+                                | #{data.qsQuestionId.createdBy.name} #{data.qsQuestionId.createdBy.lastName}
+                              td.text-capitalize
+                                span.more #{data.qsQuestionId.question}
+                              td
+                                span Completed
+                              td.text-right
+                                | $ 19.00
+                          if data.status == "closed"
+                            tr
+                              td.getAnsweredCount
+                                | #{data.qsQuestionId.createdBy.name} #{data.qsQuestionId.createdBy.lastName}
+                              td.text-capitalize
+                                span.more #{data.qsQuestionId.question}
+                              td
+                                span Closed
+                              td.text-right
+                                | $ 00.00

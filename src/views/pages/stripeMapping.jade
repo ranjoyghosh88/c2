@@ -1,0 +1,9 @@
+extends ../layouts/layout
+include ../mixin/headpanel
+include ../mixin/registerFormcontinue
+
+block content
+	include ../widgets/stripeMapping
+
+append js
+	script(src=cdn('/dashboard.js'))

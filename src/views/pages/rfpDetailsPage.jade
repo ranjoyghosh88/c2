@@ -1,0 +1,144 @@
+extends ../layouts/layout
+include ../mixin/search
+
+block content
+	.container
+		div#rfpDetails
+			.row
+				div.col-sm-9
+					h4 Now lets analyze and score your RFP responses
+					h3 ERP Replacement of Epicon September 2015 
+						label.text-primary See RFP Profile
+				div.col-sm-3
+					button.btn.btn-primary.text-uppercase.invite invite contributors
+						i.fa.fa-plus.text-inverse
+			.row
+				.col-sm-12
+						ul.nav.nav-tabs
+							li.active.text-center.col-sm-3(role='presentation')
+								a(href='#functional', aria-controls='functional', role='tab', data-toggle='tab') Functional
+							li.text-center.col-sm-3(role='presentation')
+								a(href='#technical', aria-controls='technical', role='tab', data-toggle='tab') Technical
+							li.text-center.col-sm-3(role='presentation')
+								a(href='#business', aria-controls='business', role='tab', data-toggle='tab') Business
+							li.text-center.col-sm-3(role='presentation')
+								a(href='#legalAndContract', aria-controls='legalAndContract', role='tab', data-toggle='tab') Legal & Contract
+						.tab-content
+							#functional.tab-pane.active.media(role='tabpanel')
+								.panel.panel-description.panel-default
+									.panel-body
+										h4 Total questions
+											span.text-primary 05
+										div.rfp_company_details
+												.outer.relative
+													.inner
+														table.table(cellpadding="0" cellspacing="0")
+															tr
+																td.absolute(colspan="2")
+																td.scored.td_height(align="center") Scored
+																td.company_logo.td_height(align="center")
+																	img(src="#{cdn('/profile.jpg')}")
+																td.company_logo(align="center")
+																	img(src="#{cdn('/profile.jpg')}")
+																td.company_logo(align="center")
+																	img(src="#{cdn('/profile.jpg')}")
+																td.company_logo(align="center")
+																	img(src="#{cdn('/profile.jpg')}")
+															tr
+																td.serial_no 01
+																td.questions Do you support subscription Billing?
+																td.scored_checkbox(align="center")
+																	input(type="checkbox")
+																td(align="center")
+																	div.inline-block
+																		input(type="radio")
+																		label Yes
+																	div.inline-block
+																		input(type="radio")
+																		label No
+																	div.avg_score
+																		span Avg Score
+																		input(type="text" value="07")
+																td(align="center")
+																	div.inline-block
+																		input(type="radio")
+																		label Yes
+																	div.inline-block
+																		input(type="radio")
+																		label No
+																	div.avg_score
+																		span Avg Score
+																		input(type="text" value="10")
+																td(align="center")
+																	div.inline-block
+																		input(type="radio")
+																		label Yes
+																	div.inline-block
+																		input(type="radio")
+																		label No
+																	div.avg_score
+																		span Avg Score
+																		input(type="text" value="03")
+																td(align="center")
+																	div.inline-block
+																		input(type="radio")
+																		label Yes
+																	div.inline-block
+																		input(type="radio")
+																		label No
+																	div.avg_score
+																		span Avg Score
+																		input(type="text" value="07")
+															tr
+																td.serial_no 02
+																td.questions Do you support subscription Billing?
+																td.scored_checkbox(align="center")
+																	input(type="checkbox" placeholder="answer")
+																td(align="center")
+																	input(type="text")
+																	div.avg_score
+																		span Avg Score
+																		input(type="text" value="10")
+																td(align="center")
+																	input(type="text")
+																	div.avg_score
+																		span Avg Score
+																		input(type="text" value="05")
+																td(align="center")
+																	input(type="text")
+																	div.avg_score
+																		span Avg Score
+																		input(type="text" value="14")
+																td(align="center")
+																	input(type="text")
+																	div.avg_score
+																		span Avg Score
+																		input(type="text" value="24")
+															tr
+																td.serial_no 03
+																td.questions Do you support subscription Billing?
+																td.scored_checkbox(align="center")
+																	input(type="checkbox")
+																td(align="center")
+																	textarea
+																td(align="center")
+																	textarea
+																td(align="center")
+																	textarea
+																td(align="center")
+																	textarea
+							#technical.tab-pane.media(role='tabpanel')
+								.panel.panel-description.panel-default
+									.panel-body
+							#business.tab-pane.media(role='tabpanel')
+								.panel.panel-description.panel-default
+									.panel-body
+							#legalAndContract.tab-pane.media(role='tabpanel')
+								.panel.panel-description.panel-default
+									.panel-body
+			.form-group
+				.row
+					.col-md-2.col-sm-3
+						a.btn.btn-primary.form-control(href="#") Save Draft
+					.col-md-2.col-sm-3
+						a.btn.btn-primary.form-control(href="#") Create Final Report

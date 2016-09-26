@@ -1,0 +1,334 @@
+mixin selectBoxRole(data,text)
+	option
+	each item in data
+		option(value=item._id)= item.name
+
+mixin selectCsquireServiceRole(data,text)
+	option
+	each item in data
+		if item.name != 'Referral' && item.name != 'Promotion'
+			option(value=item._id)= item.name
+
+mixin selectCsquireServiceFilter(data,text)
+	option
+		option(value=0 selected='selected')= 'All'
+	each item in data
+		if item.name != 'Referral' && item.name != 'Promotion'
+			option(value=item._id)= item.name
+
+mixin selectCsquireServiceRoleAll(data,text)
+	option
+	each item in data
+		if(item._id==6)
+			option(value=item._id,title=tooltip selected='selected')= item.name
+		else
+			option(value=item._id)= item.name
+
+mixin selectCsquireServiceRoleAllForValidService(data,text)
+	option
+	each item in data
+		option(value=item._id)= item.name
+
+mixin selectStripeProduct(data,text)
+	option
+	each item in data
+		option(value=item.id)= item.name
+
+mixin selectStripeCoupon(data,text)
+	option
+	each item in data
+		if(item.valid!=false)
+			option(value=item.id)= item.id
+
+mixin selectStripePlan(data,text)
+	option
+	each item in data
+		if(item.valid!=false)
+			option(value=item.id)= item.name
+
+mixin preSelectStripePlan(data,selectedData)
+	option
+	each item in data
+		if(item.valid!=false)
+			if item.id == selectedData
+				option(value=item.id selected='selected')= item.name
+			else
+				option(value=item.id id = selectedData)= item.name
+
+mixin preSelectStripeSku(data,selectedData)
+	- selectedData = selectedData || []
+	- data = data || []
+	each sku in data
+		-var conv = sku.price / 100;
+		-var skuName = sku.id+' ('+'$' + conv.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')+' )'
+		if sku.id == selectedData
+			option(value=sku.id selected='selected')= skuName
+		else
+			option(value=sku.id)= skuName
+
+mixin selectStripeSku(data,text)
+	option
+		each product in data
+			each sku in product.skus.data
+				-var conv = sku.price / 100;
+				-var skuName = sku.id+' ('+'$' + conv.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')+' )'
+				option(value=sku.id id = product.id)= skuName
+
+mixin preSelectStripeProduct(data,selectedData)
+	- selectedData = selectedData || []
+	- data = data || []
+	each item in data
+		if(item.id!=selectedData)
+			option(value=item.id,title=tooltip)= item.name
+		else
+			option(value=item.id,title=tooltip selected='selected')= item.name
+
+mixin preSelectStripeCoupon(data,selectedData)
+	- selectedData = selectedData || []
+	- data = data || []
+	each item in data
+		if(item.id!=selectedData)
+			option(value=item.id,title=tooltip)= item.id
+		else
+			option(value=item.id,title=tooltip selected='selected')= item.id
+
+mixin PreselectCsquireServiceFilter(data,selectedData,tooltip)
+	- selectedData = selectedData || []
+	- data = data || []
+	option(value=0)= 'All'
+	each item in data
+		if item.name != 'Referral' && item.name != 'Promotion'
+			if(selectedData && item._id ==selectedData._id)
+				option(value=item._id,title=tooltip selected='selected')= item.name
+			else
+				option(value=item._id,title=tooltip)= item.name
+
+mixin PreselectCsquireServiceRole(data,selectedData,tooltip)
+	- selectedData = selectedData || []
+	- data = data || []
+	each item in data
+		if item.name != 'Referral' && item.name != 'Promotion'
+			if(selectedData && item._id ==selectedData._id)
+				option(value=item._id,title=tooltip selected='selected')= item.name
+			else
+				option(value=item._id,title=tooltip)= item.name
+
+mixin PreselectCsquireServiceRoleAll(data,selectedData,tooltip)
+	- selectedData = selectedData || []
+	- data = data || []
+	each item in data
+		if(selectedData && item._id ==selectedData._id)
+			option(value=item._id,title=tooltip selected='selected')= item.name
+		else
+			option(value=item._id,title=tooltip)= item.name
+mixin selectCsquireServiceReferral(data,tooltip)
+	- data = data || []
+	each item in data
+		if item.name == 'Referral'
+			option(value=item._id,title=tooltip selected='selected')= item.name
+		else
+			option(value=item._id,title=tooltip)= item.name
+				
+mixin PreselectBoxQuick(data,selectedData)
+	- selectedData = selectedData || []
+	- data = data || []
+	- var result=[]
+	- var notExist=true
+	each item in data
+		- for(var i=0;i<selectedData.length;i++)
+			- if(selectedData[i] && selectedData[i].name)
+				- if(item.name!=selectedData[i].name)
+					- notExist=true
+				- else
+					- notExist=false
+					- break
+			- else
+				- notExist=true		
+		if notExist==true
+			- result.push(item)
+	-if(selectedData.length<=1 && !selectedData[0])
+		option
+	each item in selectedData
+		-if(item && item.name)
+			- var name = item.name + ' ' + item.lastName + ' ('+ item.email + ')';
+			option(value=item._id,selected='selected')= name
+	each item in result
+		option(value=item._id)= item.name + ' ' + item.lastName
+
+mixin PreselectBoxQuickDefault(data,selectedData)
+	- selectedData = selectedData || []
+	- data = data || []
+	- var result=[]
+	- var notExist=true
+	each item in data
+		- for(var i=0;i<selectedData.length;i++)
+			- if(selectedData[i] && selectedData[i].name)
+				- if(item.name!=selectedData[i].name)
+					- notExist=true
+				- else
+					- notExist=false
+					- break
+			- else
+				- notExist=true		
+		if notExist==true
+			- result.push(item)
+	-if(selectedData.length<=1 && !selectedData[0])
+		option
+	each item in selectedData
+		-if(item && item.name)
+			- var name = item.name;
+			option(value=item._id,selected='selected')= name
+	each item in result
+		option(value=item._id)= item.name
+		
+mixin selectStripeReferralSku(data,text)
+	option
+	each item in data
+		if item.active
+			-var conv = item.price / 100;
+			-var skuName = item.id+' ('+'$' + conv.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')+' )'
+			option(value=item.id)= skuName
+mixin qsMappingModel()
+	#mappingPopup.modal.fade(role='dialog')
+		.modal-dialog
+			.modal-content
+				.modal-header
+					button.close.text-inverse(type='button', data-dismiss='modal') &times;    
+					h4.modal-title.setHeaderMessage.text-inverse.text-uppercase.font-secondary
+				.modal-body
+					p.messageGeneric  
+				.modal-footer
+					button.btn.btn-default.btn-primary.btn-heading-small(type='button', data-dismiss='modal') OK
+mixin skuDetailsModel()
+	#skuDetailsPopup.modal.fade(role='dialog')
+		.modal-dialog
+			.modal-content
+				.modal-header
+					button.close.text-inverse(type='button', data-dismiss='modal') &times;    
+					h4.modal-title.setHeaderMessage.text-inverse.text-uppercase.font-secondary
+				.modal-body
+					p
+						label.widthadjust150 SKU Name
+						span.skuName
+					p
+						label.widthadjust150 Product
+						span.product
+					p
+						label.widthadjust150 Description
+						span.description
+					p
+						label.widthadjust150 Price
+						span.price
+				.modal-footer
+					button.btn.btn-default.btn-primary.btn-heading-small(type='button', data-dismiss='modal') OK
+
+mixin couponSkuDetailsModel()
+	#couponSkuPopup.modal.fade(role='dialog')
+		.modal-dialog
+			.modal-content
+				.modal-header
+					button.close.text-inverse(type='button', data-dismiss='modal') &times;    
+					h4.modal-title.setHeaderMessage.text-inverse.text-uppercase.font-secondary
+				.modal-body
+					.panel.panel-default
+						.panel-body.padding0
+							div.padding15
+								h4.font-primary Coupon Details
+								p.couponId
+								p.couponPrice
+								p.duration
+								p.maxRedemptions
+								p.timesRedeemed
+								p.valid
+								p.expiryDate
+							div.bordertop
+							div.padding15
+								h4.font-primary Referral Sku Details
+								p
+									label.widthadjust SKU Name
+									span.skuName
+								p 
+									label.widthadjust Product
+									span.product
+								p
+									label.widthadjust Description
+									span.description
+								p
+									label.widthadjust Price
+									span.price
+				.modal-footer
+					button.btn.btn-default.btn-primary.btn-heading-small(type='button', data-dismiss='modal') OK
+mixin couponDetailsModel()
+	#couponPopup.modal.fade(role='dialog')
+		.modal-dialog
+			.modal-content
+				.modal-header
+					button.close.text-inverse(type='button', data-dismiss='modal') &times;    
+					h4.modal-title.setHeaderMessage.text-inverse.text-uppercase.font-secondary
+				.modal-body
+					.panel.panel-default
+						.panel-body.padding0
+							div.padding15
+								h4.font-primary Coupon Details
+								p.couponId
+								p.couponPrice
+								p.duration
+								p.maxRedemptions
+								p.timesRedeemed
+								p.valid
+								p.expiryDate
+				.modal-footer
+					button.btn.btn-default.btn-primary.btn-heading-small(type='button', data-dismiss='modal') OK
+mixin couponDetailsModelErr()
+	#couponPopupErr.modal.fade(role='dialog')
+		.modal-dialog
+			.modal-content
+				.modal-header
+					button.close.text-inverse(type='button', data-dismiss='modal') &times;    
+					h4.modal-title.setHeaderMessage.text-inverse.text-uppercase.font-secondary
+				.modal-body
+					.panel.panel-default
+						.panel-body.padding0
+							div.padding15
+								h4.font-primary Coupon Details
+				.modal-footer
+					button.btn.btn-default.btn-primary.btn-heading-small(type='button', data-dismiss='modal') OK
+mixin planDetailsModel()
+	#planPopup.modal.fade(role='dialog')
+		.modal-dialog
+			.modal-content
+				.modal-header
+					button.close.text-inverse(type='button', data-dismiss='modal') &times;    
+					h4.modal-title.setHeaderMessage.text-inverse.text-uppercase.font-secondary
+				.modal-body
+					p
+						label.widthadjust150 Plan Name
+						span.planId
+					p
+						label.widthadjust150 Price
+						span.planPrice
+					p
+						label.widthadjust150 Duration
+						span.duration
+					p.description-block
+						label.widthadjust150 Description
+						span.description
+					p.trial-period
+						label.widthadjust150 Trial Period Days
+						span.trialPeriod
+				.modal-footer
+					button.btn.btn-default.btn-primary.btn-heading-small(type='button', data-dismiss='modal') OK
+
+mixin confirmBox()
+	#submit-confirm.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+		.modal-dialog
+			.modal-content
+				.modal-header
+					button.close(type='button', data-dismiss='modal')
+						span(aria-hidden='true') ×
+						span.sr-only Close
+					h4.modal-title
+				.modal-body
+				.modal-footer
+					button.btn.btn-default(type='button', data-dismiss='modal') Close
+					button.btn.btn-primary(type='button', data-confirm='modal') OK

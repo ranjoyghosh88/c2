@@ -1,0 +1,31 @@
+extends ../../layouts/layout
+include ../../mixin/headpanel
+include ../../mixin/formHeading
+include ../../mixin/SignupstepsTemplate
+include ../../mixin/registerFormcontinue
+block content 
+    +headpanels('Sign up as ' + role )
+    .container
+      +signSteps({step:'step2'})
+    .container.error-container 
+    .container
+      form.form-horizontal.signupForm(method='post', action='/register/step3')
+        +previousData(formdata)
+        input#_csrf(type='hidden', name='_csrf', value='{{csrfToken}}')
+        +setFormHead({head:'Please share your expertise with this group',text:"Let people know what you are good at"})
+        .form-group
+          .col-md-4.col-md-offset-4.col-sm-8.col-sm-offset-2
+            label Software Knowledge
+            select.form-control#developmentSoftwares(name='developmentSoftwares',data-taggable='true', data-master='developmentSoftware'  data-errorholder='Software Knowledge', multiple='multiple',data-placeholder='Please Select a Software Knowledge',style="width: 100%")
+               //-+selectBox(masterCollections.softwareDevs,"Please Select a Software Knowledge")
+        .form-group
+          .col-md-4.col-md-offset-4.col-sm-8.col-sm-offset-2
+            label Business Process
+            select.form-control#businessProcessAreas(name='businessProcessAreas',data-taggable='true', data-master='businessProcessArea',  data-errorholder='Business Process', multiple='multiple',data-placeholder='Please Select a Business Process Area',style="width: 100%")
+                //-+selectBox(masterCollections.businessProcess,"Please Select a Business Process Area")    
+        .form-group
+          .col-md-4.col-md-offset-4.col-sm-8.col-sm-offset-2
+            button.btn.signup.btn-primary.form-control(type='submit') Continue 
+        .form-group
+          .col-md-4.col-md-offset-4.col-sm-8.col-sm-offset-2
+            button.btn.signup.btn-link.form-control(type='submit') or Skip     

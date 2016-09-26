@@ -1,0 +1,93 @@
+mixin myRfp(data)
+  each item in data
+    - var stateText = item.state;
+    - if(stateText=='completed')
+     - stateText='Published';
+     - if(parseInt(item.responseCount) > 0)
+       - stateText='Response Received ('+item.responseCount+')';
+    tr(data-response='#{item.responseCount}' data-rfpid='#{item._id}')
+     td
+        input(type="checkbox" class='check-rfp')
+     td
+        if item.state=='completed'
+         a(href="/rfp-review/#{item._id}") #{item.title}
+        else
+         a(href="/rfp/create?_id=#{item._id}") #{item.title}
+     td.text-capitalize
+        | #{item.userLog.createdBy.userId.name + ' ' + item.userLog.createdBy.userId.lastName}
+     td.date
+        | #{item.userLog.createdBy.date}
+     td(class="text-capitalize #{item.state}")
+        | #{stateText}
+
+<h3 class="text-uppercase dashboard-heading">RFP Dashboard</h3>
+.panel
+  .panel-body.padding0
+    .row
+      .col-xs-12
+        ul#Tab.nav.nav-tabs.navUi
+          li.active
+            a#a(href='#my-rfp', data-toggle='tab')
+              | My RFPs (#{data.length})
+          li
+            a#b(href='#allrfps', data-toggle='tab')
+              | All RFPs (<span class='count'>#{data.length+responseRfps.length}</span>)
+    .row
+      .col-sm-12
+        #TabContent.tab-content.tabUi
+          #my-rfp.tab-pane.fade.in.active.rfp-dashboard
+            div
+              table.my-rfp-table.table.marginT_30
+                thead
+                  tr
+                    th
+                    th 
+                      | Name 
+                      i.fa.fa-chevron-down.fa_Marginleft
+                    th
+                      | Owner
+                      i.fa.fa-chevron-down.fa_Marginleft
+                    th
+                      | Date
+                      i.fa.fa-chevron-down.fa_Marginleft
+                    th
+                      | Status
+                      i.fa.fa-chevron-down.fa_Marginleft
+                tbody
+                 +myRfp(data)
+          #allrfps.tab-pane.fade.rfp-dashboard 
+           div
+              table.all-rfp-table.table.marginT_30(style='width:100%')
+                thead
+                  tr
+                    th
+                    th 
+                      | Name 
+                      i.fa.fa-chevron-down.fa_Marginleft
+                    th
+                      | Owner
+                      i.fa.fa-chevron-down.fa_Marginleft
+                    th
+                      | Date
+                      i.fa.fa-chevron-down.fa_Marginleft
+                    th
+                      | Status
+                      i.fa.fa-chevron-down.fa_Marginleft
+                tbody
+                 each items in responseRfps
+                  - var item= items.rfpId
+                  tr
+                    td
+                      input(type="checkbox" class='check-rfp')
+                    td
+                      if items.state=='Responded'
+                        a(href="#", class='disabled') #{item.title}
+                      else
+                        a(href="/rfp/respond?_id=#{item._id}") #{item.title}
+                    td.text-capitalize
+                      | #{item.userLog.createdBy.userId.name + ' ' + item.userLog.createdBy.userId.lastName}
+                    td.date
+                      | #{item.userLog.createdBy.date}
+                    td(class="text-capitalize draft")
+                      | #{items.state}
+                 +myRfp(data)
